@@ -1,22 +1,26 @@
 import React, { useState } from 'react';
 import { useRouter } from '../../context/RouterContext';
 import { siteConfig } from '../../config/siteConfig';
-import { MessageSquare, X, Mail, ArrowRight, Sparkles, Send } from 'lucide-react';
+import { MessageSquare, X, Mail, ArrowRight, Bot } from 'lucide-react';
 
-export const FloatingContactCTA: React.FC = () => {
+interface FloatingContactCTAProps {
+  onOpenChatbot?: () => void;
+}
+
+export const FloatingContactCTA: React.FC<FloatingContactCTAProps> = ({ onOpenChatbot }) => {
   const { navigate } = useRouter();
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <div className="fixed bottom-6 right-6 z-40">
+    <div className="fixed bottom-16 md:bottom-6 right-4 sm:right-6 z-40">
       {/* Expanded Quick Contact Drawer / Card */}
       {isOpen && (
-        <div className="mb-3 w-80 sm:w-96 rounded-2xl bg-[#070B1F]/95 backdrop-blur-2xl border border-cyan-500/30 p-5 shadow-[0_20px_50px_rgba(0,0,0,0.8),0_0_25px_rgba(6,182,212,0.2)] animate-in fade-in slide-in-from-bottom-4 duration-200">
+        <div className="mb-3 w-76 sm:w-96 rounded-2xl bg-[#070B1F]/95 backdrop-blur-2xl border border-cyan-500/30 p-5 shadow-[0_20px_50px_rgba(0,0,0,0.8),0_0_25px_rgba(6,182,212,0.2)] animate-in fade-in slide-in-from-bottom-4 duration-200">
           <div className="flex items-center justify-between pb-3 border-b border-slate-800">
             <div className="flex items-center gap-2">
               <div className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" />
-              <span className="text-xs font-bold text-white tracking-wider uppercase">
-                InfosBrain Strategy Lead
+              <span className="text-xs font-bold text-white tracking-wider uppercase font-mono">
+                InfosBrain Direct Advisory
               </span>
             </div>
             <button
@@ -30,7 +34,7 @@ export const FloatingContactCTA: React.FC = () => {
 
           <div className="py-4 space-y-3">
             <p className="text-xs text-slate-300 leading-relaxed">
-              Have a web project, SEO audit, or marketing campaign in mind? We respond within 24 hours.
+              Have an AI project, software engineering initiative, or digital transformation need? Connect with our solution experts immediately.
             </p>
 
             <div className="p-3 rounded-xl bg-slate-900/80 border border-slate-800 space-y-2 text-xs">
@@ -41,13 +45,6 @@ export const FloatingContactCTA: React.FC = () => {
               >
                 <Mail className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
                 <span className="truncate">{siteConfig.contact.primaryEmail}</span>
-              </a>
-              <a
-                href={`mailto:${siteConfig.contact.secondaryEmail}`}
-                className="flex items-center gap-2 text-cyan-300 hover:text-cyan-200 font-mono"
-              >
-                <Mail className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
-                <span className="truncate">{siteConfig.contact.secondaryEmail}</span>
               </a>
               <a
                 href={siteConfig.contact.whatsappUrl}
@@ -66,6 +63,19 @@ export const FloatingContactCTA: React.FC = () => {
           </div>
 
           <div className="pt-2 flex flex-col gap-2">
+            {onOpenChatbot && (
+              <button
+                onClick={() => {
+                  setIsOpen(false);
+                  onOpenChatbot();
+                }}
+                className="w-full py-2.5 px-4 rounded-xl text-xs font-bold text-white bg-gradient-to-r from-[#6C4DFF] to-[#0078FF] hover:from-[#5A3EE0] hover:to-[#0066DB] shadow-[0_0_20px_rgba(108,77,255,0.3)] flex items-center justify-center gap-2 transition-all cursor-pointer"
+              >
+                <Bot className="w-3.5 h-3.5" />
+                <span>Launch AI Assistant (Instant Answers)</span>
+              </button>
+            )}
+
             <a
               href={siteConfig.contact.whatsappUrl}
               target="_blank"

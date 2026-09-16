@@ -83,6 +83,10 @@ export interface TestimonialItem {
   rating: number;
   avatarText?: string;
   avatarUrl?: string;
+  country?: string;
+  flag?: string;
+  videoThumbnail?: string;
+  videoUrl?: string;
 }
 
 export interface BlogPostItem {
@@ -124,4 +128,66 @@ export interface TeamMember {
   bio: string;
   imageUrl?: string;
   skills: string[];
+}
+
+export interface OfficeLocation {
+  id: string;
+  city: string;
+  country: string;
+  region: 'Europe' | 'South Asia' | 'West Africa' | 'Global';
+  role: string;
+  flag: string;
+  address: string;
+  teamSize: string;
+  servicesProvided: string[];
+  contactEmail: string;
+  contactPhone?: string;
+  localSuccessStory: string;
+  coordinates: { x: number; y: number }; // Percentage on 1000x500 map
+  imageUrl: string;
+}
+
+export interface AIToolItem {
+  id: string;
+  name: string;
+  tagline: string;
+  description: string;
+  iconName: string;
+  badge: string;
+  capabilities: string[];
+  ctaText: string;
+  ctaAction: string;
+  metric: string;
+}
+
+export interface ResearchPaper {
+  id: string;
+  title: string;
+  subtitle: string;
+  category: string;
+  readTime: string;
+  pages: number;
+  executiveSummary: string;
+  keyInsights: string[];
+  iconName: string;
+}
+
+export interface LeadershipMember {
+  id: string;
+  name: string;
+  role: string;
+  bio: string;
+  achievements: string[];
+  imageUrl: string;
+  linkedinUrl: string;
+}
+
+export interface InnovationItem {
+  id: string;
+  name: string;
+  tagline: string;
+  description: string;
+  iconName: string;
+  readinessLevel: string;
+  useCase: string;
 }

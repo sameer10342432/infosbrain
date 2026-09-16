@@ -1,13 +1,14 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { RouterProvider, useRouter } from './context/RouterContext';
-import { ThemeProvider } from './context/ThemeContext';
-import { TranslationProvider } from './context/TranslationContext';
 import { Navbar } from './components/common/Navbar';
 import { Footer } from './components/common/Footer';
 import { FloatingContactCTA } from './components/common/FloatingContactCTA';
 import { FloatingWhatsApp } from './components/common/FloatingWhatsApp';
-import { AutoTranslateNotification } from './components/common/AutoTranslateNotification';
 import { CookieConsent } from './components/common/CookieConsent';
+import { StickyMobileNav } from './components/common/StickyMobileNav';
+import { ConsultationModal } from './components/common/ConsultationModal';
+import { VideoModal } from './components/common/VideoModal';
+import { AIAssistantModal } from './components/common/AIAssistantModal';
 
 // Pages
 import { HomePage } from './pages/HomePage';
@@ -25,7 +26,17 @@ import { NotFoundPage } from './pages/NotFoundPage';
 import { AISolutionsHubPage } from './pages/AISolutionsHubPage';
 import { AISolutionDetailPage } from './pages/AISolutionDetailPage';
 
-const PageContent: React.FC = () => {
+interface PageContentProps {
+  onOpenConsultation: () => void;
+  onOpenVideoModal: (title?: string, videoUrl?: string) => void;
+  onOpenChatbot: () => void;
+}
+
+const PageContent: React.FC<PageContentProps> = ({
+  onOpenConsultation,
+  onOpenVideoModal,
+  onOpenChatbot,
+}) => {
   const { currentPath } = useRouter();
 
   // Normalize path by stripping query params and trailing slashes (except root)
@@ -45,7 +56,13 @@ const PageContent: React.FC = () => {
 
   switch (cleanPath) {
     case '/':
-      return <HomePage />;
+      return (
+        <HomePage
+          onOpenConsultation={onOpenConsultation}
+          onOpenVideoModal={onOpenVideoModal}
+          onOpenChatbot={onOpenChatbot}
+        />
+      );
     case '/about':
       return <AboutPage />;
     case '/services':
@@ -77,23 +94,57 @@ const PageContent: React.FC = () => {
 };
 
 export default function App() {
+  const [isConsultationOpen, setIsConsultationOpen] = useState(false);
+  const [isVideoOpen, setIsVideoOpen] = useState(false);
+  const [videoModalData, setVideoModalData] = useState<{ title?: string; videoUrl?: string }>({});
+  const [isChatbotOpen, setIsChatbotOpen] = useState(false);
+
+  const handleOpenConsultation = () => setIsConsultationOpen(true);
+  const handleOpenVideo = (title?: string, videoUrl?: string) => {
+    setVideoModalData({ title, videoUrl });
+    setIsVideoOpen(true);
+  };
+  const handleOpenChatbot = () => setIsChatbotOpen(true);
+
   return (
-    <ThemeProvider>
-      <TranslationProvider>
-        <RouterProvider>
-          <div className="min-h-screen bg-[#050816] text-slate-100 flex flex-col font-sans selection:bg-cyan-500 selection:text-white transition-colors duration-250">
-            <Navbar />
-            <div className="flex-grow">
-              <PageContent />
-            </div>
-            <Footer />
-            <FloatingWhatsApp />
-            <FloatingContactCTA />
-            <AutoTranslateNotification />
-            <CookieConsent />
-          </div>
-        </RouterProvider>
-      </TranslationProvider>
-    </ThemeProvider>
+    <RouterProvider>
+      <div className="min-h-screen bg-[#071A35] text-slate-100 flex flex-col font-sans selection:bg-[#0078FF] selection:text-white transition-colors duration-250 pb-16 md:pb-0">
+        <Navbar onOpenConsultation={handleOpenConsultation} />
+        <div className="flex-grow">
+          <PageContent
+            onOpenConsultation={handleOpenConsultation}
+            onOpenVideoModal={handleOpenVideo}
+            onOpenChatbot={handleOpenChatbot}
+          />
+        </div>
+        <Footer />
+
+        {/* Floating Overlays */}
+        <FloatingWhatsApp />
+        <FloatingContactCTA onOpenChatbot={handleOpenChatbot} />
+        <CookieConsent />
+
+        {/* Sticky Mobile Navigation */}
+        <StickyMobileNav />
+
+        {/* Global Modals */}
+        <ConsultationModal
+          isOpen={isConsultationOpen}
+          onClose={() => setIsConsultationOpen(false)}
+        />
+        <VideoModal
+          isOpen={isVideoOpen}
+          onClose={() => setIsVideoOpen(false)}
+          title={videoModalData.title}
+          videoUrl={videoModalData.videoUrl}
+        />
+        <AIAssistantModal
+          isOpen={isChatbotOpen}
+          onClose={() => setIsChatbotOpen(false)}
+          onOpenConsultation={handleOpenConsultation}
+        />
+      </div>
+    </RouterProvider>
   );
 }
+

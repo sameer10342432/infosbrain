@@ -8,15 +8,29 @@
     --accent-blue: #2563EB;
     --accent-cyan: #06B6D4;
     --accent-purple: #7C3AED;
+
+    /* InfosBrain Brand Palette */
+    --brand-midnight: #071A35;
+    --brand-electric: #0078FF;
+    --brand-purple: #6C4DFF;
+    --brand-teal: #00C9A7;
+    --brand-white: #FFFFFF;
+    --brand-light-gray: #F5F7FA;
   }
 
   html.light {
-    --bg-main: #F8FAFC;
+    --bg-main: #F5F7FA;
     --bg-secondary: #FFFFFF;
     --bg-card: #FFFFFF;
-    --accent-blue: #2563EB;
-    --accent-cyan: #0284C7;
-    --accent-purple: #7C3AED;
+    --accent-blue: #0078FF;
+    --accent-cyan: #00C9A7;
+    --accent-purple: #6C4DFF;
+    --brand-midnight: #071A35;
+    --brand-electric: #0078FF;
+    --brand-purple: #6C4DFF;
+    --brand-teal: #00C9A7;
+    --brand-white: #FFFFFF;
+    --brand-light-gray: #F5F7FA;
     color-scheme: light;
   }
 
@@ -96,6 +110,63 @@
 
 .radial-spotlight-purple {
   background: radial-gradient(circle at 50% 50%, rgba(124, 58, 237, 0.12) 0%, rgba(37, 99, 235, 0.05) 45%, transparent 70%);
+}
+
+/* InfosBrain Brand Utilities */
+.bg-midnight {
+  background-color: #071A35;
+}
+
+.bg-midnight-card {
+  background-color: rgba(7, 26, 53, 0.75);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(0, 120, 255, 0.15);
+}
+
+.text-electric {
+  color: #0078FF;
+}
+
+.text-ai-purple {
+  color: #6C4DFF;
+}
+
+.text-teal-green {
+  color: #00C9A7;
+}
+
+.border-electric {
+  border-color: rgba(0, 120, 255, 0.35);
+}
+
+.border-ai-purple {
+  border-color: rgba(108, 77, 255, 0.35);
+}
+
+.border-teal-green {
+  border-color: rgba(0, 201, 167, 0.35);
+}
+
+.glow-electric {
+  box-shadow: 0 0 25px rgba(0, 120, 255, 0.25);
+}
+
+.glow-ai-purple {
+  box-shadow: 0 0 25px rgba(108, 77, 255, 0.25);
+}
+
+.glow-teal-green {
+  box-shadow: 0 0 25px rgba(0, 201, 167, 0.25);
+}
+
+.gradient-brand {
+  background: linear-gradient(135deg, #0078FF 0%, #6C4DFF 55%, #00C9A7 100%);
+}
+
+.gradient-text-brand {
+  background: linear-gradient(135deg, #0078FF 0%, #6C4DFF 50%, #00C9A7 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 /* ==========================================================================

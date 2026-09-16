@@ -1,10 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from '../../context/RouterContext';
-import { useTheme } from '../../context/ThemeContext';
 import { siteConfig } from '../../config/siteConfig';
 import { Button } from './Button';
-import { ThemeToggle } from './ThemeToggle';
-import { LanguageSelector } from './LanguageSelector';
 import {
   Menu,
   X,
@@ -34,13 +31,29 @@ import {
   Eye,
 } from 'lucide-react';
 
-export const Navbar: React.FC = () => {
+interface NavbarProps {
+  onOpenConsultation?: () => void;
+}
+
+export const Navbar: React.FC<NavbarProps> = ({ onOpenConsultation }) => {
   const { currentPath, navigate } = useRouter();
-  const { theme } = useTheme();
-  const isDark = theme === 'dark';
+  const isDark = true;
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
+
+  const scrollToSection = (id: string) => {
+    if (currentPath !== '/') {
+      navigate('/');
+      setTimeout(() => {
+        const el = document.getElementById(id);
+        if (el) el.scrollIntoView({ behavior: 'smooth' });
+      }, 150);
+    } else {
+      const el = document.getElementById(id);
+      if (el) el.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -191,7 +204,7 @@ export const Navbar: React.FC = () => {
             <span className={`hidden sm:block text-[9px] font-mono tracking-widest uppercase -mt-1 ${
               isDark ? 'text-slate-400' : 'text-slate-500'
             }`}>
-              Digital Growth Agency
+              Intelligent Digital Solutions
             </span>
           </div>
         </button>
@@ -421,6 +434,13 @@ export const Navbar: React.FC = () => {
           </button>
 
           <button
+            onClick={() => scrollToSection('global')}
+            className={getNavBtnClass(false)}
+          >
+            Global
+          </button>
+
+          <button
             onClick={() => navigate('/contact')}
             className={getNavBtnClass(currentPath === '/contact')}
           >
@@ -428,31 +448,23 @@ export const Navbar: React.FC = () => {
           </button>
         </nav>
 
-        {/* Right CTA Button, Language Selector & Theme Toggle */}
+        {/* Right CTA Button */}
         <div className="hidden lg:flex items-center gap-3">
-          <LanguageSelector />
-          <ThemeToggle />
           <Button
             size="sm"
             variant="primary"
-            onClick={() => navigate('/contact')}
+            onClick={() => (onOpenConsultation ? onOpenConsultation() : navigate('/contact'))}
             icon={<ArrowRight className="w-4 h-4" />}
           >
-            Let's Talk
+            Schedule Consultation
           </Button>
         </div>
 
-        {/* Mobile Header Right: Language, Theme Toggle & Hamburger */}
+        {/* Mobile Header Right: Hamburger */}
         <div className="flex lg:hidden items-center gap-2">
-          <LanguageSelector compact />
-          <ThemeToggle />
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className={`p-2 rounded-xl transition-colors border cursor-pointer focus:outline-none ${
-              isDark
-                ? 'text-slate-300 hover:text-white hover:bg-slate-800/60 border-slate-700/60'
-                : 'text-slate-700 hover:text-slate-900 hover:bg-slate-100 border-slate-200'
-            }`}
+            className="p-2 rounded-xl transition-colors border cursor-pointer focus:outline-none text-slate-300 hover:text-white hover:bg-slate-800/60 border-slate-700/60"
             aria-label="Toggle navigation menu"
           >
             {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
@@ -468,23 +480,6 @@ export const Navbar: React.FC = () => {
             : 'bg-white/98 border-slate-200 text-slate-800 shadow-2xl'
         }`}>
           <div className="space-y-4">
-            {/* Mobile Controls Row: Language & Theme Toggle */}
-            <div className={`grid grid-cols-2 gap-2 p-3 rounded-2xl border mb-3 transition-colors ${
-              isDark ? 'bg-slate-900/60 border-slate-800/80' : 'bg-slate-50 border-slate-200'
-            }`}>
-              <div className="flex flex-col gap-1">
-                <span className={`text-[10px] uppercase font-bold tracking-wider ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
-                  Language
-                </span>
-                <LanguageSelector />
-              </div>
-              <div className="flex flex-col gap-1 items-end">
-                <span className={`text-[10px] uppercase font-bold tracking-wider ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
-                  Theme
-                </span>
-                <ThemeToggle showLabel />
-              </div>
-            </div>
 
             <button
               onClick={() => navigate('/')}

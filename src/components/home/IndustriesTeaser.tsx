@@ -1,137 +1,153 @@
 import React from 'react';
 import { useRouter } from '../../context/RouterContext';
-import { siteConfig } from '../../config/siteConfig';
 import { SectionHeading } from '../common/SectionHeading';
 import {
-  ShoppingBag,
-  Cpu,
-  Building,
   Activity,
-  DollarSign,
   GraduationCap,
-  Briefcase,
-  Store,
-  Compass,
-  Rocket,
-  Laptop,
-  Users,
+  HeartHandshake,
+  Landmark,
+  Truck,
+  ShoppingBag,
+  Building2,
+  Factory,
   ArrowRight,
+  ExternalLink,
 } from 'lucide-react';
 
 export const IndustriesTeaser: React.FC = () => {
   const { navigate } = useRouter();
 
-  const getIndustryIcon = (name: string) => {
-    switch (name) {
-      case 'ShoppingBag':
-        return ShoppingBag;
-      case 'Cpu':
-        return Cpu;
-      case 'Building':
-        return Building;
-      case 'Activity':
-        return Activity;
-      case 'DollarSign':
-        return DollarSign;
-      case 'GraduationCap':
-        return GraduationCap;
-      case 'Briefcase':
-        return Briefcase;
-      case 'Store':
-        return Store;
-      case 'Compass':
-        return Compass;
-      case 'Rocket':
-        return Rocket;
-      case 'Laptop':
-        return Laptop;
-      case 'Users':
-        return Users;
-      default:
-        return Briefcase;
-    }
-  };
+  const industriesList = [
+    {
+      id: 'ind-healthcare',
+      name: 'Healthcare & Life Sciences',
+      icon: Activity,
+      desc: 'Administrative automation, secure patient portals, HIPAA/GDPR compliance, and clinical document intelligence.',
+      caseLink: '/case-studies',
+      color: '#00C9A7',
+      tag: 'Clinical Portals',
+    },
+    {
+      id: 'ind-education',
+      name: 'Education & Institutions',
+      icon: GraduationCap,
+      desc: 'Adaptive learning pathways, AI tutoring assistance, institutional student portals, and comprehension analytics.',
+      caseLink: '/case-studies',
+      color: '#0078FF',
+      tag: '10,000+ Active Learners',
+    },
+    {
+      id: 'ind-nonprofit',
+      name: 'Nonprofits & NGOs',
+      icon: HeartHandshake,
+      desc: 'Multilingual donor engagement platforms, automated impact reporting, transparency ledgers, and outreach funnels.',
+      caseLink: '/case-studies',
+      color: '#6C4DFF',
+      tag: '+300% Engagement',
+    },
+    {
+      id: 'ind-banking',
+      name: 'Banking & Financial Services',
+      icon: Landmark,
+      desc: 'Document intelligence for underwriting, regulatory compliance audit trails, fraud pattern detection, and fintech dashboards.',
+      caseLink: '/case-studies',
+      color: '#0078FF',
+      tag: 'Audit Ready',
+    },
+    {
+      id: 'ind-logistics',
+      name: 'Logistics & Supply Chain',
+      icon: Truck,
+      desc: 'Real-time fleet tracking, invoice three-way matching, demand forecasting, and cross-border route optimization.',
+      caseLink: '/case-studies',
+      color: '#00C9A7',
+      tag: 'Real-Time Telemetry',
+    },
+    {
+      id: 'ind-retail',
+      name: 'Retail & E-Commerce',
+      icon: ShoppingBag,
+      desc: 'Sub-second headless digital storefronts, predictive cart cross-sells, omnichannel inventory, and customer chatbots.',
+      caseLink: '/case-studies',
+      color: '#6C4DFF',
+      tag: '+180% Sales Growth',
+    },
+    {
+      id: 'ind-government',
+      name: 'Government & Public Sector',
+      icon: Building2,
+      desc: 'Accessible citizen digital services, municipal management portals, secure document archives, and civic reporting.',
+      caseLink: '/case-studies',
+      color: '#0078FF',
+      tag: 'Citizen Services',
+    },
+    {
+      id: 'ind-manufacturing',
+      name: 'Manufacturing & Industrial',
+      icon: Factory,
+      desc: 'Industrial IoT telemetry, predictive machinery maintenance, process optimization, and inventory synchronizations.',
+      caseLink: '/case-studies',
+      color: '#00C9A7',
+      tag: 'Process Automation',
+    },
+  ];
 
   return (
-    <section className="relative py-24 bg-[#050816] overflow-hidden">
+    <section id="industries" className="relative py-24 bg-[#071A35] overflow-hidden">
+      {/* Ambient background lighting */}
+      <div className="absolute top-1/2 left-10 w-[500px] h-[500px] bg-[#0078FF]/10 rounded-full blur-[140px] pointer-events-none" />
+      <div className="absolute inset-0 cyber-grid opacity-35 pointer-events-none" />
+
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <SectionHeading
-          badge="TARGET DOMAINS"
-          title="Tailored Solutions For"
-          highlightText="Every Key Sector"
-          description="Every industry operates under distinct regulatory constraints, buyer psychology, and unit economics. We tailor strategies to your precise vertical."
+          badge="SECTOR EXPERTISE"
+          title="Industries We"
+          highlightText="Serve Globally"
+          description="Every sector operates under specific regulatory frameworks, data confidentiality requirements, and user expectations. InfosBrain delivers tailored digital solutions architected around your industry's precise realities."
         />
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {siteConfig.industries.slice(0, 6).map((ind) => {
-            const Icon = getIndustryIcon(ind.iconName);
+        {/* 8 Industries Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
+          {industriesList.map((ind) => {
+            const Icon = ind.icon;
             return (
               <div
                 key={ind.id}
-                onClick={() => navigate('/industries')}
-                className="group p-6 rounded-2xl bg-[#070B1F]/80 border border-slate-800/80 hover:border-cyan-500/50 hover:shadow-[0_15px_30px_rgba(0,0,0,0.6),0_0_20px_rgba(6,182,212,0.15)] transition-all cursor-pointer flex flex-col justify-between overflow-hidden"
+                onClick={() => navigate(ind.caseLink)}
+                className="group p-6 rounded-3xl bg-[#050816]/85 border border-slate-800 hover:border-[#0078FF]/60 hover:shadow-[0_15px_35px_rgba(0,0,0,0.6),0_0_20px_rgba(0,120,255,0.15)] transition-all cursor-pointer flex flex-col justify-between"
               >
                 <div>
-                  {/* Industry Visual Banner */}
-                  {ind.imageUrl && (
-                    <div className="relative h-32 w-full rounded-xl overflow-hidden mb-4 border border-slate-800 group-hover:border-cyan-500/30 transition-all">
-                      <img
-                        src={ind.imageUrl}
-                        alt={ind.name}
-                        referrerPolicy="no-referrer"
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-[#070B1F] via-[#070B1F]/30 to-transparent" />
-                      <div className="absolute bottom-2 left-2 flex items-center gap-2">
-                        <div className="w-8 h-8 rounded-lg bg-slate-950/90 border border-cyan-500/40 flex items-center justify-center text-cyan-400 backdrop-blur-md">
-                          <Icon className="w-4 h-4" />
-                        </div>
-                      </div>
-                    </div>
-                  )}
-
-                  {!ind.imageUrl && (
-                    <div className="w-12 h-12 rounded-xl bg-slate-900 border border-slate-800 group-hover:border-cyan-400/50 flex items-center justify-center text-cyan-400 group-hover:bg-cyan-500/20 transition-all mb-4">
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="w-12 h-12 rounded-2xl bg-slate-900 border border-slate-800 group-hover:border-[#0078FF]/50 group-hover:bg-[#0078FF]/15 flex items-center justify-center text-[#0078FF] transition-all">
                       <Icon className="w-6 h-6" />
                     </div>
-                  )}
+                    <span className="px-2 py-0.5 rounded-full text-[10px] font-mono text-slate-300 bg-[#071A35] border border-slate-800">
+                      {ind.tag}
+                    </span>
+                  </div>
 
-                  <h3 className="text-xl font-bold text-white group-hover:text-cyan-300 transition-colors font-display mb-2">
+                  <h3 className="text-lg font-bold text-white font-display group-hover:text-[#00C9A7] transition-colors mb-2">
                     {ind.name}
                   </h3>
-
-                  <p className="text-xs sm:text-sm text-slate-400 leading-relaxed mb-4">
-                    {ind.tagline}
-                  </p>
-
-                  <div className="flex flex-wrap gap-1.5 mb-4">
-                    {ind.relevantServices.map((srv, sIdx) => (
-                      <span
-                        key={sIdx}
-                        className="px-2 py-0.5 rounded text-[10px] font-mono text-cyan-300/80 bg-cyan-950/40 border border-cyan-500/20"
-                      >
-                        {srv}
-                      </span>
-                    ))}
-                  </div>
+                  <p className="text-xs text-slate-300 leading-relaxed mb-6">{ind.desc}</p>
                 </div>
 
-                <div className="pt-3 border-t border-slate-800 flex items-center justify-between text-xs font-bold text-cyan-400 group-hover:text-cyan-300">
-                  <span>View Sector Roadmap</span>
-                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                <div className="pt-4 border-t border-slate-800/80 flex items-center justify-between text-xs font-bold text-[#0078FF] group-hover:text-[#00C9A7] transition-colors">
+                  <span>View Case Study</span>
+                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1.5 transition-transform" />
                 </div>
               </div>
             );
           })}
         </div>
 
-        <div className="mt-10 text-center">
+        <div className="text-center">
           <button
             onClick={() => navigate('/industries')}
-            className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-slate-900/80 hover:bg-slate-800 text-sm font-bold text-slate-200 border border-slate-700 hover:border-cyan-400/50 transition-all cursor-pointer shadow-lg"
+            className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-[#050816] hover:bg-slate-900 text-sm font-bold text-white border border-slate-800 hover:border-[#0078FF] transition-all cursor-pointer shadow-md"
           >
-            <span>Explore All 12 Specialized Industry Practices</span>
-            <ArrowRight className="w-4 h-4 text-cyan-400" />
+            <span>Explore Complete Industry Solutions</span>
+            <ArrowRight className="w-4 h-4 text-[#0078FF]" />
           </button>
         </div>
       </div>

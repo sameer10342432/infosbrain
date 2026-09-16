@@ -9,7 +9,7 @@ export const FloatingWhatsApp: React.FC = () => {
 
   return (
     <div
-      className="fixed bottom-21 right-6 z-40 flex items-center justify-end"
+      className="fixed bottom-28 md:bottom-20 right-4 sm:right-6 z-40 flex items-center justify-end"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
