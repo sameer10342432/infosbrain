@@ -1,10 +1,12 @@
 import React from 'react';
 import { RouterProvider, useRouter } from './context/RouterContext';
 import { ThemeProvider } from './context/ThemeContext';
+import { TranslationProvider } from './context/TranslationContext';
 import { Navbar } from './components/common/Navbar';
 import { Footer } from './components/common/Footer';
 import { FloatingContactCTA } from './components/common/FloatingContactCTA';
 import { FloatingWhatsApp } from './components/common/FloatingWhatsApp';
+import { AutoTranslateNotification } from './components/common/AutoTranslateNotification';
 import { CookieConsent } from './components/common/CookieConsent';
 
 // Pages
@@ -77,18 +79,21 @@ const PageContent: React.FC = () => {
 export default function App() {
   return (
     <ThemeProvider>
-      <RouterProvider>
-        <div className="min-h-screen bg-[#050816] text-slate-100 flex flex-col font-sans selection:bg-cyan-500 selection:text-white transition-colors duration-250">
-          <Navbar />
-          <div className="flex-grow">
-            <PageContent />
+      <TranslationProvider>
+        <RouterProvider>
+          <div className="min-h-screen bg-[#050816] text-slate-100 flex flex-col font-sans selection:bg-cyan-500 selection:text-white transition-colors duration-250">
+            <Navbar />
+            <div className="flex-grow">
+              <PageContent />
+            </div>
+            <Footer />
+            <FloatingWhatsApp />
+            <FloatingContactCTA />
+            <AutoTranslateNotification />
+            <CookieConsent />
           </div>
-          <Footer />
-          <FloatingWhatsApp />
-          <FloatingContactCTA />
-          <CookieConsent />
-        </div>
-      </RouterProvider>
+        </RouterProvider>
+      </TranslationProvider>
     </ThemeProvider>
   );
 }

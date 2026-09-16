@@ -496,3 +496,59 @@ html.light .from-blue-950\/80 {
 html.light .to-cyan-950\/80 {
   --tw-gradient-to: #E0E7FF var(--tw-gradient-to-position) !important;
 }
+
+/* ==========================================================================
+   GOOGLE TRANSLATE SEAMLESS INTEGRATION STYLES
+   Hides default Google top bar, tooltips, and preserves modern UI
+   ========================================================================== */
+
+/* Hide default Google Translate top banner frame */
+.goog-te-banner-frame,
+.goog-te-banner-frame.skiptranslate,
+iframe.goog-te-banner-frame {
+  display: none !important;
+  visibility: hidden !important;
+  height: 0 !important;
+  border: none !important;
+}
+
+/* Prevent body from shifting down */
+body {
+  top: 0px !important;
+  position: static !important;
+}
+
+/* Hide Google Translate hover balloons and tooltips */
+#goog-gt-tt,
+.goog-te-balloon-frame,
+.goog-tooltip,
+.goog-tooltip:hover {
+  display: none !important;
+  visibility: hidden !important;
+}
+
+/* Remove default Google text highlight overlay */
+.goog-text-highlight {
+  background-color: transparent !important;
+  box-shadow: none !important;
+  border: none !important;
+}
+
+/* Hide default Google element */
+#google_translate_element {
+  display: none !important;
+}
+
+/* Hide Google's automatic iframe attribution */
+body > .skiptranslate {
+  display: none !important;
+}
+
+/* RTL direction support for Arabic and Urdu */
+[dir="rtl"] {
+  text-align: right;
+}
+[dir="rtl"] .dropdown-menu {
+  right: auto;
+  left: 0;
+}

@@ -4,6 +4,7 @@ import { useTheme } from '../../context/ThemeContext';
 import { siteConfig } from '../../config/siteConfig';
 import { Button } from './Button';
 import { ThemeToggle } from './ThemeToggle';
+import { LanguageSelector } from './LanguageSelector';
 import {
   Menu,
   X,
@@ -427,8 +428,9 @@ export const Navbar: React.FC = () => {
           </button>
         </nav>
 
-        {/* Right CTA Button & Theme Toggle */}
+        {/* Right CTA Button, Language Selector & Theme Toggle */}
         <div className="hidden lg:flex items-center gap-3">
+          <LanguageSelector />
           <ThemeToggle />
           <Button
             size="sm"
@@ -440,8 +442,9 @@ export const Navbar: React.FC = () => {
           </Button>
         </div>
 
-        {/* Mobile Header Right: Theme Toggle & Hamburger */}
+        {/* Mobile Header Right: Language, Theme Toggle & Hamburger */}
         <div className="flex lg:hidden items-center gap-2">
+          <LanguageSelector compact />
           <ThemeToggle />
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -465,14 +468,22 @@ export const Navbar: React.FC = () => {
             : 'bg-white/98 border-slate-200 text-slate-800 shadow-2xl'
         }`}>
           <div className="space-y-4">
-            {/* Mobile Theme Toggle Row */}
-            <div className={`flex items-center justify-between p-3 rounded-2xl border mb-3 transition-colors ${
+            {/* Mobile Controls Row: Language & Theme Toggle */}
+            <div className={`grid grid-cols-2 gap-2 p-3 rounded-2xl border mb-3 transition-colors ${
               isDark ? 'bg-slate-900/60 border-slate-800/80' : 'bg-slate-50 border-slate-200'
             }`}>
-              <div className="flex items-center gap-2 text-xs font-semibold">
-                <span className={isDark ? 'text-slate-300' : 'text-slate-700'}>Appearance</span>
+              <div className="flex flex-col gap-1">
+                <span className={`text-[10px] uppercase font-bold tracking-wider ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
+                  Language
+                </span>
+                <LanguageSelector />
               </div>
-              <ThemeToggle showLabel />
+              <div className="flex flex-col gap-1 items-end">
+                <span className={`text-[10px] uppercase font-bold tracking-wider ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
+                  Theme
+                </span>
+                <ThemeToggle showLabel />
+              </div>
             </div>
 
             <button
