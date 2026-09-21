@@ -73,11 +73,31 @@ export const BlogPage: React.FC = () => {
     return matchesCat && matchesSearch;
   });
 
-  const handleSubscribe = (e: React.FormEvent) => {
+  const [isSubscribing, setIsSubscribing] = useState(false);
+
+  const handleSubscribe = async (e: React.FormEvent) => {
     e.preventDefault();
     if (emailInput.trim()) {
-      setSubscribed(true);
-      setEmailInput('');
+      setIsSubscribing(true);
+      try {
+        await fetch('/api/inquiries', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            name: 'Newsletter Subscriber',
+            email: emailInput.trim(),
+            service: 'Newsletter Subscription',
+            projectDetails: 'Subscribed to Weekly Executive Briefings & Technical Insights from Blog page.',
+            source: 'Blog Newsletter Form',
+          }),
+        });
+      } catch (err) {
+        console.error('Newsletter subscription error:', err);
+      } finally {
+        setIsSubscribing(false);
+        setSubscribed(true);
+        setEmailInput('');
+      }
     }
   };
 
@@ -271,9 +291,10 @@ export const BlogPage: React.FC = () => {
                 />
                 <button
                   type="submit"
-                  className="px-6 py-3 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 text-white text-xs font-bold shadow-[0_0_20px_rgba(6,182,212,0.4)] cursor-pointer hover:from-cyan-400 hover:to-blue-500"
+                  disabled={isSubscribing}
+                  className="px-6 py-3 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 text-white text-xs font-bold shadow-[0_0_20px_rgba(6,182,212,0.4)] cursor-pointer hover:from-cyan-400 hover:to-blue-500 disabled:opacity-60"
                 >
-                  Join Dispatch
+                  {isSubscribing ? 'Joining...' : 'Join Dispatch'}
                 </button>
               </form>
             )}

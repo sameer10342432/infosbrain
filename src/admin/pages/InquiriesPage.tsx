@@ -237,6 +237,11 @@ export const InquiriesPage: React.FC = () => {
                           {inq.business}
                         </div>
                       )}
+                      {inq.source && (
+                        <div className="inline-block mt-1 px-1.5 py-0.5 rounded text-[10px] font-mono bg-cyan-950/60 text-cyan-300 border border-cyan-500/20">
+                          {inq.source}
+                        </div>
+                      )}
                     </td>
                     <td className="p-4 whitespace-nowrap">
                       <div className="font-semibold text-slate-200">{inq.service || 'General Brief'}</div>
@@ -360,6 +365,13 @@ export const InquiriesPage: React.FC = () => {
                 <X className="w-5 h-5" />
               </button>
             </div>
+
+            {activeInquiry.source && (
+              <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-800 text-xs font-mono text-cyan-400">
+                <span className="text-slate-500 uppercase tracking-wider text-[10px]">Origin:</span>
+                <span>{activeInquiry.source}</span>
+              </div>
+            )}
 
             {/* Quick Contact Info */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 rounded-2xl bg-slate-950 border border-slate-800 text-xs">

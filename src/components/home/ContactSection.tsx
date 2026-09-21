@@ -34,10 +34,32 @@ export const ContactSection: React.FC<ContactSectionProps> = ({
   const [budget, setBudget] = useState('$10k - $25k');
   const [message, setMessage] = useState('');
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsSubmitted(true);
+    if (!name.trim() || !email.trim()) return;
+    setIsSubmitting(true);
+    try {
+      await fetch('/api/inquiries', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name,
+          email,
+          business: organization,
+          service: serviceFocus,
+          budget,
+          projectDetails: message || `Requested ${activeTab} for ${serviceFocus}`,
+          source: `Homepage Contact Section (${activeTab.toUpperCase()})`,
+        }),
+      });
+    } catch (err) {
+      console.error('Inquiry submission error:', err);
+    } finally {
+      setIsSubmitting(false);
+      setIsSubmitted(true);
+    }
   };
 
   return (
@@ -247,11 +269,14 @@ export const ContactSection: React.FC<ContactSectionProps> = ({
                 <div className="pt-2">
                   <button
                     type="submit"
-                    className="w-full py-3.5 px-6 rounded-xl bg-gradient-to-r from-[#0078FF] via-[#6C4DFF] to-[#00C9A7] hover:opacity-95 text-white font-bold text-sm shadow-[0_0_30px_rgba(0,120,255,0.4)] flex items-center justify-center gap-2 cursor-pointer transition-all"
+                    disabled={isSubmitting}
+                    className="w-full py-3.5 px-6 rounded-xl bg-gradient-to-r from-[#0078FF] via-[#6C4DFF] to-[#00C9A7] hover:opacity-95 text-white font-bold text-sm shadow-[0_0_30px_rgba(0,120,255,0.4)] flex items-center justify-center gap-2 cursor-pointer transition-all disabled:opacity-60"
                   >
                     <Send className="w-4 h-4" />
                     <span>
-                      {activeTab === 'consultation'
+                      {isSubmitting
+                        ? 'Submitting...'
+                        : activeTab === 'consultation'
                         ? 'Book Strategic Consultation'
                         : activeTab === 'proposal'
                         ? 'Request Detailed Proposal'

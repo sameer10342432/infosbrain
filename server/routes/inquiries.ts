@@ -62,20 +62,16 @@ router.post('/', async (req: Request, res: Response) => {
     source = 'Website Contact Form',
   } = req.body;
 
-  const clientName = (name || fullName || '').trim();
   const clientEmail = (email || '').toLowerCase().trim();
-  const clientDetails = (projectDetails || message || '').trim();
 
-  if (!clientName || !clientEmail || !clientDetails) {
-    res.status(400).json({ error: 'Name, email, and project details are required.' });
-    return;
-  }
-
-  // Basic email format check
-  if (!clientEmail.includes('@') || !clientEmail.includes('.')) {
+  // Email format check
+  if (!clientEmail || !clientEmail.includes('@') || !clientEmail.includes('.')) {
     res.status(400).json({ error: 'Please provide a valid email address.' });
     return;
   }
+
+  const clientName = (name || fullName || 'Website Visitor').trim() || 'Website Visitor';
+  const clientDetails = (projectDetails || message || 'Inquiry received via website form').trim();
 
   const id = 'inq_' + Math.random().toString(36).substring(2, 10);
   const now = new Date().toISOString();

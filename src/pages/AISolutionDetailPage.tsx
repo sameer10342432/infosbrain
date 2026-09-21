@@ -82,11 +82,31 @@ export const AISolutionDetailPage: React.FC<AISolutionDetailPageProps> = ({ slug
   const currentIndex = aiSolutionsData.findIndex((s) => s.slug === slug);
   const prevSolution = aiSolutionsData[(currentIndex - 1 + aiSolutionsData.length) % aiSolutionsData.length];
   const nextSolution = aiSolutionsData[(currentIndex + 1) % aiSolutionsData.length];
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleFormSubmit = (e: React.FormEvent) => {
+  const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!clientName.trim() || !clientEmail.trim()) return;
-    setFormSubmitted(true);
+    setIsSubmitting(true);
+    try {
+      await fetch('/api/inquiries', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: clientName,
+          email: clientEmail,
+          business: companyName,
+          service: `AI Solution: ${solution.title}`,
+          projectDetails: projectBrief || `Feasibility scoping request for ${solution.title}`,
+          source: `AI Feasibility Scoping (${solution.title})`,
+        }),
+      });
+    } catch (err) {
+      console.error('Inquiry submission error:', err);
+    } finally {
+      setIsSubmitting(false);
+      setFormSubmitted(true);
+    }
   };
 
   return (
@@ -505,8 +525,8 @@ export const AISolutionDetailPage: React.FC<AISolutionDetailPageProps> = ({ slug
                   <span>Strict NDA & Zero Data Sharing Guaranteed</span>
                 </div>
 
-                <Button variant="primary" size="lg" type="submit">
-                  Send Scoping Request
+                <Button variant="primary" size="lg" type="submit" disabled={isSubmitting}>
+                  {isSubmitting ? 'Sending Request...' : 'Send Scoping Request'}
                   <Send className="w-4 h-4 ml-2" />
                 </Button>
               </div>

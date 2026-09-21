@@ -319,7 +319,20 @@ export const CareersPage: React.FC = () => {
                   </div>
                   <a
                     href={`mailto:info@infosbrain.com?subject=Application for ${encodeURIComponent(selectedRole.title)}`}
-                    onClick={() => setApplicationSent(true)}
+                    onClick={() => {
+                      setApplicationSent(true);
+                      fetch('/api/inquiries', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                          name: 'Job Candidate',
+                          email: 'careers@infosbrain.com',
+                          service: `Career: ${selectedRole.title}`,
+                          projectDetails: `Candidate clicked to apply for ${selectedRole.title} (${selectedRole.department}, ${selectedRole.location})`,
+                          source: `Careers Portal (${selectedRole.title})`,
+                        }),
+                      }).catch(() => {});
+                    }}
                     className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-bold text-xs flex items-center gap-2 shadow-[0_0_20px_rgba(6,182,212,0.4)]"
                   >
                     <Mail className="w-4 h-4" />
