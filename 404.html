@@ -1,106 +1,20 @@
-<!doctype html>
-<html lang="en" class="dark scroll-smooth">
+<!DOCTYPE html>
+<html>
   <head>
-    <meta charset="UTF-8" />
-    <script>
-      (function () {
-        try {
-          if (typeof Window !== 'undefined' && Window.prototype) {
-            var protoDesc = Object.getOwnPropertyDescriptor(Window.prototype, 'fetch');
-            if (protoDesc && protoDesc.get && !protoDesc.set) {
-              var origGet = protoDesc.get;
-              Object.defineProperty(Window.prototype, 'fetch', {
-                get: function () {
-                  return this.__customFetch || origGet.call(this);
-                },
-                set: function (val) {
-                  this.__customFetch = val;
-                },
-                configurable: true,
-                enumerable: protoDesc.enumerable !== false,
-              });
-            }
-          }
-
-          var nativeFetch = typeof window !== 'undefined' ? window.fetch : null;
-          var boundFetch = typeof nativeFetch === 'function' ? nativeFetch.bind(window) : nativeFetch;
-          var currentFetch = boundFetch;
-
-          if (typeof window !== 'undefined') {
-            Object.defineProperty(window, 'fetch', {
-              get: function () {
-                return currentFetch;
-              },
-              set: function (newFetch) {
-                currentFetch = newFetch;
-              },
-              configurable: true,
-              enumerable: true,
-            });
-          }
-
-          if (typeof globalThis !== 'undefined' && globalThis !== window) {
-            Object.defineProperty(globalThis, 'fetch', {
-              get: function () {
-                return currentFetch;
-              },
-              set: function (newFetch) {
-                currentFetch = newFetch;
-              },
-              configurable: true,
-              enumerable: true,
-            });
-          }
-        } catch (_) {}
-      })();
+    <meta charset="utf-8">
+    <title>InfosBrain | Loading...</title>
+    <script type="text/javascript">
+      var pathSegmentsToKeep = 1;
+      var l = window.location;
+      l.replace(
+        l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '') +
+        l.pathname.split('/').slice(0, 1 + pathSegmentsToKeep).join('/') + '/?/' +
+        l.pathname.slice(1).split('/').slice(pathSegmentsToKeep).join('/').replace(/&/g, '~and~') +
+        (l.search ? '&' + l.search.slice(1).replace(/&/g, '~and~') : '') +
+        l.hash
+      );
     </script>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
-    <title>InfosBrain | Digital Transformation & Technology Solutions</title>
-    <meta name="description" content="InfosBrain delivers digital transformation solutions for organizations ready to scale, innovate, and lead. Practical digital solutions through software development, AI, cloud solutions, cybersecurity, SEO & digital growth." />
-    <meta property="og:title" content="InfosBrain | Digital Transformation & Technology Solutions" />
-    <meta property="og:description" content="Digital transformation solutions for organizations ready to scale, innovate, and lead. Build Smarter. Scale Faster. Grow with Confidence." />
-    <meta property="og:type" content="website" />
-    <meta property="og:site_name" content="InfosBrain" />
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="InfosBrain | Digital Transformation & Technology Solutions" />
-    <meta name="twitter:description" content="Build Smarter. Scale Faster. Grow with Confidence. Software development, artificial intelligence, cloud solutions, cybersecurity, and digital transformation consulting." />
-    <meta name="theme-color" content="#071A35" />
-
-    <!-- Google Fonts for futuristic, high-tech branding -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
-
-    <!-- Structured Data / JSON-LD -->
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "Organization",
-      "name": "InfosBrain",
-      "alternateName": "InfosBrain Digital Agency",
-      "url": "https://infosbrain.com",
-      "logo": "https://infosbrain.com/logo.svg",
-      "contactPoint": [
-        {
-          "@type": "ContactPoint",
-          "email": "info@infosbrain.com",
-          "contactType": "customer service"
-        },
-        {
-          "@type": "ContactPoint",
-          "email": "contact@infosbrain.com",
-          "contactType": "sales"
-        }
-      ],
-      "sameAs": []
-    }
-    </script>
-    <script type="module" crossorigin src="./assets/index-Cbiktpl8.js"></script>
-    <link rel="stylesheet" crossorigin href="./assets/index-bitmXzgC.css">
   </head>
-  <body class="bg-[#050816] text-slate-100 font-sans antialiased selection:bg-cyan-500/30 selection:text-cyan-200 overflow-x-hidden min-h-screen">
-    <div id="root"></div>
+  <body>
   </body>
 </html>
-
