@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter } from '../../context/RouterContext';
 import { siteConfig } from '../../config/siteConfig';
 import { SectionHeading } from '../common/SectionHeading';
@@ -6,6 +6,24 @@ import { Clock, Calendar, ArrowRight, BookOpen } from 'lucide-react';
 
 export const InsightsTeaser: React.FC = () => {
   const { navigate } = useRouter();
+  const [posts, setPosts] = useState<any[]>(siteConfig.blogPosts.slice(0, 3));
+
+  useEffect(() => {
+    async function loadFeaturedPosts() {
+      try {
+        const res = await fetch('/api/posts?featured=true&limit=3');
+        if (res.ok) {
+          const data = await res.json();
+          if (data.posts && data.posts.length > 0) {
+            setPosts(data.posts.slice(0, 3));
+          }
+        }
+      } catch {
+        // Keep siteConfig fallback
+      }
+    }
+    loadFeaturedPosts();
+  }, []);
 
   return (
     <section className="relative py-24 bg-[#050816] overflow-hidden">
@@ -33,10 +51,10 @@ export const InsightsTeaser: React.FC = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {siteConfig.blogPosts.slice(0, 3).map((post) => (
+          {posts.map((post) => (
             <article
               key={post.id}
-              onClick={() => navigate('/blog')}
+              onClick={() => navigate(post.slug ? `/blog/${post.slug}` : '/blog')}
               className="group rounded-2xl p-6 bg-[#070B1F]/80 border border-slate-800/80 hover:border-cyan-500/50 hover:shadow-[0_15px_30px_rgba(0,0,0,0.6),0_0_20px_rgba(6,182,212,0.15)] transition-all cursor-pointer flex flex-col justify-between"
             >
               <div>

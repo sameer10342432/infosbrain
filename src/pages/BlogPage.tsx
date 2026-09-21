@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter } from '../context/RouterContext';
 import { siteConfig } from '../config/siteConfig';
 import { SEOHead } from '../components/common/SEOHead';
@@ -25,21 +25,51 @@ export const BlogPage: React.FC = () => {
   const [activeArticle, setActiveArticle] = useState<BlogPostItem | null>(null);
   const [subscribed, setSubscribed] = useState(false);
   const [emailInput, setEmailInput] = useState('');
-
-  const categories = [
+  const [posts, setPosts] = useState<any[]>(siteConfig.blogPosts);
+  const [categories, setCategories] = useState<string[]>([
     'All',
-    'SEO & Strategy',
-    'Web Architecture',
+    'SEO',
+    'Web Development',
     'Paid Advertising',
-    'Conversion Optimization',
-  ];
+    'E-commerce',
+    'Technology',
+  ]);
 
-  const filteredPosts = siteConfig.blogPosts.filter((post) => {
+  useEffect(() => {
+    async function loadCMSData() {
+      try {
+        const [postsRes, catRes] = await Promise.all([
+          fetch('/api/posts'),
+          fetch('/api/categories'),
+        ]);
+
+        if (postsRes.ok) {
+          const pData = await postsRes.json();
+          if (pData.posts && pData.posts.length > 0) {
+            setPosts(pData.posts);
+          }
+        }
+
+        if (catRes.ok) {
+          const cData = await catRes.json();
+          if (cData.categories && cData.categories.length > 0) {
+            setCategories(['All', ...cData.categories.map((c: any) => c.name)]);
+          }
+        }
+      } catch {
+        // Graceful fallback to static siteConfig
+      }
+    }
+
+    loadCMSData();
+  }, []);
+
+  const filteredPosts = posts.filter((post) => {
     const matchesCat = selectedCat === 'All' || post.category === selectedCat;
     const matchesSearch =
-      post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      post.excerpt.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      post.category.toLowerCase().includes(searchQuery.toLowerCase());
+      post.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      post.excerpt?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      post.category?.toLowerCase().includes(searchQuery.toLowerCase());
     return matchesCat && matchesSearch;
   });
 
@@ -147,7 +177,7 @@ export const BlogPage: React.FC = () => {
             {filteredPosts.map((post) => (
               <article
                 key={post.id}
-                onClick={() => setActiveArticle(post)}
+                onClick={() => navigate('/blog/' + post.slug)}
                 className="group rounded-3xl p-7 bg-[#070B1F]/90 border border-slate-800 hover:border-cyan-500/50 hover:shadow-[0_20px_45px_rgba(0,0,0,0.8),0_0_25px_rgba(6,182,212,0.15)] transition-all duration-300 cursor-pointer flex flex-col justify-between"
               >
                 <div>

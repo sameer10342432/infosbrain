@@ -18,6 +18,7 @@ import { ServiceDetailPage } from './pages/ServiceDetailPage';
 import { IndustriesPage } from './pages/IndustriesPage';
 import { CaseStudiesPage } from './pages/CaseStudiesPage';
 import { BlogPage } from './pages/BlogPage';
+import { BlogArticlePage } from './pages/BlogArticlePage';
 import { CareersPage } from './pages/CareersPage';
 import { ContactPage } from './pages/ContactPage';
 import { PrivacyPolicyPage } from './pages/PrivacyPolicyPage';
@@ -25,6 +26,9 @@ import { TermsPage } from './pages/TermsPage';
 import { NotFoundPage } from './pages/NotFoundPage';
 import { AISolutionsHubPage } from './pages/AISolutionsHubPage';
 import { AISolutionDetailPage } from './pages/AISolutionDetailPage';
+
+// Admin CMS Application
+import { AdminApp } from './admin/AdminApp';
 
 interface PageContentProps {
   onOpenConsultation: () => void;
@@ -52,6 +56,16 @@ const PageContent: React.FC<PageContentProps> = ({
   if (cleanPath.startsWith('/ai-solutions/') && cleanPath.length > '/ai-solutions/'.length) {
     const slug = cleanPath.replace('/ai-solutions/', '');
     return <AISolutionDetailPage slug={slug} />;
+  }
+
+  // Handle individual blog/insights article routes: /blog/:slug or /insights/:slug
+  if (cleanPath.startsWith('/blog/') && cleanPath.length > '/blog/'.length) {
+    const slug = cleanPath.replace('/blog/', '');
+    return <BlogArticlePage slug={slug} />;
+  }
+  if (cleanPath.startsWith('/insights/') && cleanPath.length > '/insights/'.length) {
+    const slug = cleanPath.replace('/insights/', '');
+    return <BlogArticlePage slug={slug} />;
   }
 
   switch (cleanPath) {
@@ -93,7 +107,16 @@ const PageContent: React.FC<PageContentProps> = ({
   }
 };
 
-export default function App() {
+const AppShell: React.FC = () => {
+  const { currentPath } = useRouter();
+  const cleanPath = currentPath.split('?')[0].replace(/\/$/, '') || '/';
+
+  // If visiting Admin Panel, render AdminApp exclusively
+  if (cleanPath.startsWith('/admin')) {
+    return <AdminApp />;
+  }
+
+  // Public website state and layout
   const [isConsultationOpen, setIsConsultationOpen] = useState(false);
   const [isVideoOpen, setIsVideoOpen] = useState(false);
   const [videoModalData, setVideoModalData] = useState<{ title?: string; videoUrl?: string }>({});
@@ -107,43 +130,49 @@ export default function App() {
   const handleOpenChatbot = () => setIsChatbotOpen(true);
 
   return (
-    <RouterProvider>
-      <div className="min-h-screen bg-[#071A35] text-slate-100 flex flex-col font-sans selection:bg-[#0078FF] selection:text-white transition-colors duration-250 pb-16 md:pb-0">
-        <Navbar onOpenConsultation={handleOpenConsultation} />
-        <div className="flex-grow">
-          <PageContent
-            onOpenConsultation={handleOpenConsultation}
-            onOpenVideoModal={handleOpenVideo}
-            onOpenChatbot={handleOpenChatbot}
-          />
-        </div>
-        <Footer />
-
-        {/* Floating Overlays */}
-        <FloatingWhatsApp />
-        <FloatingContactCTA onOpenChatbot={handleOpenChatbot} />
-        <CookieConsent />
-
-        {/* Sticky Mobile Navigation */}
-        <StickyMobileNav />
-
-        {/* Global Modals */}
-        <ConsultationModal
-          isOpen={isConsultationOpen}
-          onClose={() => setIsConsultationOpen(false)}
-        />
-        <VideoModal
-          isOpen={isVideoOpen}
-          onClose={() => setIsVideoOpen(false)}
-          title={videoModalData.title}
-          videoUrl={videoModalData.videoUrl}
-        />
-        <AIAssistantModal
-          isOpen={isChatbotOpen}
-          onClose={() => setIsChatbotOpen(false)}
+    <div className="min-h-screen bg-[#071A35] text-slate-100 flex flex-col font-sans selection:bg-[#0078FF] selection:text-white transition-colors duration-250 pb-16 md:pb-0">
+      <Navbar onOpenConsultation={handleOpenConsultation} />
+      <div className="flex-grow">
+        <PageContent
           onOpenConsultation={handleOpenConsultation}
+          onOpenVideoModal={handleOpenVideo}
+          onOpenChatbot={handleOpenChatbot}
         />
       </div>
+      <Footer />
+
+      {/* Floating Overlays */}
+      <FloatingWhatsApp />
+      <FloatingContactCTA onOpenChatbot={handleOpenChatbot} />
+      <CookieConsent />
+
+      {/* Sticky Mobile Navigation */}
+      <StickyMobileNav />
+
+      {/* Global Modals */}
+      <ConsultationModal
+        isOpen={isConsultationOpen}
+        onClose={() => setIsConsultationOpen(false)}
+      />
+      <VideoModal
+        isOpen={isVideoOpen}
+        onClose={() => setIsVideoOpen(false)}
+        title={videoModalData.title}
+        videoUrl={videoModalData.videoUrl}
+      />
+      <AIAssistantModal
+        isOpen={isChatbotOpen}
+        onClose={() => setIsChatbotOpen(false)}
+        onOpenConsultation={handleOpenConsultation}
+      />
+    </div>
+  );
+};
+
+export default function App() {
+  return (
+    <RouterProvider>
+      <AppShell />
     </RouterProvider>
   );
 }

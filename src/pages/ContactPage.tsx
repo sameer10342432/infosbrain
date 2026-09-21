@@ -30,9 +30,27 @@ export const ContactPage: React.FC = () => {
     message: '',
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (formData.fullName && formData.email && formData.message) {
+      try {
+        await fetch('/api/inquiries', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            fullName: formData.fullName,
+            email: formData.email,
+            phone: formData.phone,
+            company: formData.company,
+            service: formData.service,
+            budget: formData.budget,
+            message: formData.message,
+            source: 'Website Contact Page',
+          }),
+        });
+      } catch (err) {
+        console.error('Inquiry submission error:', err);
+      }
       setSubmitted(true);
     }
   };

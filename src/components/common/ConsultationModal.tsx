@@ -40,8 +40,25 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({
     'In 3 Days, 1:00 PM GMT',
   ];
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    try {
+      await fetch('/api/inquiries', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name,
+          email,
+          business: organization,
+          service: topic,
+          budget: 'Consultation',
+          projectDetails: `[Requested Time: ${selectedDate}]\n${message || 'Consultation request'}`,
+          source: 'Consultation Modal',
+        }),
+      });
+    } catch (err) {
+      console.error('Inquiry submission error:', err);
+    }
     setIsSubmitted(true);
   };
 

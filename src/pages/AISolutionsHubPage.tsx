@@ -527,7 +527,7 @@ export const AISolutionsHubPage: React.FC = () => {
         <SectionHeading
           badge="// FAQ"
           title="Frequently Asked Questions About Enterprise AI"
-          subtitle="Answers to common questions regarding enterprise integration, security, accuracy guarantees, and delivery timelines."
+          description="Answers to common questions regarding enterprise integration, security, accuracy guarantees, and delivery timelines."
           align="center"
         />
 
