@@ -319,32 +319,53 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ onNavigate }) => {
             {recentInquiries.length === 0 ? (
               <div className="py-12 text-center text-xs text-slate-500">No inquiries received yet.</div>
             ) : (
-              recentInquiries.map((inq) => (
-                <div
-                  key={inq.id}
-                  onClick={() => onNavigate('/admin/inquiries')}
-                  className="p-3.5 rounded-xl bg-slate-900/60 border border-slate-800/70 hover:border-slate-700 transition-all cursor-pointer"
-                >
-                  <div className="flex items-center justify-between mb-1.5">
-                    <span className="text-xs font-bold text-white truncate">{inq.name}</span>
-                    <span
-                      className={`text-[9px] font-mono uppercase px-2 py-0.5 rounded-full border ${
-                        inq.status === 'New'
-                          ? 'bg-rose-950/60 text-rose-300 border-rose-500/40 animate-pulse'
-                          : inq.status === 'Converted'
-                          ? 'bg-emerald-950/60 text-emerald-300 border-emerald-500/30'
-                          : 'bg-slate-800 text-slate-300 border-slate-700'
-                      }`}
-                    >
-                      {inq.status}
-                    </span>
+              recentInquiries.map((inq) => {
+                const s = (inq.source || '').toLowerCase();
+                let sourceBadge = { label: inq.source || 'Contact Form', cls: 'bg-indigo-950/60 text-indigo-300 border-indigo-500/40' };
+                if (s.includes('newsletter')) {
+                  sourceBadge = { label: 'Newsletter', cls: 'bg-amber-950/60 text-amber-300 border-amber-500/40' };
+                } else if (s.includes('career') || s.includes('job') || s.includes('candidate')) {
+                  sourceBadge = { label: 'Job Application', cls: 'bg-emerald-950/60 text-emerald-300 border-emerald-500/40' };
+                } else if (s.includes('consultation')) {
+                  sourceBadge = { label: 'Consultation', cls: 'bg-cyan-950/60 text-cyan-300 border-cyan-500/40' };
+                } else if (s.includes('ai') || s.includes('feasibility')) {
+                  sourceBadge = { label: 'AI Scoping', cls: 'bg-purple-950/60 text-purple-300 border-purple-500/40' };
+                } else if (s.includes('homepage')) {
+                  sourceBadge = { label: 'Homepage Lead', cls: 'bg-blue-950/60 text-blue-300 border-blue-500/40' };
+                }
+
+                return (
+                  <div
+                    key={inq.id}
+                    onClick={() => onNavigate('/admin/inquiries')}
+                    className="p-3.5 rounded-xl bg-slate-900/60 border border-slate-800/70 hover:border-slate-700 transition-all cursor-pointer"
+                  >
+                    <div className="flex items-center justify-between mb-1.5">
+                      <span className="text-xs font-bold text-white truncate">{inq.name}</span>
+                      <div className="flex items-center gap-1.5">
+                        <span className={`text-[9px] font-mono px-1.5 py-0.5 rounded border ${sourceBadge.cls}`}>
+                          {sourceBadge.label}
+                        </span>
+                        <span
+                          className={`text-[9px] font-mono uppercase px-2 py-0.5 rounded-full border ${
+                            inq.status === 'New'
+                              ? 'bg-rose-950/60 text-rose-300 border-rose-500/40 animate-pulse'
+                              : inq.status === 'Converted'
+                              ? 'bg-emerald-950/60 text-emerald-300 border-emerald-500/30'
+                              : 'bg-slate-800 text-slate-300 border-slate-700'
+                          }`}
+                        >
+                          {inq.status}
+                        </span>
+                      </div>
+                    </div>
+                    <div className="text-[11px] text-cyan-400 font-mono truncate">{inq.service || 'General Brief'}</div>
+                    <p className="text-xs text-slate-400 line-clamp-2 mt-1 leading-relaxed">
+                      {inq.projectDetails}
+                    </p>
                   </div>
-                  <div className="text-[11px] text-cyan-400 font-mono truncate">{inq.service || 'General Brief'}</div>
-                  <p className="text-xs text-slate-400 line-clamp-2 mt-1 leading-relaxed">
-                    {inq.projectDetails}
-                  </p>
-                </div>
-              ))
+                );
+              })
             )}
           </div>
         </div>

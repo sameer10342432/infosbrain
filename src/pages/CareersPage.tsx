@@ -25,6 +25,40 @@ export const CareersPage: React.FC = () => {
   const { navigate } = useRouter();
   const [selectedRole, setSelectedRole] = useState<any | null>(null);
   const [applicationSent, setApplicationSent] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [candidateName, setCandidateName] = useState('');
+  const [candidateEmail, setCandidateEmail] = useState('');
+  const [candidatePhone, setCandidatePhone] = useState('');
+  const [candidateResume, setCandidateResume] = useState('');
+  const [candidateExp, setCandidateExp] = useState('');
+  const [candidateNote, setCandidateNote] = useState('');
+
+  const handleApplySubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!candidateName.trim() || !candidateEmail.trim() || !selectedRole) return;
+    setIsSubmitting(true);
+    try {
+      await fetch('/api/inquiries', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: candidateName.trim(),
+          email: candidateEmail.trim(),
+          phone: candidatePhone.trim(),
+          business: candidateExp ? `Experience: ${candidateExp}` : 'Applicant',
+          service: `Career: ${selectedRole.title}`,
+          budget: selectedRole.department,
+          projectDetails: `[Role Applied: ${selectedRole.title} (${selectedRole.department}, ${selectedRole.location})]\n[Experience: ${candidateExp || 'Not specified'}]\n[Portfolio/Resume Link: ${candidateResume || 'Not specified'}]\n\nCandidate Statement:\n${candidateNote || 'Direct application via Careers portal.'}`,
+          source: `Careers Application (${selectedRole.title})`,
+        }),
+      });
+      setApplicationSent(true);
+    } catch (err) {
+      console.error('Job application error:', err);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   const perks = [
     {
@@ -308,37 +342,147 @@ export const CareersPage: React.FC = () => {
               </div>
 
               {applicationSent ? (
-                <div className="p-4 rounded-xl bg-emerald-950/40 border border-emerald-500/30 text-emerald-300 text-xs flex items-center justify-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-                  <span>Application initiated! Please forward your resume to info@infosbrain.com.</span>
+                <div className="p-6 rounded-2xl bg-emerald-950/40 border border-emerald-500/40 text-emerald-300 text-center space-y-3">
+                  <div className="w-12 h-12 rounded-full bg-emerald-500/20 text-emerald-400 mx-auto flex items-center justify-center">
+                    <CheckCircle2 className="w-6 h-6" />
+                  </div>
+                  <h4 className="text-base font-bold text-white">Application Successfully Submitted!</h4>
+                  <p className="text-xs text-slate-300 max-w-md mx-auto leading-relaxed">
+                    Thank you, <strong className="text-white">{candidateName}</strong>! Your application for <strong className="text-cyan-300">{selectedRole.title}</strong> has been received by our talent team. We will review your profile within 48 hours.
+                  </p>
+                  <div className="pt-2">
+                    <button
+                      onClick={() => {
+                        setSelectedRole(null);
+                        setApplicationSent(false);
+                        setCandidateName('');
+                        setCandidateEmail('');
+                        setCandidatePhone('');
+                        setCandidateResume('');
+                        setCandidateExp('');
+                        setCandidateNote('');
+                      }}
+                      className="px-4 py-2 rounded-xl bg-slate-900 border border-slate-700 text-xs font-semibold text-white hover:border-cyan-400 cursor-pointer"
+                    >
+                      Close Window
+                    </button>
+                  </div>
                 </div>
               ) : (
-                <div className="pt-4 border-t border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4">
-                  <div className="text-xs text-slate-400">
-                    Direct resume submissions to: <a href="mailto:info@infosbrain.com" className="text-cyan-300 underline font-mono">info@infosbrain.com</a>
+                <form onSubmit={handleApplySubmit} className="pt-4 border-t border-slate-800 space-y-4">
+                  <div className="flex items-center justify-between">
+                    <h4 className="text-xs font-mono font-bold uppercase tracking-wider text-cyan-400">
+                      Submit Your Application
+                    </h4>
+                    <span className="text-[11px] text-slate-500 font-mono">* Required fields</span>
                   </div>
-                  <a
-                    href={`mailto:info@infosbrain.com?subject=Application for ${encodeURIComponent(selectedRole.title)}`}
-                    onClick={() => {
-                      setApplicationSent(true);
-                      fetch('/api/inquiries', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                          name: 'Job Candidate',
-                          email: 'careers@infosbrain.com',
-                          service: `Career: ${selectedRole.title}`,
-                          projectDetails: `Candidate clicked to apply for ${selectedRole.title} (${selectedRole.department}, ${selectedRole.location})`,
-                          source: `Careers Portal (${selectedRole.title})`,
-                        }),
-                      }).catch(() => {});
-                    }}
-                    className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-bold text-xs flex items-center gap-2 shadow-[0_0_20px_rgba(6,182,212,0.4)]"
-                  >
-                    <Mail className="w-4 h-4" />
-                    <span>Apply via Email</span>
-                  </a>
-                </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                      <label className="block text-[11px] font-mono text-slate-400 mb-1">
+                        Full Name *
+                      </label>
+                      <input
+                        type="text"
+                        required
+                        placeholder="e.g. Alex Morgan"
+                        value={candidateName}
+                        onChange={(e) => setCandidateName(e.target.value)}
+                        className="w-full px-3 py-2 text-xs rounded-xl bg-slate-900 border border-slate-800 text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[11px] font-mono text-slate-400 mb-1">
+                        Email Address *
+                      </label>
+                      <input
+                        type="email"
+                        required
+                        placeholder="e.g. alex@example.com"
+                        value={candidateEmail}
+                        onChange={(e) => setCandidateEmail(e.target.value)}
+                        className="w-full px-3 py-2 text-xs rounded-xl bg-slate-900 border border-slate-800 text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                      <label className="block text-[11px] font-mono text-slate-400 mb-1">
+                        Phone Number
+                      </label>
+                      <input
+                        type="tel"
+                        placeholder="e.g. +1 (555) 019-2834"
+                        value={candidatePhone}
+                        onChange={(e) => setCandidatePhone(e.target.value)}
+                        className="w-full px-3 py-2 text-xs rounded-xl bg-slate-900 border border-slate-800 text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[11px] font-mono text-slate-400 mb-1">
+                        Experience Level
+                      </label>
+                      <select
+                        value={candidateExp}
+                        onChange={(e) => setCandidateExp(e.target.value)}
+                        className="w-full px-3 py-2 text-xs rounded-xl bg-slate-900 border border-slate-800 text-white focus:outline-none focus:border-cyan-400 cursor-pointer"
+                      >
+                        <option value="">Select Experience</option>
+                        <option value="1-2 Years">1-2 Years</option>
+                        <option value="3-5 Years">3-5 Years</option>
+                        <option value="5-8 Years">5-8 Years (Senior)</option>
+                        <option value="8+ Years">8+ Years (Principal / Lead)</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-[11px] font-mono text-slate-400 mb-1">
+                      Portfolio, LinkedIn, or Resume Link
+                    </label>
+                    <input
+                      type="url"
+                      placeholder="https://linkedin.com/in/... or https://github.com/..."
+                      value={candidateResume}
+                      onChange={(e) => setCandidateResume(e.target.value)}
+                      className="w-full px-3 py-2 text-xs rounded-xl bg-slate-900 border border-slate-800 text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-[11px] font-mono text-slate-400 mb-1">
+                      Brief Introduction / Note to Hiring Team
+                    </label>
+                    <textarea
+                      rows={3}
+                      placeholder="Tell us about your technical focus, past key achievements, and why you'd like to work at InfosBrain..."
+                      value={candidateNote}
+                      onChange={(e) => setCandidateNote(e.target.value)}
+                      className="w-full px-3 py-2 text-xs rounded-xl bg-slate-900 border border-slate-800 text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400 resize-none"
+                    />
+                  </div>
+
+                  <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-2">
+                    <div className="text-[11px] text-slate-500">
+                      Or email directly: <a href="mailto:info@infosbrain.com" className="text-cyan-400 underline font-mono">info@infosbrain.com</a>
+                    </div>
+                    <button
+                      type="submit"
+                      disabled={isSubmitting || !candidateName.trim() || !candidateEmail.trim()}
+                      className="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(6,182,212,0.4)] disabled:opacity-50 cursor-pointer"
+                    >
+                      {isSubmitting ? (
+                        <span>Submitting Application...</span>
+                      ) : (
+                        <>
+                          <Mail className="w-4 h-4" />
+                          <span>Submit Application</span>
+                        </>
+                      )}
+                    </button>
+                  </div>
+                </form>
               )}
             </div>
           </div>

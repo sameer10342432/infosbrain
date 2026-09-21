@@ -13,12 +13,12 @@ export const SEOHead: React.FC<SEOHeadProps> = ({
 }) => {
   useEffect(() => {
     const fullTitle = title
-      ? `${title} | InfosBrain - Digital Technology & Marketing Agency`
-      : 'InfosBrain - Digital Technology & Marketing Agency';
+      ? `${title} | InfosBrain - Digital Transformation & Technology Solutions`
+      : 'InfosBrain | Digital Transformation & Technology Solutions';
 
     const fullDesc =
       description ||
-      'InfosBrain helps businesses grow through powerful digital marketing, high-performance websites, intelligent technology, creative design, and data-driven strategies.';
+      'InfosBrain delivers digital transformation solutions for organizations ready to scale, innovate, and lead. Turning complex challenges into practical, measurable digital solutions through software development, AI, cloud solutions, cybersecurity, and digital growth.';
 
     document.title = fullTitle;
 

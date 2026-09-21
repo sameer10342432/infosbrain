@@ -23,6 +23,9 @@ import {
   Sparkles,
   CheckCircle2,
   Layers,
+  Cloud,
+  ShieldCheck,
+  Cpu,
 } from 'lucide-react';
 
 export const ServicesHubPage: React.FC = () => {
@@ -58,12 +61,20 @@ export const ServicesHubPage: React.FC = () => {
         return Target;
       case 'Zap':
         return Zap;
+      case 'Cloud':
+        return Cloud;
+      case 'ShieldCheck':
+        return ShieldCheck;
+      case 'Layers':
+        return Layers;
+      case 'Cpu':
+        return Cpu;
       default:
         return Sparkles;
     }
   };
 
-  const categories = ['All', 'Development', 'Marketing', 'Advertising', 'Design'];
+  const categories = ['All', 'Technology', 'Development', 'Marketing', 'Consulting', 'Advertising', 'Design'];
 
   const filtered = siteConfig.services.filter((s) => {
     const matchesCat = activeCategory === 'All' || s.category === activeCategory;
@@ -77,17 +88,17 @@ export const ServicesHubPage: React.FC = () => {
   return (
     <div className="pt-24 pb-20">
       <SEOHead
-        title="Services Hub - Complete Technology & Marketing Solutions"
-        description="Explore InfosBrain's 13 core digital services across full-stack web development, SEO, digital marketing, graphic design, and performance advertising."
+        title="Our Services"
+        description="From software development and artificial intelligence to cloud solutions, cybersecurity, digital strategy, and performance marketing, explore InfosBrain's core services."
       />
 
       {/* Hero Banner Section with Digital Workstation Image */}
       <PageHeroBanner
-        badge="FULL-SPECTRUM CAPABILITIES"
-        badgeIcon={<Sparkles className="w-3.5 h-3.5 text-cyan-400" />}
-        title="Digital Engineering &"
-        highlightText="Marketing Excellence"
-        description="From custom MERN architectures and headless e-commerce to algorithmic search dominance and multi-channel paid ad campaigns, explore our 13 specialized service lines."
+        badge="CORE PRACTICES & CAPABILITIES"
+        badgeIcon={<Sparkles className="w-3.5 h-3.5 text-[#00C9A7]" />}
+        title="Our"
+        highlightText="Services"
+        description="From software development and artificial intelligence to cloud solutions, cybersecurity, digital strategy, and performance marketing, we combine technology and strategic expertise to help organizations improve performance, strengthen customer engagement, and build future-ready operations."
         image={{
           src: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=1200&q=80',
           alt: 'InfosBrain Digital Technology & Performance Marketing Command Center',

@@ -5,7 +5,7 @@ export interface ServiceItem {
   shortDescription: string;
   heroSubtitle?: string;
   fullDescription?: string;
-  category: 'Marketing' | 'Development' | 'Design' | 'Advertising';
+  category: 'Marketing' | 'Development' | 'Design' | 'Advertising' | 'Technology' | 'Consulting';
   iconName: string;
   featured?: boolean;
   imageUrl?: string;

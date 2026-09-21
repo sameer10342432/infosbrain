@@ -65,17 +65,17 @@ export const IndustriesPage: React.FC = () => {
   return (
     <div className="pt-24 pb-20">
       <SEOHead
-        title="Industries We Serve - Specialized Domain Solutions"
-        description="InfosBrain engineers tailored web development, SEO, and digital growth campaigns for 12 key industry verticals worldwide."
+        title="Industries We Serve"
+        description="InfosBrain supports organizations across private, public, and mission-driven sectors with specialized digital transformation and technology solutions."
       />
 
       {/* Hero Banner Section with Enterprise Industry Architecture Imagery */}
       <PageHeroBanner
-        badge="SPECIALIZED DOMAIN EXPERTISE"
-        badgeIcon={<Building className="w-3.5 h-3.5 text-cyan-400" />}
-        title="Engineered For Your Specific"
-        highlightText="Industry Dynamics"
-        description="Generic agency strategies fail because every vertical has different purchase cycles, compliance hurdles, and technical parameters. Explore our 12 targeted sector playbooks."
+        badge="SECTOR PRACTICE & EXPERTISE"
+        badgeIcon={<Building className="w-3.5 h-3.5 text-[#00C9A7]" />}
+        title="Industries We"
+        highlightText="Serve"
+        description="InfosBrain supports organizations across private, public, and mission-driven sectors. We deliver tailored digital solutions architected around your industry's precise operational realities."
         image={{
           src: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1200&q=80',
           alt: 'InfosBrain Enterprise Sector Architectures and Skyline',

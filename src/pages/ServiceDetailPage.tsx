@@ -4,6 +4,7 @@ import { siteConfig } from '../config/siteConfig';
 import { SEOHead } from '../components/common/SEOHead';
 import { Button } from '../components/common/Button';
 import { PageHeroBanner } from '../components/common/PageHeroBanner';
+import { ConsultationModal } from '../components/common/ConsultationModal';
 import {
   ArrowRight,
   CheckCircle2,
@@ -25,6 +26,7 @@ interface ServiceDetailPageProps {
 export const ServiceDetailPage: React.FC<ServiceDetailPageProps> = ({ slug }) => {
   const { navigate } = useRouter();
   const [openFaq, setOpenFaq] = useState<number | null>(0);
+  const [isConsultModalOpen, setIsConsultModalOpen] = useState(false);
 
   const service = siteConfig.services.find((s) => s.slug === slug);
 
@@ -354,16 +356,31 @@ export const ServiceDetailPage: React.FC<ServiceDetailPageProps> = ({ slug }) =>
             Speak directly with our practice directors. Email{' '}
             <span className="text-cyan-300 font-mono">info@infosbrain.com</span> or submit your project details.
           </p>
-          <Button
-            size="lg"
-            variant="primary"
-            onClick={() => navigate('/contact')}
-            icon={<ArrowRight className="w-5 h-5" />}
-          >
-            Schedule Discovery Consultation
-          </Button>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+            <Button
+              size="lg"
+              variant="primary"
+              onClick={() => setIsConsultModalOpen(true)}
+              icon={<ArrowRight className="w-5 h-5" />}
+            >
+              Schedule Discovery Consultation
+            </Button>
+            <Button
+              size="lg"
+              variant="secondary"
+              onClick={() => navigate('/contact')}
+            >
+              Custom Project Brief
+            </Button>
+          </div>
         </div>
       </section>
+
+      {/* Consultation Modal */}
+      <ConsultationModal
+        isOpen={isConsultModalOpen}
+        onClose={() => setIsConsultModalOpen(false)}
+      />
     </div>
   );
 };

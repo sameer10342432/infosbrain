@@ -30,49 +30,50 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
           {/* Left Hero Content */}
           <div className="lg:col-span-7 space-y-6 text-center lg:text-left">
-            {/* Brand Badge */}
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold uppercase tracking-wider bg-gradient-to-r from-[#0078FF]/20 via-[#6C4DFF]/20 to-transparent text-[#00C9A7] border border-[#00C9A7]/30 backdrop-blur-md shadow-[0_0_20px_rgba(0,201,167,0.2)]">
+            {/* Brand Statement Badge */}
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold uppercase tracking-wider bg-gradient-to-r from-[#0078FF]/20 via-[#6C4DFF]/20 to-transparent text-[#00C9A7] border border-[#00C9A7]/30 backdrop-blur-md shadow-[0_0_20px_rgba(0,201,167,0.2)]">
               <span className="w-2 h-2 rounded-full bg-[#00C9A7] animate-pulse" />
-              <span>{siteConfig.brand.badge}</span>
+              <span>Build Smarter. Scale Faster. Grow with Confidence.</span>
             </div>
 
             {/* Main Headline */}
             <h1 className="text-4xl sm:text-5xl md:text-6xl xl:text-7xl font-extrabold text-white tracking-tight leading-[1.08] font-display">
-              Transforming Ideas Into{' '}
+              Digital Transformation Solutions for Organizations Ready to{' '}
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#0078FF] via-[#6C4DFF] to-[#00C9A7] drop-shadow-sm">
-                Intelligent Digital Solutions
+                Scale, Innovate, and Lead.
               </span>
             </h1>
 
             {/* Supporting Text */}
-            <p className="text-base sm:text-lg md:text-xl text-slate-300 max-w-2xl leading-relaxed mx-auto lg:mx-0 font-normal">
-              InfosBrain helps organizations modernize operations, build intelligent platforms, and create secure digital experiences that support sustainable growth.
+            <p className="text-base sm:text-lg text-slate-200 max-w-2xl leading-relaxed mx-auto lg:mx-0 font-normal">
+              InfosBrain helps businesses, nonprofits, institutions, and government organizations turn complex challenges into practical, measurable digital solutions.
             </p>
 
-            {/* Action Buttons: 3 Primary Actions + Watch Story */}
+            {/* Supporting Service / Value Statement */}
+            <p className="text-xs sm:text-sm text-slate-400 max-w-2xl leading-relaxed mx-auto lg:mx-0">
+              From software development and artificial intelligence to cloud solutions, cybersecurity, digital strategy, and performance marketing, we combine technology and strategic expertise to help organizations improve performance, strengthen customer engagement, and build future-ready operations.
+            </p>
+
+            {/* Action Buttons */}
             <div className="pt-2 flex flex-wrap items-center justify-center lg:justify-start gap-3.5">
               <button
                 onClick={() => (onOpenConsultation ? onOpenConsultation() : navigate('/contact'))}
-                className="px-6 py-3.5 rounded-xl bg-[#0078FF] hover:bg-[#0078FF]/90 text-white font-bold text-sm shadow-[0_0_25px_rgba(0,120,255,0.4)] flex items-center gap-2 cursor-pointer transition-all"
+                className="px-6 py-3.5 rounded-xl bg-gradient-to-r from-[#0078FF] to-[#0060df] hover:from-[#006ee6] hover:to-[#0050c0] text-white font-bold text-sm shadow-[0_0_25px_rgba(0,120,255,0.4)] flex items-center gap-2 cursor-pointer transition-all"
               >
-                <span>Schedule a Consultation</span>
+                <span>Start Your Digital Transformation</span>
                 <ArrowRight className="w-4 h-4" />
               </button>
 
               <button
-                onClick={() => navigate('/ai-solutions')}
+                onClick={() => {
+                  const el = document.getElementById('services');
+                  if (el) el.scrollIntoView({ behavior: 'smooth' });
+                  else navigate('/services');
+                }}
                 className="px-6 py-3.5 rounded-xl bg-slate-900/90 border border-slate-700 hover:border-[#00C9A7] text-slate-100 font-semibold text-sm transition-all flex items-center gap-2 cursor-pointer backdrop-blur-md"
               >
                 <Layers className="w-4 h-4 text-[#00C9A7]" />
-                <span>View Solutions</span>
-              </button>
-
-              <button
-                onClick={() => navigate('/contact')}
-                className="px-5 py-3 rounded-xl bg-[#6C4DFF] hover:bg-[#6C4DFF]/90 text-white font-semibold text-sm transition-all shadow-[0_0_20px_rgba(108,77,255,0.3)] flex items-center gap-2 cursor-pointer"
-              >
-                <Sparkles className="w-4 h-4" />
-                <span>Start Your Project</span>
+                <span>Explore Our Services</span>
               </button>
 
               {onOpenVideoModal && (
@@ -92,15 +93,15 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
             <div className="pt-6 border-t border-slate-800/80 flex flex-wrap items-center justify-center lg:justify-start gap-6 text-xs text-slate-300 font-medium">
               <div className="flex items-center gap-2">
                 <CheckCircle2 className="w-4 h-4 text-[#00C9A7]" />
-                <span>Responsible AI by Design</span>
+                <span>Build Smarter</span>
               </div>
               <div className="flex items-center gap-2">
                 <CheckCircle2 className="w-4 h-4 text-[#0078FF]" />
-                <span>Enterprise Zero-Trust Security</span>
+                <span>Scale Faster</span>
               </div>
               <div className="flex items-center gap-2">
                 <CheckCircle2 className="w-4 h-4 text-[#6C4DFF]" />
-                <span>24/7 Global Collaboration</span>
+                <span>Grow with Confidence</span>
               </div>
             </div>
           </div>

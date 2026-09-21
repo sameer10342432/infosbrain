@@ -250,6 +250,114 @@ export function seedDatabase() {
       });
     });
   }
+
+  // 6. Seed representative form inquiries if none or few exist
+  const inqCount = db.prepare('SELECT COUNT(*) as count FROM inquiries').get() as { count: number };
+  if (inqCount.count < 5) {
+    const seedInquiries = [
+      {
+        id: 'inq_contact_1',
+        name: 'Marcus Sterling',
+        business: 'Vanguard Retail Systems',
+        email: 'marcus@vanguardretail.co.uk',
+        phone: '+44 20 7946 0912',
+        service: 'Enterprise Headless Platform',
+        budget: '£40,000 - £75,000',
+        projectDetails: '[Timeline: Immediate (1-2 months)] [NDA Requested: Yes]\n\nPlanning a comprehensive overhaul of our high-volume multi-brand storefront. Need Next.js SSR frontend and microservices backend with SAP integration.',
+        source: 'Website Contact Page',
+        status: 'New',
+        createdAt: new Date(Date.now() - 3600000 * 4).toISOString(),
+      },
+      {
+        id: 'inq_consult_1',
+        name: 'Dr. Evelyn Reed',
+        business: 'BioGen Diagnostics',
+        email: 'ereed@biogendiagnostics.com',
+        phone: '+1 (415) 555-0198',
+        service: 'Cybersecurity & ISO/GDPR Compliance',
+        budget: 'Consultation',
+        projectDetails: '[Requested Time: Tomorrow, 2:00 PM GMT]\n\nNeed technical advisory on HIPAA/GDPR certified cloud data pipeline architecture before clinical trial rollout.',
+        source: 'Consultation Modal',
+        status: 'Contacted',
+        createdAt: new Date(Date.now() - 3600000 * 12).toISOString(),
+      },
+      {
+        id: 'inq_ai_1',
+        name: 'Tariq Mansoor',
+        business: 'Apex Logistics Global',
+        email: 'tmansoor@apexlogistics.ae',
+        phone: '+971 4 312 8890',
+        service: 'AI Solution: Autonomous AI Agents & Task Orchestration',
+        budget: '$30,000 - $50,000',
+        projectDetails: 'Feasibility scoping request: Automate dispatch routing, customs paperwork validation, and exception handling using multi-agent workflows.',
+        source: 'AI Feasibility Scoping (Autonomous AI Agents)',
+        status: 'In Progress',
+        createdAt: new Date(Date.now() - 3600000 * 24).toISOString(),
+      },
+      {
+        id: 'inq_home_1',
+        name: 'Sofia Al-Hassan',
+        business: 'FinTech Horizons',
+        email: 'sofia@fintechhorizons.qa',
+        phone: '+974 4412 3456',
+        service: 'Custom Software Development',
+        budget: '$50,000+',
+        projectDetails: 'Looking for senior React & Node.js engineering squad to accelerate launch of our digital banking onboarding portal.',
+        source: 'Homepage Contact Section (CONSULTATION)',
+        status: 'New',
+        createdAt: new Date(Date.now() - 3600000 * 36).toISOString(),
+      },
+      {
+        id: 'inq_career_1',
+        name: 'David K. Osei',
+        business: 'Experience: 5-8 Years',
+        email: 'david.osei@devcloud.tech',
+        phone: '+233 24 456 7890',
+        service: 'Career: Senior Cloud Platform Engineer',
+        budget: 'Engineering',
+        projectDetails: '[Role Applied: Senior Cloud Platform Engineer (DevOps & Infrastructure, Remote EMEA)]\n[Portfolio: https://github.com/david-cloud]\n\nExperienced in Terraform, Kubernetes, and automated zero-downtime CI/CD pipelines.',
+        source: 'Careers Application (Senior Cloud Platform Engineer)',
+        status: 'New',
+        createdAt: new Date(Date.now() - 3600000 * 8).toISOString(),
+      },
+      {
+        id: 'inq_news_1',
+        name: 'Newsletter Subscriber',
+        business: '',
+        email: 'insights.subscriber@cloudpulse.io',
+        phone: '',
+        service: 'Blog Newsletter Subscription',
+        budget: 'Subscriber',
+        projectDetails: 'Subscribed to Weekly Executive Briefings & Technical Insights from Blog page.',
+        source: 'Blog Newsletter Form',
+        status: 'Converted',
+        createdAt: new Date(Date.now() - 3600000 * 48).toISOString(),
+      },
+    ];
+
+    const insertInq = db.prepare(`
+      INSERT OR IGNORE INTO inquiries (
+        id, name, business, email, phone, service, budget, projectDetails, source, status, createdAt, updatedAt
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `);
+
+    seedInquiries.forEach((item) => {
+      insertInq.run(
+        item.id,
+        item.name,
+        item.business,
+        item.email,
+        item.phone,
+        item.service,
+        item.budget,
+        item.projectDetails,
+        item.source,
+        item.status,
+        item.createdAt,
+        item.createdAt
+      );
+    });
+  }
 }
 
 // Run initial seed on load

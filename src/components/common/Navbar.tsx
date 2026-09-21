@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from '../../context/RouterContext';
 import { siteConfig } from '../../config/siteConfig';
 import { Button } from './Button';
+import { BrandLogo } from './BrandLogo';
 import {
   Menu,
   X,
@@ -29,6 +30,8 @@ import {
   Rocket,
   Bot,
   Eye,
+  Cloud,
+  ShieldCheck,
 } from 'lucide-react';
 
 interface NavbarProps {
@@ -76,33 +79,32 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenConsultation }) => {
 
   const serviceCategories = [
     {
-      group: 'Development & Engineering',
+      group: 'Core Technology & Cloud',
       icon: Code2,
       items: [
-        { name: 'MERN Stack Development', path: '/services/mern-stack-development', desc: 'React, Node, Express, MongoDB SaaS' },
-        { name: 'Shopify Development', path: '/services/shopify-development', desc: 'Custom stores & headless commerce' },
-        { name: 'WordPress Development', path: '/services/wordpress-development', desc: 'Enterprise custom themes & WooCommerce' },
-        { name: 'PHP & Laravel Development', path: '/services/php-development', desc: 'Scalable backends & business portals' },
+        { name: 'Software Development', path: '/services/software-development', desc: 'Custom web, mobile & enterprise apps' },
+        { name: 'AI & Automation', path: '/services/artificial-intelligence-automation', desc: 'Intelligent systems & autonomous agents' },
+        { name: 'Cloud Solutions', path: '/services/cloud-solutions', desc: 'Secure cloud architecture & DevOps' },
+        { name: 'Cybersecurity', path: '/services/cybersecurity', desc: 'Risk defense & compliance governance' },
       ],
     },
     {
-      group: 'Digital Marketing & Growth',
-      icon: Megaphone,
+      group: 'Strategy & Growth',
+      icon: TrendingUp,
       items: [
+        { name: 'SEO & Digital Growth', path: '/services/seo-digital-growth', desc: 'Search dominance, GEO & revenue growth' },
+        { name: 'Digital Transformation', path: '/services/digital-transformation-consulting', desc: 'Modernization roadmaps & agility' },
         { name: 'Digital Marketing Strategy', path: '/services/digital-marketing', desc: '360° revenue growth funnels' },
-        { name: 'Search Engine Optimization (SEO)', path: '/services/seo', desc: 'Technical & organic ranking dominance' },
         { name: 'Content Marketing', path: '/services/content-marketing', desc: 'Thought leadership & inbound assets' },
-        { name: 'Email Marketing & Automation', path: '/services/email-marketing', desc: 'Lifecycle retention flows & Klaviyo' },
-        { name: 'Social Media Marketing', path: '/services/social-media-marketing', desc: 'Community engagement & brand viral reach' },
       ],
     },
     {
-      group: 'Advertising & Creative',
+      group: 'Full-Stack & Creative',
       icon: Target,
       items: [
+        { name: 'MERN Stack Engineering', path: '/services/mern-stack-development', desc: 'React, Node, Express, MongoDB SaaS' },
+        { name: 'Shopify Development', path: '/services/shopify-development', desc: 'Custom stores & headless commerce' },
         { name: 'Paid Advertising (PPC)', path: '/services/paid-ads', desc: 'Multi-channel high-ROAS campaigns' },
-        { name: 'Google Ads & Search', path: '/services/google-ads', desc: 'Search intent, PMax & YouTube ads' },
-        { name: 'Facebook & Meta Ads', path: '/services/facebook-meta-ads', desc: 'Advantage+ scaling & CAPI tracking' },
         { name: 'Graphic Design & Branding', path: '/services/graphic-design', desc: 'Visual identity systems & UI design' },
       ],
     },
@@ -180,33 +182,13 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenConsultation }) => {
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
-        {/* Brand Logo */}
+        {/* Brand Logo with IB surrounded by digital brain */}
         <button
           onClick={() => navigate('/')}
-          className="flex items-center gap-3 group text-left cursor-pointer focus:outline-none"
+          className="group text-left cursor-pointer focus:outline-none"
           aria-label="InfosBrain Home"
         >
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 via-cyan-500 to-violet-600 p-[1.5px] shadow-[0_0_20px_rgba(6,182,212,0.4)] group-hover:shadow-[0_0_25px_rgba(6,182,212,0.7)] transition-all">
-            <div className={`w-full h-full rounded-[10px] flex items-center justify-center transition-colors ${
-              isDark ? 'bg-[#050816]' : 'bg-slate-900'
-            }`}>
-              <span className="font-display font-extrabold text-lg text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-violet-400">
-                IB
-              </span>
-            </div>
-          </div>
-          <div>
-            <span className={`font-display font-bold text-xl sm:text-2xl tracking-tight flex items-center transition-colors ${
-              isDark ? 'text-white' : 'text-slate-900'
-            }`}>
-              Infos<span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">Brain</span>
-            </span>
-            <span className={`hidden sm:block text-[9px] font-mono tracking-widest uppercase -mt-1 ${
-              isDark ? 'text-slate-400' : 'text-slate-500'
-            }`}>
-              Intelligent Digital Solutions
-            </span>
-          </div>
+          <BrandLogo isDark={isDark} />
         </button>
 
         {/* Desktop Navigation */}
@@ -420,6 +402,13 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenConsultation }) => {
           </button>
 
           <button
+            onClick={() => scrollToSection('approach')}
+            className={getNavBtnClass(false)}
+          >
+            Our Approach
+          </button>
+
+          <button
             onClick={() => navigate('/blog')}
             className={getNavBtnClass(currentPath.startsWith('/blog') || currentPath === '/insights')}
           >
@@ -590,6 +579,16 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenConsultation }) => {
               }`}
             >
               Case Studies
+            </button>
+
+            <button
+              onClick={() => {
+                setMobileMenuOpen(false);
+                scrollToSection('approach');
+              }}
+              className="w-full text-left py-2.5 text-base font-semibold border-b border-slate-800 text-slate-200 hover:text-cyan-400"
+            >
+              Our Approach
             </button>
 
             <button

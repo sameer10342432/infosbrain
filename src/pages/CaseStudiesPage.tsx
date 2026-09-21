@@ -33,17 +33,17 @@ export const CaseStudiesPage: React.FC = () => {
   return (
     <div className="pt-24 pb-20">
       <SEOHead
-        title="Case Studies & Portfolio - Proven Business Outcomes"
-        description="Review technical architecture breakdowns, SEO rankings growth, and paid advertising results delivered by InfosBrain."
+        title="Case Studies & Proven Business Outcomes"
+        description="See how we transform challenges into opportunities by removing technical barriers, optimizing conversion performance, and driving scalable growth through advanced technology, intelligent automation, and results-focused digital strategies."
       />
 
       {/* Hero Banner Section with Analytics & Business Growth Imagery */}
       <PageHeroBanner
-        badge="MEASURABLE BUSINESS IMPACT"
-        badgeIcon={<TrendingUp className="w-3.5 h-3.5 text-cyan-400" />}
+        badge="PROVEN CLIENT ENGAGEMENTS"
+        badgeIcon={<TrendingUp className="w-3.5 h-3.5 text-[#00C9A7]" />}
         title="Case Studies & Proven"
-        highlightText="Transformations"
-        description="Explore how we dismantle technical bottlenecks, accelerate conversion funnels, and scale enterprise market share with data-backed engineering and high-ROAS marketing campaigns."
+        highlightText="Business Outcomes"
+        description="See how we transform challenges into opportunities by removing technical barriers, optimizing conversion performance, and driving scalable growth through advanced technology, intelligent automation, and results-focused digital strategies."
         image={{
           src: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=1200&q=80',
           alt: 'InfosBrain Verified Client Outcomes and Performance Dashboard',

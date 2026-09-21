@@ -1,121 +1,144 @@
 import React from 'react';
 import { useRouter } from '../../context/RouterContext';
-import { siteConfig } from '../../config/siteConfig';
 import { Button } from '../common/Button';
-import { ArrowRight, ShieldCheck, Target, Lightbulb, Compass, Award } from 'lucide-react';
+import {
+  ArrowRight,
+  Code2,
+  Compass,
+  Cpu,
+  TrendingUp,
+  ShieldCheck,
+  CheckCircle2,
+} from 'lucide-react';
 
 export const AboutTeaserSection: React.FC = () => {
   const { navigate } = useRouter();
 
+  const corePillars = [
+    {
+      title: 'Technology Expertise',
+      desc: 'Deep engineering in custom software, cloud architecture, and modern application stacks.',
+      icon: Code2,
+      color: '#0078FF',
+    },
+    {
+      title: 'Strategic Consulting',
+      desc: 'Bridging technical capabilities with operational priorities to achieve strategic goals.',
+      icon: Compass,
+      color: '#6C4DFF',
+    },
+    {
+      title: 'Innovation & Scalability',
+      desc: 'Harnessing AI, intelligent automation, and resilient infrastructure built for modern growth.',
+      icon: Cpu,
+      color: '#00C9A7',
+    },
+    {
+      title: 'Measurable Outcomes',
+      desc: 'Laser-focused on operational efficiency, user retention, and long-term business impact.',
+      icon: TrendingUp,
+      color: '#0078FF',
+    },
+  ];
+
   return (
-    <section className="relative py-24 bg-[#070B1F] border-t border-slate-800/80 overflow-hidden">
-      {/* Subtle background glow */}
-      <div className="absolute top-1/4 -right-40 w-96 h-96 bg-violet-600/10 rounded-full blur-3xl pointer-events-none" />
+    <section id="about" className="relative py-24 bg-[#050816] border-t border-slate-800/80 overflow-hidden">
+      {/* Background ambient glow */}
+      <div className="absolute top-1/3 -left-40 w-96 h-96 bg-[#0078FF]/10 rounded-full blur-[140px] pointer-events-none" />
+      <div className="absolute bottom-10 right-0 w-96 h-96 bg-[#00C9A7]/10 rounded-full blur-[140px] pointer-events-none" />
+      <div className="absolute inset-0 cyber-grid opacity-30 pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-          {/* Left Visual Composition */}
-          <div className="lg:col-span-5 relative">
-            <div className="relative rounded-3xl p-6 sm:p-8 bg-slate-900/80 border border-cyan-500/30 shadow-[0_0_40px_rgba(6,182,212,0.15)] backdrop-blur-xl">
-              {/* Agency Atmosphere Photo */}
-              <div className="relative h-44 sm:h-48 rounded-2xl overflow-hidden mb-6 border border-slate-700/80 group">
-                <img
-                  src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=800&q=80"
-                  alt="InfosBrain Engineering & Strategy Lab"
-                  referrerPolicy="no-referrer"
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#070B1F] via-transparent to-black/30" />
-                <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between">
-                  <span className="text-[10px] font-mono font-bold text-cyan-300 bg-slate-950/80 px-2.5 py-1 rounded-full border border-cyan-500/30">
-                    InfosBrain Innovation Lab
-                  </span>
-                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                </div>
-              </div>
-
-              <div className="space-y-4">
-                <div className="flex items-center justify-between pb-3 border-b border-slate-800">
-                  <span className="text-xs font-mono text-cyan-400 font-bold uppercase tracking-wider">
-                    // INFOSBRAIN FOUNDATIONS
-                  </span>
-                  <span className="text-xs text-slate-500 font-mono">EST. 2024</span>
-                </div>
-
-                <div className="space-y-3 text-xs sm:text-sm text-slate-300">
-                  <div className="p-4 rounded-xl bg-slate-950/60 border border-slate-800">
-                    <div className="font-bold text-white flex items-center gap-2 mb-1">
-                      <Target className="w-4 h-4 text-cyan-400" />
-                      Our Mission
-                    </div>
-                    <p className="text-slate-400 leading-relaxed text-xs">
-                      Empowering global enterprises and agile startups through resilient technology stacks, algorithmic marketing, and distinctive brand design.
-                    </p>
-                  </div>
-
-                  <div className="p-4 rounded-xl bg-slate-950/60 border border-slate-800">
-                    <div className="font-bold text-white flex items-center gap-2 mb-1">
-                      <Lightbulb className="w-4 h-4 text-violet-400" />
-                      Our Vision
-                    </div>
-                    <p className="text-slate-400 leading-relaxed text-xs">
-                      To be the world’s most trusted digital growth ally, where technical rigor meets boundless creative innovation.
-                    </p>
-                  </div>
-
-                  <div className="p-4 rounded-xl bg-slate-950/60 border border-slate-800">
-                    <div className="font-bold text-white flex items-center gap-2 mb-1">
-                      <Compass className="w-4 h-4 text-blue-400" />
-                      Our Core Principles
-                    </div>
-                    <p className="text-slate-400 leading-relaxed text-xs">
-                      Radical engineering clarity, statistical accountability, zero vanity metrics, and enduring commercial partnerships.
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Right Text Content */}
-          <div className="lg:col-span-7 space-y-6">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider bg-cyan-950/60 text-cyan-300 border border-cyan-500/30">
-              <span>ABOUT INFOSBRAIN</span>
+          {/* Left Text Narrative */}
+          <div className="lg:col-span-6 space-y-6">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold uppercase tracking-wider bg-[#0078FF]/15 text-[#00C9A7] border border-[#00C9A7]/30 backdrop-blur-md">
+              <span className="w-2 h-2 rounded-full bg-[#00C9A7]" />
+              <span>WHO WE ARE</span>
             </div>
 
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white font-display leading-tight">
-              A Digital Technology Agency{' '}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-blue-400 to-violet-400">
-                Built For Modern Scale
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-white font-display leading-[1.15]">
+              Transforming Complex Ideas into{' '}
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#0078FF] via-[#6C4DFF] to-[#00C9A7]">
+                Scalable, Measurable Digital Reality
               </span>
             </h2>
 
-            <p className="text-base sm:text-lg text-slate-300 leading-relaxed">
-              InfosBrain is a modern digital technology and growth agency helping businesses turn ideas into powerful digital experiences. We bridge the gap between creative visual artistry and deep technical engineering.
+            <p className="text-base sm:text-lg text-slate-200 leading-relaxed font-normal">
+              InfosBrain is a technology and digital transformation company dedicated to helping businesses, nonprofits, institutions, and government organizations leverage innovative technologies to achieve their strategic objectives.
             </p>
 
-            <p className="text-sm text-slate-400 leading-relaxed">
-              Whether architecting real-time MERN software, optimizing enterprise SEO architecture for first-page search capture, or managing millions in high-ROAS paid media, our multidisciplinary teams operate with obsessive attention to craft.
+            <p className="text-sm text-slate-300 leading-relaxed">
+              By combining expertise in software development, artificial intelligence, cloud solutions, cybersecurity, and digital transformation consulting, InfosBrain delivers practical, scalable, and future-ready solutions that drive efficiency, growth, and long-term impact.
             </p>
 
-            <div className="pt-2 flex flex-wrap items-center gap-4">
+            {/* Checklist highlights */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+              <div className="flex items-center gap-2 text-xs text-slate-300 font-medium">
+                <CheckCircle2 className="w-4 h-4 text-[#00C9A7] flex-shrink-0" />
+                <span>Enterprise-Level Execution</span>
+              </div>
+              <div className="flex items-center gap-2 text-xs text-slate-300 font-medium">
+                <CheckCircle2 className="w-4 h-4 text-[#0078FF] flex-shrink-0" />
+                <span>Strategic Consulting & Roadmaps</span>
+              </div>
+              <div className="flex items-center gap-2 text-xs text-slate-300 font-medium">
+                <CheckCircle2 className="w-4 h-4 text-[#6C4DFF] flex-shrink-0" />
+                <span>Scalable Cloud & AI Platforms</span>
+              </div>
+              <div className="flex items-center gap-2 text-xs text-slate-300 font-medium">
+                <CheckCircle2 className="w-4 h-4 text-[#00C9A7] flex-shrink-0" />
+                <span>Measurable Business Velocity</span>
+              </div>
+            </div>
+
+            <div className="pt-4 flex flex-wrap items-center gap-4">
               <Button
                 variant="primary"
                 size="md"
                 onClick={() => navigate('/about')}
                 icon={<ArrowRight className="w-4 h-4" />}
               >
-                Read Our Story & Values
+                Learn More About Us
               </Button>
 
               <button
                 onClick={() => navigate('/case-studies')}
-                className="text-sm font-semibold text-cyan-400 hover:text-cyan-300 transition-colors flex items-center gap-1.5 cursor-pointer px-3 py-2"
+                className="text-sm font-semibold text-[#00C9A7] hover:text-white transition-colors flex items-center gap-1.5 cursor-pointer px-3 py-2"
               >
-                <span>View Case Studies</span>
+                <span>Explore Proven Outcomes</span>
                 <span>→</span>
               </button>
             </div>
+          </div>
+
+          {/* Right Visual 4-Card Pillar Grid */}
+          <div className="lg:col-span-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {corePillars.map((pillar, idx) => {
+              const Icon = pillar.icon;
+              return (
+                <div
+                  key={idx}
+                  className="group p-6 rounded-2xl bg-[#071A35]/80 border border-slate-800 hover:border-[#0078FF]/50 hover:shadow-[0_15px_30px_rgba(0,120,255,0.15)] transition-all duration-300 backdrop-blur-md flex flex-col justify-between"
+                >
+                  <div>
+                    <div className="w-12 h-12 rounded-xl bg-slate-900 border border-slate-800 group-hover:border-[#00C9A7]/50 group-hover:bg-[#00C9A7]/10 flex items-center justify-center text-[#00C9A7] transition-all mb-4">
+                      <Icon className="w-6 h-6" />
+                    </div>
+                    <h3 className="text-base font-bold text-white group-hover:text-cyan-300 transition-colors font-display mb-2">
+                      {pillar.title}
+                    </h3>
+                    <p className="text-xs text-slate-300 leading-relaxed">
+                      {pillar.desc}
+                    </p>
+                  </div>
+                  <div className="pt-4 mt-4 border-t border-slate-800/80 flex items-center justify-between text-[11px] font-mono text-slate-400">
+                    <span>CAPABILITY 0{idx + 1}</span>
+                    <span className="text-[#0078FF]">→</span>
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </div>
       </div>

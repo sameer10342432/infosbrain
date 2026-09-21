@@ -82,7 +82,7 @@ export const AboutPage: React.FC = () => {
               onClick={() => navigate('/contact')}
               icon={<ArrowRight className="w-4 h-4" />}
             >
-              Partner With Us
+              Start Your Digital Transformation
             </Button>
             <Button
               size="lg"
@@ -96,8 +96,8 @@ export const AboutPage: React.FC = () => {
         }
         keyPoints={[
           'Full Intellectual Property Ownership',
-          '95+ Google Core Web Vitals Score',
-          'Data-Driven ROAS Optimization',
+          'Enterprise Scalability Standards',
+          'Measurable Digital Outcomes',
         ]}
       />
 
@@ -106,32 +106,35 @@ export const AboutPage: React.FC = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div className="space-y-6">
-              <div className="text-xs font-mono text-cyan-400 uppercase tracking-widest font-bold">
-                // ORIGIN & ETHOS
+              <div className="text-xs font-mono text-[#00C9A7] uppercase tracking-widest font-bold">
+                // WHO WE ARE
               </div>
-              <h2 className="text-3xl sm:text-4xl font-bold text-white font-display">
-                Engineered For The New Digital Economy
+              <h2 className="text-3xl sm:text-4xl font-bold text-white font-display leading-tight">
+                Transforming Complex Ideas into{' '}
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#0078FF] via-[#6C4DFF] to-[#00C9A7]">
+                  Scalable, Measurable Digital Reality
+                </span>
               </h2>
-              <p className="text-sm sm:text-base text-slate-300 leading-relaxed">
-                Founded to bridge the disconnect between creative design studios that lack deep technical chops and developer agencies that neglect conversion psychology, InfosBrain unites both worlds.
+              <p className="text-sm sm:text-base text-slate-200 leading-relaxed">
+                InfosBrain is a technology and digital transformation company dedicated to helping businesses, nonprofits, institutions, and government organizations leverage innovative technologies to achieve their strategic objectives.
               </p>
 
               {/* Agency Atmosphere Feature Image */}
               <div className="relative h-56 rounded-2xl overflow-hidden border border-slate-800 shadow-xl group">
                 <img
                   src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=1000&q=80"
-                  alt="InfosBrain Collaborative Digital Studio"
+                  alt="InfosBrain Distributed Tech Ecosystem"
                   referrerPolicy="no-referrer"
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#070B1F] via-[#070B1F]/20 to-transparent" />
                 <div className="absolute bottom-3 left-3 text-xs font-mono text-cyan-300 bg-slate-950/80 px-3 py-1 rounded-full border border-cyan-500/30 backdrop-blur-md">
-                  InfosBrain Distributed Tech Ecosystem
+                  InfosBrain Innovation Lab
                 </div>
               </div>
 
-              <p className="text-sm sm:text-base text-slate-400 leading-relaxed">
-                We work with international startups, scale-ups, and established enterprises who require more than just a vendor—they require a dedicated digital technology co-pilot to outpace market competitors.
+              <p className="text-sm sm:text-base text-slate-300 leading-relaxed">
+                By combining expertise in software development, artificial intelligence, cloud solutions, cybersecurity, and digital transformation consulting, InfosBrain delivers practical, scalable, and future-ready solutions that drive efficiency, growth, and long-term impact.
               </p>
 
               <div className="grid grid-cols-2 gap-4 pt-4 border-t border-slate-800">
@@ -277,10 +280,10 @@ export const AboutPage: React.FC = () => {
       <section className="py-16 bg-[#050816]">
         <div className="max-w-4xl mx-auto px-4 text-center">
           <h2 className="text-3xl font-bold text-white font-display mb-4">
-            Partner With InfosBrain On Your Next Breakthrough
+            Your Trusted Partner in Digital Innovation
           </h2>
-          <p className="text-sm text-slate-400 mb-8 max-w-xl mx-auto">
-            Directly connect with our strategy leads at <span className="text-cyan-300 font-mono">info@infosbrain.com</span> or schedule a discovery call today.
+          <p className="text-sm text-slate-300 mb-8 max-w-xl mx-auto">
+            Directly connect with our strategy leads at <span className="text-[#00C9A7] font-mono">info@infosbrain.com</span> or schedule a discovery consultation today.
           </p>
           <Button
             size="lg"

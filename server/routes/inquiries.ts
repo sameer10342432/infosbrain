@@ -112,12 +112,13 @@ router.post('/', async (req: Request, res: Response) => {
   });
 });
 
-// Admin: GET /api/admin/inquiries
+// Admin: GET /api/inquiries/admin
 router.get('/admin', requireAdmin, (req: AuthenticatedRequest, res: Response) => {
   const page = Math.max(1, parseInt(req.query.page as string, 10) || 1);
   const limit = Math.min(100, Math.max(1, parseInt(req.query.limit as string, 10) || 20));
   const offset = (page - 1) * limit;
   const status = req.query.status as string | undefined;
+  const source = req.query.source as string | undefined;
   const search = req.query.search as string | undefined;
 
   let whereClauses: string[] = [];
@@ -128,10 +129,15 @@ router.get('/admin', requireAdmin, (req: AuthenticatedRequest, res: Response) =>
     params.push(status);
   }
 
+  if (source && source !== 'all') {
+    whereClauses.push('source LIKE ?');
+    params.push(`%${source}%`);
+  }
+
   if (search && search.trim()) {
-    whereClauses.push('(name LIKE ? OR email LIKE ? OR business LIKE ? OR service LIKE ? OR projectDetails LIKE ?)');
+    whereClauses.push('(name LIKE ? OR email LIKE ? OR business LIKE ? OR service LIKE ? OR projectDetails LIKE ? OR source LIKE ? OR phone LIKE ?)');
     const term = `%${search.trim()}%`;
-    params.push(term, term, term, term, term);
+    params.push(term, term, term, term, term, term, term);
   }
 
   const whereSql = whereClauses.length > 0 ? 'WHERE ' + whereClauses.join(' AND ') : '';
@@ -165,9 +171,22 @@ router.get('/admin', requireAdmin, (req: AuthenticatedRequest, res: Response) =>
     statusMap[c.status] = c.count;
   });
 
+  // Count by form source
+  const countsBySource = db.prepare(`
+    SELECT source, COUNT(*) as count FROM inquiries GROUP BY source
+  `).all() as { source: string; count: number }[];
+
+  const sourceMap: Record<string, number> = {};
+  countsBySource.forEach((c) => {
+    if (c.source) {
+      sourceMap[c.source] = c.count;
+    }
+  });
+
   res.json({
     inquiries,
     statusCounts: statusMap,
+    sourceCounts: sourceMap,
     pagination: {
       page,
       limit,
@@ -177,7 +196,71 @@ router.get('/admin', requireAdmin, (req: AuthenticatedRequest, res: Response) =>
   });
 });
 
-// Admin: PATCH /api/admin/inquiries/:id/status
+// Admin: GET /api/inquiries/admin/export (CSV export)
+router.get('/admin/export', requireAdmin, (req: AuthenticatedRequest, res: Response) => {
+  const status = req.query.status as string | undefined;
+  const source = req.query.source as string | undefined;
+  const search = req.query.search as string | undefined;
+
+  let whereClauses: string[] = [];
+  const params: any[] = [];
+
+  if (status && status !== 'all') {
+    whereClauses.push('status = ?');
+    params.push(status);
+  }
+
+  if (source && source !== 'all') {
+    whereClauses.push('source LIKE ?');
+    params.push(`%${source}%`);
+  }
+
+  if (search && search.trim()) {
+    whereClauses.push('(name LIKE ? OR email LIKE ? OR business LIKE ? OR service LIKE ? OR projectDetails LIKE ? OR source LIKE ? OR phone LIKE ?)');
+    const term = `%${search.trim()}%`;
+    params.push(term, term, term, term, term, term, term);
+  }
+
+  const whereSql = whereClauses.length > 0 ? 'WHERE ' + whereClauses.join(' AND ') : '';
+
+  const stmt = db.prepare(`
+    SELECT * FROM inquiries
+    ${whereSql}
+    ORDER BY createdAt DESC
+  `);
+
+  const inquiries = stmt.all(...params) as any[];
+
+  // Helper to escape CSV cell
+  const escapeCsv = (val: any) => {
+    if (val === null || val === undefined) return '""';
+    const str = String(val).replace(/"/g, '""');
+    return `"${str}"`;
+  };
+
+  const headers = ['ID', 'Date', 'Name', 'Email', 'Phone', 'Company', 'Service', 'Budget', 'Form Source', 'Status', 'Project Brief'];
+  const rows = inquiries.map((inq) => [
+    escapeCsv(inq.id),
+    escapeCsv(inq.createdAt),
+    escapeCsv(inq.name),
+    escapeCsv(inq.email),
+    escapeCsv(inq.phone || ''),
+    escapeCsv(inq.business || ''),
+    escapeCsv(inq.service || ''),
+    escapeCsv(inq.budget || ''),
+    escapeCsv(inq.source || ''),
+    escapeCsv(inq.status),
+    escapeCsv(inq.projectDetails || ''),
+  ].join(','));
+
+  const csvContent = [headers.join(','), ...rows].join('\r\n');
+
+  res.setHeader('Content-Type', 'text/csv; charset=utf-8');
+  res.setHeader('Content-Disposition', `attachment; filename="infosbrain-inquiries-${Date.now()}.csv"`);
+  res.send(csvContent);
+});
+
+// Admin: PATCH /api/inquiries/admin/:id/status
 router.patch('/admin/:id/status', requireAdmin, (req: AuthenticatedRequest, res: Response) => {
   const { id } = req.params;
   const { status } = req.body;
@@ -194,7 +277,7 @@ router.patch('/admin/:id/status', requireAdmin, (req: AuthenticatedRequest, res:
   res.json({ success: true, message: `Inquiry marked as ${status}.` });
 });
 
-// Admin: DELETE /api/admin/inquiries/:id
+// Admin: DELETE /api/inquiries/admin/:id
 router.delete('/admin/:id', requireAdmin, (req: AuthenticatedRequest, res: Response) => {
   const { id } = req.params;
   db.prepare('DELETE FROM inquiries WHERE id = ?').run(id);

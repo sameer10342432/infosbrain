@@ -18,20 +18,22 @@ export const siteConfig = {
   brand: {
     name: 'InfosBrain',
     legalName: 'InfosBrain Global Technology & Digital Solutions',
-    tagline: 'Transforming Ideas into Intelligent Digital Solutions',
-    secondaryTagline: 'Delivering Solutions Across Continents',
-    heroHeadline: 'Transforming Ideas into Intelligent Digital Solutions',
+    tagline: 'Build Smarter. Scale Faster. Grow with Confidence.',
+    secondaryTagline: 'Digital transformation solutions for organizations ready to scale, innovate, and lead.',
+    heroHeadline: 'Digital Transformation Solutions for Organizations Ready to Scale, Innovate, and Lead.',
     heroSupport:
-      'InfosBrain helps organizations modernize operations, build intelligent platforms, and create secure digital experiences that support growth.',
+      'InfosBrain helps businesses, nonprofits, institutions, and government organizations turn complex challenges into practical, measurable digital solutions.',
+    heroServiceStatement:
+      'From software development and artificial intelligence to cloud solutions, cybersecurity, digital strategy, and performance marketing, we combine technology and strategic expertise to help organizations improve performance, strengthen customer engagement, and build future-ready operations.',
     description:
-      'InfosBrain is positioned as a technology-driven company that helps businesses, nonprofits, institutions, and public-sector organizations design, build, and scale practical digital solutions through software development, artificial intelligence, cloud technologies, cybersecurity, and digital transformation consulting.',
-    badge: 'TRANSFORMING IDEAS INTO INTELLIGENT DIGITAL SOLUTIONS',
+      'InfosBrain is a technology and digital transformation company dedicated to helping businesses, nonprofits, institutions, and government organizations leverage innovative technologies to achieve their strategic objectives. By combining expertise in software development, artificial intelligence, cloud solutions, cybersecurity, and digital transformation consulting, InfosBrain delivers practical, scalable, and future-ready solutions that drive efficiency, growth, and long-term impact.',
+    badge: 'DIGITAL TRANSFORMATION & TECHNOLOGY SOLUTIONS',
     establishedYear: 2021,
     url: 'https://infosbrain.com',
     primaryCTAs: [
-      { label: 'Schedule a Consultation', path: '/contact' },
-      { label: 'View Solutions', path: '/ai-solutions' },
-      { label: 'Start Your Project', path: '/contact' },
+      { label: 'Start Your Digital Transformation', path: '/contact' },
+      { label: 'Explore Our Services', path: '/services' },
+      { label: 'Start a Conversation', path: '/contact' },
     ],
     colorPalette: {
       midnightBlue: '#071A35',
@@ -42,7 +44,7 @@ export const siteConfig = {
       lightGray: '#F5F7FA',
     },
     globalMessage:
-      'Local understanding, international collaboration, and scalable digital delivery for organizations operating across regions.',
+      'Build Smarter. Scale Faster. Grow with Confidence.',
   },
 
   contact: {
@@ -79,69 +81,58 @@ export const siteConfig = {
   coreServices: [
     {
       id: 'cs-software-dev',
-      title: 'Custom Software Development',
-      badge: 'ENTERPRISE ENGINEERING',
+      title: 'Software Development',
+      badge: 'ENTERPRISE APPLICATIONS',
       iconName: 'Code2',
       description:
-        'Tailored platforms, enterprise applications, and automation tools engineered around high-impact business goals.',
-      subPillars: ['Enterprise Applications', 'SaaS Platforms', 'Business Automation', 'API Architecture'],
-      path: '/services/mern-stack-development',
+        'Custom web, mobile, and enterprise applications designed to support performance, flexibility, scalability, and long-term growth.',
+      subPillars: ['Custom Web Applications', 'Mobile App Development', 'Enterprise Systems', 'Scalable Architecture'],
+      path: '/services/software-development',
       accentColor: '#0078FF',
     },
     {
-      id: 'cs-ai',
-      title: 'Artificial Intelligence',
+      id: 'cs-ai-automation',
+      title: 'Artificial Intelligence & Automation',
       badge: 'INTELLIGENT SYSTEMS',
       iconName: 'Sparkles',
       description:
-        'AI assistants, predictive analytics, workflow automation, and document intelligence with responsible human oversight.',
-      subPillars: ['Machine Learning', 'Generative AI', 'Agentic Automation', 'Predictive Analytics'],
-      path: '/ai-solutions',
+        'Intelligent systems that streamline workflows, improve decision-making, reduce repetitive work, and unlock new opportunities for innovation.',
+      subPillars: ['Workflow Automation', 'Decision Intelligence', 'Custom LLMs & Agents', 'Machine Learning'],
+      path: '/services/artificial-intelligence-automation',
       accentColor: '#6C4DFF',
     },
     {
       id: 'cs-cloud',
-      title: 'Cloud Solutions & DevOps',
-      badge: 'INFRASTRUCTURE',
+      title: 'Cloud Solutions',
+      badge: 'CLOUD ARCHITECTURE',
       iconName: 'Cloud',
       description:
-        'Scalable infrastructure, cloud modernization, automated deployment pipelines, and multi-region resilience.',
-      subPillars: ['Microsoft Azure', 'Amazon AWS', 'Hybrid Infrastructure', 'CI/CD Automation'],
-      path: '/services/php-development',
+        'Secure, scalable cloud architecture, migration, optimization, and infrastructure solutions that help organizations operate with greater agility.',
+      subPillars: ['Cloud Migration', 'Infrastructure Optimization', 'DevOps Automation', 'Multi-Cloud Resilience'],
+      path: '/services/cloud-solutions',
       accentColor: '#00C9A7',
     },
     {
       id: 'cs-cybersecurity',
-      title: 'Cybersecurity & Compliance',
-      badge: 'ZERO TRUST',
+      title: 'Cybersecurity',
+      badge: 'RISK & COMPLIANCE',
       iconName: 'ShieldCheck',
       description:
-        'Risk assessment, secure architecture, data protection, and compliance-oriented development conforming to ISO & GDPR.',
-      subPillars: ['Risk Assessment', 'Security Audits', 'Data Protection', 'Secure Architecture'],
-      path: '/services/php-development',
+        'Risk-focused security solutions that protect digital assets, strengthen organizational resilience, and support compliance requirements.',
+      subPillars: ['Risk Assessment', 'Asset Protection', 'Organizational Resilience', 'Compliance Governance'],
+      path: '/services/cybersecurity',
       accentColor: '#0078FF',
     },
     {
-      id: 'cs-web-dev',
-      title: 'Web Development & Portals',
-      badge: 'PERFORMANCE',
-      iconName: 'Globe',
+      id: 'cs-seo-growth',
+      title: 'SEO & Digital Growth',
+      badge: 'SEARCH & PERFORMANCE',
+      iconName: 'TrendingUp',
       description:
-        'Fast, accessible, and high-performance digital products and enterprise portals for users across all modern devices.',
-      subPillars: ['Fast Web Applications', 'Client & Partner Portals', 'Scalable Architecture', 'Sub-second UX'],
-      path: '/services/mern-stack-development',
+        'Data-driven search, content, conversion, and customer acquisition strategies designed to increase visibility, improve conversions, and generate sustainable revenue growth.',
+      subPillars: ['Technical & Organic SEO', 'Content Strategy', 'Conversion Optimization', 'Performance Marketing'],
+      path: '/services/seo-digital-growth',
       accentColor: '#00C9A7',
-    },
-    {
-      id: 'cs-mobile-apps',
-      title: 'Mobile Applications',
-      badge: 'NATIVE & CROSS-PLATFORM',
-      iconName: 'Smartphone',
-      description:
-        'Engaging Android and iOS mobile applications designed for fluid touch interactions, offline sync, and real-time alerts.',
-      subPillars: ['Android & iOS Apps', 'React Native & Flutter', 'Secure Biometrics', 'Real-Time Sync'],
-      path: '/services/mern-stack-development',
-      accentColor: '#6C4DFF',
     },
     {
       id: 'cs-digital-transformation',
@@ -149,21 +140,10 @@ export const siteConfig = {
       badge: 'STRATEGY & ROADMAPS',
       iconName: 'Layers',
       description:
-        'Strategic technology advisory, business process optimization, legacy modernization, and implementation roadmaps.',
-      subPillars: ['Process Optimization', 'Technology Roadmaps', 'Legacy Modernization', 'Change Management'],
-      path: '/services/digital-marketing',
-      accentColor: '#0078FF',
-    },
-    {
-      id: 'cs-data-analytics',
-      title: 'Data Analytics & Business Intelligence',
-      badge: 'ACTIONABLE INSIGHTS',
-      iconName: 'BarChart3',
-      description:
-        'Business intelligence dashboards, predictive data models, and automated reporting systems that turn data into clarity.',
-      subPillars: ['Business Intelligence', 'Executive Reporting', 'Data Warehousing', 'Visual Dashboards'],
-      path: '/ai-solutions/predictive-analytics',
-      accentColor: '#00C9A7',
+        'Strategic technology consulting that helps organizations modernize legacy systems, improve operational workflows, adopt emerging technologies, and build scalable digital capabilities.',
+      subPillars: ['Legacy Modernization', 'Workflow Optimization', 'Emerging Tech Adoption', 'Scalable Capabilities'],
+      path: '/services/digital-transformation-consulting',
+      accentColor: '#6C4DFF',
     },
   ],
 
@@ -832,52 +812,28 @@ export const siteConfig = {
 
   whyChooseUs: [
     {
-      title: 'Results-Driven Approach',
+      title: 'Strategic Thinking',
       description:
-        'Every campaign and line of code is measured by tangible ROI, user engagement, and measurable revenue growth for your company.',
-      icon: 'TrendingUp',
+        'We align every solution with your business goals, operational requirements, and long-term growth priorities.',
+      icon: 'Lightbulb',
     },
     {
-      title: 'Experienced Professionals',
+      title: 'Technical Excellence',
       description:
-        'A multidisciplinary collective of senior engineers, certified marketing specialists, technical SEOs, and creative art directors.',
-      icon: 'Users',
-    },
-    {
-      title: 'Modern Technology',
-      description:
-        'We harness high-performance tech stacks, microservices, headless CMS architectures, and intelligent workflows that scale seamlessly.',
+        'Our team combines deep engineering expertise with practical implementation experience to deliver reliable and scalable technology solutions.',
       icon: 'Cpu',
-    },
-    {
-      title: 'Creative Thinking',
-      description:
-        'Blending aesthetic sophistication with deep cognitive psychology to build digital identities that capture attention and command respect.',
-      icon: 'Sparkles',
-    },
-    {
-      title: 'Transparent Communication',
-      description:
-        'Real-time sprint dashboards, clear deliverables, weekly milestone debriefs, and proactive direct channels with your dedicated lead.',
-      icon: 'MessageSquare',
-    },
-    {
-      title: 'Data-Driven Decisions',
-      description:
-        'Zero guesswork. We leverage statistical A/B split testing, behavioral heatmaps, and algorithmic analytics to steer every optimization.',
-      icon: 'BarChart2',
     },
     {
       title: 'Scalable Solutions',
       description:
-        'From high-growth seed startups to multinational enterprises, our digital architectures are built to effortlessly handle peak loads.',
+        'We design systems that grow with your organization and adapt to changing business, customer, and technology requirements.',
       icon: 'ShieldCheck',
     },
     {
-      title: 'Long-Term Partnership',
+      title: 'Measurable Outcomes',
       description:
-        'We do not disappear after deployment. InfosBrain serves as your embedded ongoing technology and marketing innovation partner.',
-      icon: 'Repeat',
+        'We focus on results that improve performance, efficiency, customer engagement, operational visibility, and sustainable growth.',
+      icon: 'TrendingUp',
     },
   ],
 
@@ -885,48 +841,334 @@ export const siteConfig = {
     {
       number: '01',
       title: 'Discover',
-      subtitle: 'Understand the business, audience and goals',
+      subtitle: 'Understanding goals, challenges, and priorities',
       description:
-        'Comprehensive discovery workshops, competitor landscape audits, audience persona profiling, and KPI benchmark mapping.',
+        'We begin by understanding your goals, challenges, users, systems, and growth priorities.',
     },
     {
       number: '02',
-      title: 'Strategize',
-      subtitle: 'Create a data-driven digital strategy',
+      title: 'Design',
+      subtitle: 'Strategy, architecture, and roadmap',
       description:
-        'Custom tactical roadmap defining architectural architecture, conversion funnels, SEO keyword clusters, and media spend budgets.',
+        'We create a clear strategy, solution architecture, and implementation roadmap tailored to your organization.',
     },
     {
       number: '03',
-      title: 'Design',
-      subtitle: 'Build the creative direction and user experience',
+      title: 'Build',
+      subtitle: 'Secure, scalable, and user-focused delivery',
       description:
-        'Interactive wireframing, design system specification, futuristic visual polish, and conversion-optimized user journeys.',
+        'We develop secure, scalable, and user-focused solutions using modern technologies and proven delivery practices.',
     },
     {
       number: '04',
-      title: 'Develop',
-      subtitle: 'Turn strategy into high-performance digital experiences',
+      title: 'Optimize',
+      subtitle: 'Monitoring, refinement, and continuous growth',
       description:
-        'Clean, modular, and fully tested codebases. Mobile-first engineering, API orchestration, and technical SEO compliance.',
-    },
-    {
-      number: '05',
-      title: 'Launch',
-      subtitle: 'Deploy and optimize the final solution',
-      description:
-        'Rigorous cross-browser QA, Core Web Vitals calibration, security hardening, analytics instrumentation, and seamless release.',
-    },
-    {
-      number: '06',
-      title: 'Grow',
-      subtitle: 'Continuously analyze, improve and scale results',
-      description:
-        'Continuous sprint-based conversion rate optimization, campaign retargeting, algorithm adaptation, and scaling advisory.',
+        'We monitor performance, improve outcomes, and support continuous growth after launch.',
     },
   ],
 
   services: [
+    {
+      id: 'service-software-development',
+      slug: 'software-development',
+      title: 'Software Development',
+      category: 'Development',
+      iconName: 'Code2',
+      featured: true,
+      imageUrl: 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=1200&q=80',
+      shortDescription:
+        'Custom web, mobile, and enterprise applications designed to support performance, flexibility, scalability, and long-term growth.',
+      heroSubtitle:
+        'Engineering resilient, scalable, and high-performance digital products engineered for long-term operational excellence.',
+      fullDescription:
+        'At InfosBrain, our Software Development practice builds robust, modular, and cloud-native software solutions tailored to enterprise workflows and rapid-growth ventures. From full-stack web platforms and native mobile applications to enterprise service-oriented architectures, we write clean, maintainable, and high-velocity code designed to adapt as your organization scales.',
+      features: [
+        'Full-stack custom web & SaaS application engineering',
+        'Cross-platform & native mobile app development (iOS & Android)',
+        'Microservices & resilient API architecture design',
+        'Legacy software modernization & cloud re-platforming',
+        'Automated CI/CD pipelines & comprehensive QA test suites',
+        'Strict security, SOC 2 alignment & code audit standards',
+      ],
+      benefits: [
+        'High-concurrency architecture that scales seamlessly with demand',
+        'Reduced technical debt through clean, modular codebases',
+        'Rapid time-to-market with iterative agile sprint deliveries',
+        '100% intellectual property and complete source code ownership',
+      ],
+      deliverables: [
+        'Fully documented enterprise codebase in client-owned repositories',
+        'Modular API specifications & OpenAPI / Swagger docs',
+        'Automated test coverage reports (Unit, Integration, E2E)',
+        'Containerized Docker & Kubernetes deployment configurations',
+        'Comprehensive system architecture & technical handover documentation',
+      ],
+      technologies: ['TypeScript', 'React / Next.js', 'Node.js', 'Python', 'Go', 'PostgreSQL', 'Docker', 'AWS'],
+      process: [
+        { phase: 'Discovery & Architecture', description: 'Comprehensive domain mapping, system architecture blueprinting, database schema design, and milestone scheduling.' },
+        { phase: 'Sprint-Based Engineering', description: 'Agile 2-week development sprints with automated CI/CD pipelines, unit testing, and continuous client demos.' },
+        { phase: 'Security & Quality Assurance', description: 'Rigorous penetration testing, load testing under high concurrency, accessibility audits, and vulnerability mitigation.' },
+        { phase: 'Deployment & Continuous Support', description: 'Zero-downtime production deployment, real-time APM telemetry monitoring, and proactive maintenance.' },
+      ],
+      faqs: [
+        { q: 'What software development methodologies does InfosBrain employ?', a: 'We employ an agile sprint methodology with bi-weekly deliverables, continuous integration/continuous deployment (CI/CD), and direct access to senior technical architects.' },
+        { q: 'Who owns the intellectual property and code repository?', a: 'You retain 100% IP ownership of all source code, design assets, databases, and deployment scripts from day one.' },
+        { q: 'Can InfosBrain take over and modernize existing legacy software?', a: 'Yes. We frequently conduct code audits, refactor legacy monoliths into modern microservices, and improve performance while preserving core business logic.' },
+        { q: 'How do you ensure enterprise-grade security in developed applications?', a: 'We implement OWASP Top 10 security standards, automated static analysis (SAST), end-to-end encryption in transit and at rest, and role-based access control (RBAC).' },
+      ],
+      ctaText: 'Start Your Software Project',
+    },
+    {
+      id: 'service-ai-automation',
+      slug: 'artificial-intelligence-automation',
+      title: 'Artificial Intelligence & Automation',
+      category: 'Technology',
+      iconName: 'Sparkles',
+      featured: true,
+      imageUrl: 'https://images.unsplash.com/photo-1677442136019-21780ecad995?auto=format&fit=crop&w=1200&q=80',
+      shortDescription:
+        'Intelligent systems that streamline workflows, improve decision-making, reduce repetitive work, and unlock new opportunities for innovation.',
+      heroSubtitle:
+        'Empowering enterprises with private LLMs, autonomous agentic workflows, predictive intelligence, and operational automation.',
+      fullDescription:
+        'InfosBrain designs and deploys custom Artificial Intelligence and enterprise automation systems that turn data into measurable competitive advantages. We bridge the gap between cutting-edge AI research and production reliability—building domain-grounded retrieval-augmented generation (RAG) agents, automated workflow pipelines, computer vision models, and predictive analytics that eliminate manual bottlenecks and scale decision accuracy.',
+      features: [
+        'Autonomous multi-agent orchestration & workflow automation',
+        'Private Retrieval-Augmented Generation (RAG) and custom LLM tuning',
+        'Intelligent document processing (IDP) & sub-second OCR extraction',
+        'Predictive machine learning models & business forecasting',
+        'Natural language processing (NLP) for enterprise search & customer ops',
+        'Strict data privacy, governance, and zero-hallucination verification',
+      ],
+      benefits: [
+        'Up to 80% reduction in repetitive manual data entry and processing',
+        'Data-backed executive forecasting and predictive risk mitigation',
+        'Secure, private AI deployments with zero data leakage to public models',
+        '24/7 intelligent customer and internal workflow resolution',
+      ],
+      deliverables: [
+        'Custom private AI models or fine-tuned LLM agents',
+        'Secure vector database indexing and retrieval pipeline',
+        'Interactive administrative dashboards for AI monitoring and latency metrics',
+        'Complete API integrations with existing ERP, CRM, and communication platforms',
+        'Data privacy & ethical AI compliance audit documentation',
+      ],
+      technologies: ['Python', 'PyTorch', 'LangChain', 'LlamaIndex', 'OpenAI APIs', 'Pinecone', 'FastAPI', 'HuggingFace'],
+      process: [
+        { phase: 'AI Opportunity Assessment', description: 'Evaluating business workflows, identifying high-ROI automation opportunities, and assessing proprietary data readiness.' },
+        { phase: 'Data Pipeline & Vector Architecture', description: 'Cleaning, embedding, and structuring private knowledge bases into secure vector stores with semantic retrieval.' },
+        { phase: 'Model Tuning & Agent Deployment', description: 'Developing custom agents, fine-tuning model parameters, establishing guardrails, and conducting benchmark evaluations.' },
+        { phase: 'Integration & Continuous Monitoring', description: 'Connecting models directly into business workflows with latency tracking, hallucination prevention, and human-in-the-loop controls.' },
+      ],
+      faqs: [
+        { q: 'Is our sensitive company data used to train public AI models?', a: 'No. We configure private cloud instances, enterprise zero-retention API agreements, and on-premises vector databases so your corporate data remains 100% confidential and secure.' },
+        { q: 'How do you prevent hallucinations in AI agent responses?', a: 'We employ multi-layer validation including Retrieval-Augmented Generation (RAG), strict semantic guardrails, confidence scoring thresholds, and automated source citations.' },
+        { q: 'Can InfosBrain integrate AI agents into our existing CRM and ERP tools?', a: 'Yes. We integrate AI workflows seamlessly into Salesforce, HubSpot, SAP, Slack, Microsoft Teams, Zendesk, and custom internal portals.' },
+        { q: 'What is the typical timeframe to deploy a working AI proof-of-concept?', a: 'A working enterprise proof-of-concept (POC) is typically live within 2 to 4 weeks, with full production integration completed within 6 to 8 weeks.' },
+      ],
+      ctaText: 'Deploy Enterprise AI Solutions',
+    },
+    {
+      id: 'service-cloud-solutions',
+      slug: 'cloud-solutions',
+      title: 'Cloud Solutions',
+      category: 'Technology',
+      iconName: 'Cloud',
+      featured: true,
+      imageUrl: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=1200&q=80',
+      shortDescription:
+        'Secure, scalable cloud architecture, migration, optimization, and infrastructure solutions that help organizations operate with greater agility.',
+      heroSubtitle:
+        'Architecting resilient multi-cloud infrastructures, DevOps automation pipelines, and cost-optimized cloud environments.',
+      fullDescription:
+        'InfosBrain delivers end-to-end cloud engineering that optimizes infrastructure performance, guarantees high availability, and lowers monthly compute expenditures. Our certified cloud architects assist organizations in migrating from legacy on-premises servers, adopting multi-cloud and hybrid environments, building containerized Kubernetes clusters, and implementing immutable Infrastructure as Code (IaC).',
+      features: [
+        'Cloud migration planning & zero-downtime database transitions',
+        'Multi-cloud & hybrid cloud architecture (AWS, Azure, Google Cloud)',
+        'Infrastructure as Code (IaC) using Terraform, Pulumi & Ansible',
+        'Kubernetes cluster orchestration & microservices deployment',
+        'Automated CI/CD deployment pipelines with GitOps workflows',
+        'FinOps cloud cost optimization and idle resource reclamation',
+      ],
+      benefits: [
+        '99.99% high availability SLA with automated disaster recovery',
+        'Average 25% to 45% reduction in monthly cloud compute overhead',
+        'Zero-friction automated releases with blue/green deployment strategies',
+        'Elastic autoscaling that gracefully absorbs sudden traffic surges',
+      ],
+      deliverables: [
+        'Full Infrastructure as Code (IaC) modular repositories',
+        'Hardened cloud landing zone with IAM least-privilege policies',
+        'Automated disaster recovery (DR) and multi-region failover protocols',
+        'Centralized APM observability dashboards (Prometheus, Grafana, Datadog)',
+        'Cloud FinOps cost-reduction audit and ongoing monitoring setup',
+      ],
+      technologies: ['AWS', 'Microsoft Azure', 'Google Cloud Platform', 'Kubernetes', 'Docker', 'Terraform', 'Helm', 'GitHub Actions'],
+      process: [
+        { phase: 'Cloud Infrastructure Audit', description: 'Comprehensive workload assessment, dependency mapping, cost profiling, and cloud readiness scoring.' },
+        { phase: 'Architecture & IaC Blueprinting', description: 'Designing modular Infrastructure as Code templates with zero-trust network topology and VPC segmentation.' },
+        { phase: 'Migration & Pipeline Execution', description: 'Executing staged migrations with real-time data replication and zero operational downtime for end users.' },
+        { phase: 'Observability & FinOps Governance', description: 'Implementing automated monitoring, continuous cost optimization guards, and 24/7 SLA incident management.' },
+      ],
+      faqs: [
+        { q: 'Which cloud platforms does InfosBrain support?', a: 'We have certified engineers across Amazon Web Services (AWS), Microsoft Azure, Google Cloud Platform (GCP), and hybrid private cloud environments.' },
+        { q: 'Can you migrate our databases without causing customer downtime?', a: 'Yes. We utilize continuous change data capture (CDC) and live replication strategies to execute zero-downtime cutovers without service interruptions.' },
+        { q: 'How does your FinOps practice reduce our existing cloud bills?', a: 'We perform deep architectural profiling to identify oversized instances, unattached storage volumes, obsolete snapshots, and architect auto-scaling and reserved capacity commitments.' },
+        { q: 'Do you manage 24/7 cloud support and incident response?', a: 'Yes. We offer continuous infrastructure monitoring, automated alerting, and dedicated DevOps support under rigorous SLAs.' },
+      ],
+      ctaText: 'Modernize Your Cloud Infrastructure',
+    },
+    {
+      id: 'service-cybersecurity',
+      slug: 'cybersecurity',
+      title: 'Cybersecurity',
+      category: 'Technology',
+      iconName: 'ShieldCheck',
+      featured: true,
+      imageUrl: 'https://images.unsplash.com/photo-1563986768609-322da13575f3?auto=format&fit=crop&w=1200&q=80',
+      shortDescription:
+        'Risk-focused security solutions that protect digital assets, strengthen organizational resilience, and support compliance requirements.',
+      heroSubtitle:
+        'Defending enterprise networks, applications, and intellectual property with zero-trust defense architectures and compliance audits.',
+      fullDescription:
+        'In an evolving threat landscape, InfosBrain provides proactive, multi-layered cybersecurity solutions designed to protect enterprise infrastructure, confidential data, and digital reputation. We combine vulnerability assessments, continuous penetration testing, zero-trust network access (ZTNA), and compliance engineering (ISO 27001, SOC 2, GDPR, HIPAA) to establish robust defense mechanisms that prevent breaches before they occur.',
+      features: [
+        'Comprehensive vulnerability assessments & penetration testing (VAPT)',
+        'Zero-Trust Network Architecture (ZTNA) & Identity Management (IAM)',
+        'Compliance audit readiness (ISO 27001, SOC 2 Type II, GDPR, HIPAA)',
+        'Web Application Firewall (WAF) & DDoS mitigation protocols',
+        'Incident response planning, simulated tabletop drills & disaster recovery',
+        'Continuous security posture monitoring & DevSecOps integration',
+      ],
+      benefits: [
+        'Guaranteed protection against unauthorized intrusions and ransomware',
+        'Streamlined regulatory compliance audits with pre-packaged documentation',
+        'Safeguarded customer trust, enterprise reputation, and brand integrity',
+        'Proactive risk mitigation that prevents costly operational outages',
+      ],
+      deliverables: [
+        'Executive & technical Penetration Test (VAPT) vulnerability audit reports',
+        'Remediation roadmap with prioritized risk scores (CVSS 3.1 standards)',
+        'Zero-Trust IAM security policy and access configuration guides',
+        'SOC 2 / ISO 27001 compliance readiness matrices and evidence logs',
+        'Incident response runbook and emergency escalation playbooks',
+      ],
+      technologies: ['Cloudflare Enterprise', 'CrowdStrike', 'Wazuh', 'Trivy', 'OWASP ZAP', 'HashiCorp Vault', 'Okta', 'Snort'],
+      process: [
+        { phase: 'Vulnerability & Risk Assessment', description: 'Simulating adversary attack vectors, scanning networks, reviewing code repositories, and cataloging threat exposure.' },
+        { phase: 'Architecture Hardening & Remediation', description: 'Patching critical vulnerabilities, configuring zero-trust firewalls, encrypting databases, and enforcing MFA.' },
+        { phase: 'Compliance & Governance Alignment', description: 'Developing operational policies, access controls, and technical safeguards aligned with international audit standards.' },
+        { phase: 'Continuous DevSecOps & Monitoring', description: 'Embedding automated security gates into build pipelines and maintaining 24/7 SIEM threat detection.' },
+      ],
+      faqs: [
+        { q: 'How often should our organization conduct penetration testing?', a: 'Industry best practices and compliance standards (such as SOC 2 and ISO 27001) mandate at least annual penetration testing, as well as testing after any significant infrastructure or architectural change.' },
+        { q: 'Can InfosBrain help us achieve SOC 2 or ISO 27001 certification?', a: 'Yes. We perform gap assessments, implement the required technical controls, draft security policies, and support your team throughout the official audit process.' },
+        { q: 'What happens if a security vulnerability is identified in our code?', a: 'Our team delivers an urgent remediation advisory with code-level patch snippets, step-by-step verification instructions, and follow-up validation re-tests.' },
+        { q: 'Do you offer employee security awareness and anti-phishing training?', a: 'Yes. We run simulated phishing campaigns and structured training sessions to educate staff on social engineering defense.' },
+      ],
+      ctaText: 'Secure Your Digital Assets',
+    },
+    {
+      id: 'service-seo-digital-growth',
+      slug: 'seo-digital-growth',
+      title: 'SEO & Digital Growth',
+      category: 'Marketing',
+      iconName: 'TrendingUp',
+      featured: true,
+      imageUrl: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=1200&q=80',
+      shortDescription:
+        'Data-driven search, content, conversion, and customer acquisition strategies designed to increase visibility, improve conversions, and generate sustainable revenue growth.',
+      heroSubtitle:
+        'Capturing high-intent organic search demand, optimizing conversion funnels, and scaling sustainable organic customer acquisition.',
+      fullDescription:
+        'InfosBrain approaches Search Engine Optimization and Digital Growth as an engineering discipline. We move beyond vanity rankings to build organic revenue engines. By combining deep technical Core Web Vitals optimization, semantic topical authority clustering, AI-search readiness (Google AI Overviews, Perplexity), and conversion rate optimization (CRO), we ensure your digital presence consistently outranks competitors and converts high-value searchers.',
+      features: [
+        'Technical SEO audits, site speed & Core Web Vitals optimization',
+        'Semantic topical authority mapping & entity schema architecture',
+        'Generative AI Search Engine Optimization (GEO & SGE readiness)',
+        'Conversion Rate Optimization (CRO) & multivariate landing page testing',
+        'Editorial content engineering and authoritative digital PR',
+        'Full-funnel organic attribution modeling and GA4 analytics',
+      ],
+      benefits: [
+        'Compounding, high-intent organic traffic that eliminates paid ad dependency',
+        'Superior conversion rates through data-tested landing page user flows',
+        'Dominance across both traditional search engines and AI answer engines',
+        'Measurable return on investment with transparent revenue reporting',
+      ],
+      deliverables: [
+        'Comprehensive technical SEO audit and developer patch backlog',
+        'Quarterly topical authority keyword clusters and editorial briefs',
+        'Schema markup implementations (Organization, Service, FAQ, Product)',
+        'A/B tested conversion rate optimization wireframes and code',
+        'Real-time Looker Studio executive organic revenue dashboard',
+      ],
+      technologies: ['Ahrefs', 'Semrush', 'Google Search Console', 'Screaming Frog', 'Google Analytics 4', 'Looker Studio', 'Hotjar', 'VWO'],
+      process: [
+        { phase: 'Technical Audit & Crawlability', description: 'Diagnosing render blocking resources, indexing anomalies, schema omissions, and Core Web Vitals performance.' },
+        { phase: 'Topical Authority Clustering', description: 'Architecting semantic content hubs that systematically cover entire target industries and capture buyer search intent.' },
+        { phase: 'On-Page Optimization & Digital PR', description: 'Deploying high-impact editorial assets, schema structures, and acquiring tier-1 editorial contextual backlinks.' },
+        { phase: 'Conversion Optimization & Scale', description: 'Testing landing page headlines, CTAs, and UX flows to maximize lead conversions from organic visitors.' },
+      ],
+      faqs: [
+        { q: 'How long does it take to see tangible organic growth from SEO?', a: 'Technical optimizations and quick wins often show indexing improvements within 30-45 days, while significant organic traffic and revenue growth typically compound over 3 to 6 months.' },
+        { q: 'How is InfosBrain preparing clients for AI search engines like Google SGE and Perplexity?', a: 'We optimize for Generative Engine Optimization (GEO) by building structured entity-based content, definitive knowledge schema, and high-citation reference data that AI models prioritize in syntheses.' },
+        { q: 'Do you guarantee first-page rankings on Google?', a: 'While no reputable agency guarantees specific ranking spots due to search algorithm shifts, our data-driven engineering approach has consistently achieved top-3 positions across hundreds of competitive search verticals.' },
+        { q: 'How do you measure SEO success and ROI?', a: 'We track meaningful business KPIs: qualified organic leads, pipeline opportunities, customer acquisition cost reduction, and organic revenue contribution in GA4.' },
+      ],
+      ctaText: 'Scale Your Organic Growth',
+    },
+    {
+      id: 'service-digital-transformation',
+      slug: 'digital-transformation-consulting',
+      title: 'Digital Transformation Consulting',
+      category: 'Consulting',
+      iconName: 'Layers',
+      featured: true,
+      imageUrl: 'https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=1200&q=80',
+      shortDescription:
+        'Strategic technology consulting that helps organizations modernize legacy systems, improve operational workflows, adopt emerging technologies, and build scalable digital capabilities.',
+      heroSubtitle:
+        'Guiding enterprise executives through technology modernization, process automation, digital roadmaps, and organizational agility.',
+      fullDescription:
+        'Digital transformation is not merely about adopting new software; it is about reshaping organizational capabilities to thrive in an era of rapid technological acceleration. InfosBrain acts as a trusted strategic advisor to enterprise leaders, government bodies, and growing institutions. We evaluate organizational bottlenecks, architect phased technology roadmaps, oversee vendor selection, and ensure technology investments produce quantifiable financial and operational returns.',
+      features: [
+        'Enterprise digital maturity & capability gap assessments',
+        'Multi-year technology roadmap design and budget governance',
+        'Legacy system modernization & microservices transition strategies',
+        'Operational process automation & cross-departmental workflow orchestration',
+        'Vendor selection, architectural evaluation & contract RFP advisory',
+        'Change management frameworks and organizational digital upskilling',
+      ],
+      benefits: [
+        'De-risked technology modernization with zero disruption to core operations',
+        'Clarity on technology investments and demonstrable return on capital',
+        'Accelerated organizational agility and rapid time-to-delivery for new initiatives',
+        'Elimination of organizational data silos and redundant legacy software licensing',
+      ],
+      deliverables: [
+        'Digital Maturity Assessment Report & Executive Scorecard',
+        '3-Year Phased Digital Transformation Strategic Blueprint',
+        'Target State Enterprise Architecture & Integration Diagrams',
+        'Software Procurement & Vendor RFP Evaluation Matrix',
+        'Change Management & Staff Adoption Readiness Playbooks',
+      ],
+      technologies: ['Enterprise Architecture (TOGAF)', 'BPMN 2.0', 'Jira Align', 'Miro', 'Lucidchart', 'Power BI', 'ServiceNow', 'SAP Integration'],
+      process: [
+        { phase: 'Digital Maturity Diagnostic', description: 'Auditing existing systems, stakeholder interviews, mapping operational bottlenecks, and benchmarking against industry leaders.' },
+        { phase: 'Target State Architecture', description: 'Designing modular future-state enterprise systems, data governance models, and vendor-neutral technology architectures.' },
+        { phase: 'Phased Roadmap & Pilot Execution', description: 'Structuring low-risk phased milestones, deploying high-impact pilot projects, and demonstrating rapid ROI.' },
+        { phase: 'Enterprise Scale & Change Enablement', description: 'Managing organizational adoption, training internal teams, instituting continuous governance, and measuring business impact.' },
+      ],
+      faqs: [
+        { q: 'What size organizations do you consult for?', a: 'We advise mid-market corporations, fast-growing scaleups, non-profit institutions, and governmental bodies navigating complex digital modernization.' },
+        { q: 'How do you ensure legacy system modernization does not disrupt ongoing operations?', a: 'We employ the "Strangler Fig" pattern and phased migration blueprints, replacing legacy components incrementally while maintaining active system uptime and continuous data parity.' },
+        { q: 'Is InfosBrain tied to specific software vendors or hardware providers?', a: 'No. We are 100% vendor-agnostic and select technology platforms solely based on client architectural fit, cost efficiency, and long-term maintainability.' },
+        { q: 'How does digital transformation consulting differ from standard software development?', a: 'Consulting addresses the high-level strategy, governance, organizational change, and architecture before code is written, ensuring that software investments solve real business challenges.' },
+      ],
+      ctaText: 'Schedule an Executive Advisory Session',
+    },
     {
       id: 's1',
       slug: 'digital-marketing',
@@ -1490,28 +1732,30 @@ export const siteConfig = {
     {
       id: 'cs-ngo',
       slug: 'international-ngo-transformation',
-      title: 'International NGO Digital Transformation: Accelerating Supporter Reach',
-      client: 'Global Humanitarian Alliance',
+      title: 'International NGO Digital Transformation: Accelerating Global Supporter Growth',
+      client: 'International Humanitarian NGO',
       industry: 'Nonprofits & NGOs',
-      category: 'Digital Marketing',
+      category: 'Web Development',
       imageUrl: 'https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&w=1000&q=80',
       challenge:
-        'The organization struggled with manual supporter communication, fragmented donor records across multiple regional systems, and high administrative friction that limited campaign reach.',
+        "Fragmented donor management systems, manual communication workflows, and growing administrative complexity limited the organization's ability to deliver personalized engagement, increase supporter retention, and scale fundraising initiatives across multiple regions.",
       strategy:
-        'Architected an integrated donor engagement platform combining automated multilingual messaging, transparent contribution tracking, and real-time donor impact analytics.',
-      services: ['Custom Software Development', 'Artificial Intelligence', 'Cloud Infrastructure', 'UI/UX Design'],
+        'Architected a centralized, multi-currency digital engagement platform featuring automated impact reporting, unified donor management, and personalized supporter journeys.',
+      services: ['Software Development', 'Artificial Intelligence & Automation', 'Cloud Solutions', 'Digital Transformation Consulting'],
       solution:
-        'An accessible, multi-currency supporter portal integrated with automated impact reporting and personalized donor nurture journeys.',
+        'InfosBrain deployed a centralized, multi-currency digital engagement platform featuring automated impact reporting, unified donor management, and personalized supporter journeys.',
+      outcome:
+        'The solution improved operational efficiency, enhanced donor experiences, and provided the foundation for sustainable growth and expanded global outreach.',
       results: [
-        { label: 'Donor Engagement Increase', value: '+300%' },
-        { label: 'Administrative Hours Saved', value: '65%' },
-        { label: 'Global Donor Retention', value: '88%' },
-        { label: 'Multi-Region Support', value: '14 Countries' },
+        { label: 'Operational Efficiency', value: 'Streamlined' },
+        { label: 'Supporter Journeys', value: 'Personalized' },
+        { label: 'Impact Reporting', value: 'Automated' },
+        { label: 'Global Outreach', value: 'Multi-Region' },
       ],
-      technologies: ['React', 'Node.js', 'PostgreSQL', 'AWS Lambda', 'Tailwind CSS'],
+      technologies: ['React', 'Node.js', 'PostgreSQL', 'Cloud Infrastructure', 'Automation Workflows'],
       testimonial: {
         quote:
-          'The AI platform transformed the way we interact with our supporters. We can now focus more on impact and less on administration.',
+          'The centralized platform transformed our donor engagement and removed administrative complexity, giving us the foundation for sustainable global outreach.',
         author: 'Executive Director',
         role: 'International Humanitarian NGO',
       },
@@ -1519,30 +1763,32 @@ export const siteConfig = {
     {
       id: 'cs-ecommerce',
       slug: 'ecommerce-growth-platform',
-      title: 'E-Commerce Growth Platform: Scaling Global Sales & Conversion Velocity',
-      client: 'Apex Global Retail',
+      title: 'E-Commerce Transformation: Accelerating Global Growth and Conversion Excellence',
+      client: 'Global Commerce Retailer',
       industry: 'Retail & E-Commerce',
       category: 'E-commerce',
       imageUrl: 'https://images.unsplash.com/photo-1472851294608-062f824d29cc?auto=format&fit=crop&w=1000&q=80',
       challenge:
-        'A high-volume consumer retailer faced declining mobile conversions, slow checkout speeds, and lost revenue due to poorly synchronized inventory and disjointed international storefronts.',
+        'As international demand grew, the retailer faced increasing complexity across multiple storefronts, inconsistent inventory visibility, and underperforming mobile user experiences. These issues created customer friction, reduced conversion rates, and limited revenue growth.',
       strategy:
-        'Engineered a sub-second headless storefront with predictive cart recommendations, localized currency routing, and automated fulfillment pipelines.',
-      services: ['Web Development', 'Custom Software Development', 'Cloud & DevOps', 'Cybersecurity'],
+        'Engineered an enterprise-grade commerce architecture with real-time inventory synchronization, sub-second search indexing, and optimized cross-border checkout experiences.',
+      services: ['Software Development', 'Cloud Solutions', 'SEO & Digital Growth', 'Cybersecurity'],
       solution:
-        'A high-performance modern web platform with 1-click international checkouts, instant search indexing, and real-time ERP inventory synchronization.',
+        'InfosBrain implemented a modern, enterprise-grade commerce platform with real-time inventory integration, high-speed search capabilities, and optimized cross-border checkout experiences.',
+      outcome:
+        'The solution delivered a seamless customer journey, improved operational agility, and enabled the retailer to scale efficiently across global markets.',
       results: [
-        { label: 'Online Sales Increase', value: '+180%' },
-        { label: 'Mobile Checkout Conversion', value: '+62%' },
-        { label: 'Average Page Load Time', value: '<0.8s' },
-        { label: 'Return On Ad Spend (ROAS)', value: '5.2x' },
+        { label: 'Customer Journey', value: 'Seamless' },
+        { label: 'Inventory Visibility', value: 'Real-Time' },
+        { label: 'Search Speed', value: 'Sub-Second' },
+        { label: 'Global Scaling', value: 'Enterprise' },
       ],
-      technologies: ['Next.js', 'TypeScript', 'Shopify Plus API', 'Redis', 'Docker'],
+      technologies: ['Modern Web Architecture', 'Real-Time ERP APIs', 'Cloud Caching', 'Secure Checkout'],
       testimonial: {
         quote:
-          'InfosBrain took our vision and engineered a flawless, lightning-fast shopping experience that scaled our online sales by 180%.',
-        author: 'Founder & CEO',
-        role: 'Apex Global Retail',
+          'InfosBrain delivered a unified commerce platform with seamless cross-border performance that removed our friction points and accelerated international scaling.',
+        author: 'Head of Digital Commerce',
+        role: 'Global Retailer',
       },
     },
     {

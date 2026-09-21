@@ -1,6 +1,7 @@
 import React from 'react';
 import { useRouter } from '../../context/RouterContext';
 import { siteConfig } from '../../config/siteConfig';
+import { BrandLogo } from './BrandLogo';
 import {
   Mail,
   ArrowUpRight,
@@ -20,9 +21,40 @@ import {
 
 export const Footer: React.FC = () => {
   const { navigate } = useRouter();
+  const [newsletterEmail, setNewsletterEmail] = React.useState('');
+  const [isSubscribing, setIsSubscribing] = React.useState(false);
+  const [isSubscribed, setIsSubscribed] = React.useState(false);
 
   const handleScrollTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleNewsletterSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const email = newsletterEmail.trim().toLowerCase();
+    if (!email || !email.includes('@')) return;
+
+    setIsSubscribing(true);
+    try {
+      await fetch('/api/inquiries', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: 'Newsletter Subscriber',
+          email,
+          service: 'Footer Newsletter Subscription',
+          budget: 'Subscriber',
+          projectDetails: 'Subscribed to weekly technology intelligence briefs from Footer dispatch.',
+          source: 'Footer Newsletter',
+        }),
+      });
+      setIsSubscribed(true);
+      setNewsletterEmail('');
+    } catch (err) {
+      console.error('Newsletter submission error:', err);
+    } finally {
+      setIsSubscribing(false);
+    }
   };
 
   return (
@@ -33,8 +65,8 @@ export const Footer: React.FC = () => {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         {/* Top Newsletter / Quick Consultation Banner */}
-        <div className="rounded-3xl p-8 sm:p-10 mb-16 bg-gradient-to-r from-[#071A35]/90 via-[#050816] to-[#071A35]/90 border border-[#0078FF]/30 backdrop-blur-xl shadow-[0_0_35px_rgba(0,120,255,0.15)] flex flex-col md:flex-row items-center justify-between gap-6">
-          <div>
+        <div className="rounded-3xl p-8 sm:p-10 mb-16 bg-gradient-to-r from-[#071A35]/90 via-[#050816] to-[#071A35]/90 border border-[#0078FF]/30 backdrop-blur-xl shadow-[0_0_35px_rgba(0,120,255,0.15)] flex flex-col lg:flex-row items-start lg:items-center justify-between gap-8">
+          <div className="max-w-xl">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-mono font-semibold uppercase tracking-wider bg-[#00C9A7]/15 text-[#00C9A7] border border-[#00C9A7]/30 mb-2">
               <Sparkles className="w-3.5 h-3.5" />
               <span>GLOBAL TECHNOLOGY ADVISORY</span>
@@ -42,14 +74,43 @@ export const Footer: React.FC = () => {
             <h3 className="text-2xl sm:text-3xl font-bold text-white font-display">
               Ready to Transform Ideas into Intelligent Digital Solutions?
             </h3>
-            <p className="text-sm text-slate-300 mt-1 max-w-xl">
-              Connect with InfosBrain senior architects to review your software roadmap, AI adoption strategy, and cloud resilience.
+            <p className="text-sm text-slate-300 mt-1 leading-relaxed">
+              Connect with InfosBrain senior architects to review your software roadmap, AI adoption strategy, or subscribe to our executive technology dispatch.
             </p>
           </div>
-          <div className="flex flex-col sm:flex-row items-center gap-3 w-full md:w-auto">
+
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full lg:w-auto shrink-0">
+            {isSubscribed ? (
+              <div className="px-5 py-3 rounded-xl bg-emerald-950/60 border border-emerald-500/40 text-emerald-300 text-xs font-semibold flex items-center gap-2">
+                <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                <span>Subscribed to Executive Dispatch!</span>
+              </div>
+            ) : (
+              <form onSubmit={handleNewsletterSubmit} className="flex items-center gap-2 w-full sm:w-auto">
+                <div className="relative w-full sm:w-64">
+                  <Mail className="w-4 h-4 text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                  <input
+                    type="email"
+                    required
+                    placeholder="Enter business email..."
+                    value={newsletterEmail}
+                    onChange={(e) => setNewsletterEmail(e.target.value)}
+                    className="w-full pl-10 pr-3 py-3 rounded-xl bg-slate-950 border border-slate-700 text-white placeholder-slate-500 text-xs focus:outline-none focus:border-cyan-400"
+                  />
+                </div>
+                <button
+                  type="submit"
+                  disabled={isSubscribing}
+                  className="px-4 py-3 rounded-xl font-bold text-xs text-white bg-slate-800 hover:bg-slate-700 border border-slate-700 hover:border-cyan-400 transition-all cursor-pointer whitespace-nowrap"
+                >
+                  {isSubscribing ? 'Joining...' : 'Subscribe'}
+                </button>
+              </form>
+            )}
+
             <button
               onClick={() => navigate('/contact')}
-              className="w-full sm:w-auto px-6 py-3.5 rounded-xl font-bold text-sm text-white bg-gradient-to-r from-[#0078FF] via-[#6C4DFF] to-[#00C9A7] hover:opacity-95 shadow-[0_0_25px_rgba(0,120,255,0.4)] transition-all cursor-pointer flex items-center justify-center gap-2 whitespace-nowrap"
+              className="px-6 py-3 rounded-xl font-bold text-xs sm:text-sm text-white bg-gradient-to-r from-[#0078FF] via-[#6C4DFF] to-[#00C9A7] hover:opacity-95 shadow-[0_0_25px_rgba(0,120,255,0.4)] transition-all cursor-pointer flex items-center justify-center gap-2 whitespace-nowrap"
             >
               <span>Schedule Consultation</span>
               <ArrowUpRight className="w-4 h-4" />
@@ -80,26 +141,18 @@ export const Footer: React.FC = () => {
           <div className="lg:col-span-2 space-y-5">
             <button
               onClick={() => navigate('/')}
-              className="flex items-center gap-3 group text-left cursor-pointer focus:outline-none"
+              className="group text-left cursor-pointer focus:outline-none"
+              aria-label="InfosBrain Home"
             >
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-[#0078FF] via-[#6C4DFF] to-[#00C9A7] p-[1.5px] shadow-[0_0_20px_rgba(0,120,255,0.4)]">
-                <div className="w-full h-full bg-[#050816] rounded-[10px] flex items-center justify-center font-display font-extrabold text-lg text-white">
-                  IB
-                </div>
-              </div>
-              <div>
-                <span className="font-display font-bold text-2xl text-white tracking-tight">
-                  Infos<span className="text-transparent bg-clip-text bg-gradient-to-r from-[#0078FF] to-[#00C9A7]">Brain</span>
-                </span>
-              </div>
+              <BrandLogo size="md" isDark={true} />
             </button>
 
             <p className="text-xs font-mono text-[#00C9A7] font-semibold">
-              Transforming Ideas into Intelligent Digital Solutions
+              Build Smarter. Scale Faster. Grow with Confidence.
             </p>
 
             <p className="text-xs text-slate-400 leading-relaxed max-w-sm">
-              InfosBrain helps businesses, nonprofits, institutions, and public-sector organizations design, build, and scale practical digital solutions through software development, artificial intelligence, cloud technologies, cybersecurity, and digital transformation consulting.
+              InfosBrain helps businesses, nonprofits, institutions, and government organizations turn complex challenges into practical, measurable digital solutions through software development, AI, cloud solutions, cybersecurity, and digital growth.
             </p>
 
             {/* Social Media Links */}
@@ -164,38 +217,38 @@ export const Footer: React.FC = () => {
             </h4>
             <ul className="space-y-2 text-xs sm:text-sm text-slate-400">
               <li>
-                <button onClick={() => navigate('/services')} className="hover:text-white transition-colors cursor-pointer">
-                  Custom Software Development
+                <button onClick={() => navigate('/services/software-development')} className="hover:text-white transition-colors cursor-pointer">
+                  Software Development
                 </button>
               </li>
               <li>
-                <button onClick={() => navigate('/ai-solutions')} className="hover:text-white transition-colors cursor-pointer">
-                  Artificial Intelligence & Agents
+                <button onClick={() => navigate('/services/artificial-intelligence-automation')} className="hover:text-white transition-colors cursor-pointer">
+                  Artificial Intelligence & Automation
                 </button>
               </li>
               <li>
-                <button onClick={() => navigate('/services')} className="hover:text-white transition-colors cursor-pointer">
-                  Cloud Solutions & DevOps
+                <button onClick={() => navigate('/services/cloud-solutions')} className="hover:text-white transition-colors cursor-pointer">
+                  Cloud Solutions & Infrastructure
                 </button>
               </li>
               <li>
-                <button onClick={() => navigate('/services')} className="hover:text-white transition-colors cursor-pointer">
-                  Cybersecurity & ISO Audits
+                <button onClick={() => navigate('/services/cybersecurity')} className="hover:text-white transition-colors cursor-pointer">
+                  Cybersecurity & Compliance
                 </button>
               </li>
               <li>
-                <button onClick={() => navigate('/services')} className="hover:text-white transition-colors cursor-pointer">
-                  Mobile & Web Applications
+                <button onClick={() => navigate('/services/seo-digital-growth')} className="hover:text-white transition-colors cursor-pointer">
+                  SEO & Digital Growth
                 </button>
               </li>
               <li>
-                <button onClick={() => navigate('/services')} className="hover:text-white transition-colors cursor-pointer">
+                <button onClick={() => navigate('/services/digital-transformation-consulting')} className="hover:text-white transition-colors cursor-pointer">
                   Digital Transformation Consulting
                 </button>
               </li>
               <li>
-                <button onClick={() => navigate('/ai-solutions/predictive-analytics')} className="hover:text-white transition-colors cursor-pointer">
-                  Data Analytics & BI Reporting
+                <button onClick={() => navigate('/services')} className="hover:text-white text-cyan-400 transition-colors cursor-pointer">
+                  View All Services →
                 </button>
               </li>
             </ul>

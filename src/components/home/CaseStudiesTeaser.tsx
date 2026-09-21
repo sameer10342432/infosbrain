@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { useRouter } from '../../context/RouterContext';
 import { siteConfig } from '../../config/siteConfig';
-import { SectionHeading } from '../common/SectionHeading';
-import { ArrowRight, TrendingUp, CheckCircle2, Quote } from 'lucide-react';
+import { ArrowRight, Quote, CheckCircle2, ShieldCheck } from 'lucide-react';
 
 export const CaseStudiesTeaser: React.FC = () => {
   const { navigate } = useRouter();
@@ -24,18 +23,18 @@ export const CaseStudiesTeaser: React.FC = () => {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
-          <div>
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-mono font-semibold uppercase tracking-wider bg-[#0078FF]/15 text-[#0078FF] border border-[#0078FF]/30 mb-3">
-              <span>PROVEN CLIENT SUCCESS</span>
+          <div className="max-w-3xl">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-mono font-semibold uppercase tracking-wider bg-[#0078FF]/15 text-[#00C9A7] border border-[#00C9A7]/30 mb-3">
+              <span>PROVEN CLIENT ENGAGEMENTS</span>
             </div>
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white font-display">
-              Real Results.{' '}
+              Case Studies &{' '}
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#0078FF] via-[#6C4DFF] to-[#00C9A7]">
-                Measurable Impact.
+                Proven Business Outcomes
               </span>
             </h2>
-            <p className="text-sm text-slate-300 mt-2 max-w-xl">
-              We replace fictional claims with verified client engagements. Every milestone is evaluated by tangible operational velocity, adoption, and measurable return.
+            <p className="text-sm sm:text-base text-slate-300 mt-3 leading-relaxed">
+              See how we transform challenges into opportunities by removing technical barriers, optimizing conversion performance, and driving scalable growth through advanced technology, intelligent automation, and results-focused digital strategies.
             </p>
           </div>
 
@@ -62,7 +61,7 @@ export const CaseStudiesTeaser: React.FC = () => {
             <div
               key={cs.id}
               onClick={() => navigate('/case-studies')}
-              className="group rounded-3xl p-6 sm:p-8 bg-[#071A35]/80 border border-slate-800 hover:border-[#0078FF]/60 hover:shadow-[0_20px_45px_rgba(0,0,0,0.8),0_0_25px_rgba(0,120,255,0.2)] transition-all duration-300 cursor-pointer flex flex-col justify-between backdrop-blur-md overflow-hidden"
+              className="group rounded-3xl p-6 sm:p-8 bg-[#071A35]/85 border border-slate-800 hover:border-[#0078FF]/60 hover:shadow-[0_20px_45px_rgba(0,0,0,0.8),0_0_25px_rgba(0,120,255,0.2)] transition-all duration-300 cursor-pointer flex flex-col justify-between backdrop-blur-md overflow-hidden"
             >
               <div>
                 {/* Case Study Image Banner */}
@@ -88,27 +87,32 @@ export const CaseStudiesTeaser: React.FC = () => {
                   </div>
                 )}
 
-                <h3 className="text-xl sm:text-2xl font-bold text-white group-hover:text-[#00C9A7] transition-colors font-display mb-3">
+                <h3 className="text-xl sm:text-2xl font-bold text-white group-hover:text-[#00C9A7] transition-colors font-display mb-4">
                   {cs.title}
                 </h3>
 
-                {/* Challenge & Solution Summary */}
-                <div className="space-y-2 mb-6 text-xs sm:text-sm text-slate-300">
-                  <p>
-                    <span className="font-bold text-[#0078FF]">Challenge: </span>
-                    {cs.challenge}
-                  </p>
-                  <p>
-                    <span className="font-bold text-[#00C9A7]">Solution: </span>
-                    {cs.solution}
-                  </p>
+                {/* Challenge & Solution Architecture */}
+                <div className="space-y-3 mb-6 text-xs sm:text-sm">
+                  <div className="p-3.5 rounded-xl bg-[#050816]/70 border border-slate-800/80">
+                    <div className="font-bold text-[#0078FF] mb-1 uppercase tracking-wider font-mono text-xs">
+                      The Challenge
+                    </div>
+                    <p className="text-slate-300 leading-relaxed">{cs.challenge}</p>
+                  </div>
+
+                  <div className="p-3.5 rounded-xl bg-[#050816]/70 border border-slate-800/80">
+                    <div className="font-bold text-[#00C9A7] mb-1 uppercase tracking-wider font-mono text-xs">
+                      The InfosBrain Solution
+                    </div>
+                    <p className="text-slate-300 leading-relaxed">{cs.solution}</p>
+                  </div>
                 </div>
 
-                {/* Key Metrics Grid */}
+                {/* Key Metrics / Operational Outcomes Grid */}
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 py-3.5 my-4 border-y border-slate-800 bg-[#050816]/60 rounded-xl px-4">
                   {cs.results.map((res, rIdx) => (
                     <div key={rIdx} className="text-center sm:text-left">
-                      <div className="text-lg sm:text-xl font-bold font-display text-transparent bg-clip-text bg-gradient-to-r from-white via-cyan-100 to-[#0078FF]">
+                      <div className="text-base sm:text-lg font-bold font-display text-transparent bg-clip-text bg-gradient-to-r from-white via-cyan-100 to-[#0078FF]">
                         {res.value}
                       </div>
                       <div className="text-[10px] text-slate-400 truncate mt-0.5">{res.label}</div>
@@ -116,13 +120,13 @@ export const CaseStudiesTeaser: React.FC = () => {
                   ))}
                 </div>
 
-                {/* Client Quote */}
+                {/* Client Testimonial / Quote */}
                 {cs.testimonial && (
-                  <div className="p-3 rounded-xl bg-[#050816]/70 border border-slate-800/80 my-4 text-xs italic text-slate-300 flex items-start gap-2">
-                    <Quote className="w-3.5 h-3.5 text-[#0078FF] flex-shrink-0 mt-0.5" />
+                  <div className="p-3.5 rounded-xl bg-[#050816]/70 border border-slate-800/80 my-4 text-xs italic text-slate-300 flex items-start gap-2.5">
+                    <Quote className="w-4 h-4 text-[#0078FF] flex-shrink-0 mt-0.5" />
                     <div>
                       "{cs.testimonial.quote}"
-                      <div className="text-[11px] font-semibold text-white mt-1 not-italic font-mono">
+                      <div className="text-[11px] font-semibold text-white mt-1.5 not-italic font-mono">
                         — {cs.testimonial.author}, {cs.testimonial.role}
                       </div>
                     </div>
@@ -131,7 +135,7 @@ export const CaseStudiesTeaser: React.FC = () => {
               </div>
 
               <div className="pt-4 border-t border-slate-800/80 flex items-center justify-between text-xs font-bold text-[#0078FF] group-hover:text-[#00C9A7]">
-                <span>View Full Case Breakdown</span>
+                <span>View Complete Case Breakdown</span>
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1.5 transition-transform" />
               </div>
             </div>

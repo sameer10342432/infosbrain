@@ -44,9 +44,9 @@ export const PartnershipSection: React.FC = () => {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <SectionHeading
-          badge="STRATEGIC ALLIANCES & ECOSYSTEM"
-          title="Building Strategic"
-          highlightText="Global Alliances"
+          badge="STRATEGIC ALLIANCES & INNOVATION"
+          title="Your Trusted Partner in"
+          highlightText="Digital Innovation"
           description="InfosBrain collaborates with enterprises, governments, academic institutions, and investors to co-create scalable solutions, foster digital capacity, and deploy transformative technologies worldwide."
         />
 

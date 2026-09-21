@@ -7,12 +7,12 @@ import {
   Sparkles,
   Cloud,
   ShieldCheck,
+  TrendingUp,
+  Layers,
+  ArrowRight,
   Globe,
   Smartphone,
-  Layers,
   BarChart3,
-  ArrowRight,
-  CheckCircle2,
 } from 'lucide-react';
 
 export const ServicesSection: React.FC = () => {
@@ -28,12 +28,14 @@ export const ServicesSection: React.FC = () => {
         return Cloud;
       case 'ShieldCheck':
         return ShieldCheck;
+      case 'TrendingUp':
+        return TrendingUp;
+      case 'Layers':
+        return Layers;
       case 'Globe':
         return Globe;
       case 'Smartphone':
         return Smartphone;
-      case 'Layers':
-        return Layers;
       case 'BarChart3':
         return BarChart3;
       default:
@@ -49,14 +51,14 @@ export const ServicesSection: React.FC = () => {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <SectionHeading
-          badge="CORE SERVICES & ARCHITECTURE"
-          title="Intelligent Digital Solutions"
-          highlightText="Engineered for Scale"
-          description="We combine innovation, strategy, design, and engineering expertise to create intelligent solutions that transform challenges into opportunities."
+          badge="CAPABILITIES & PRACTICES"
+          title="Our"
+          highlightText="Services"
+          description="We deliver high-impact digital solutions across software development, artificial intelligence, cloud infrastructure, cybersecurity, and strategic growth."
         />
 
-        {/* 8 Premium Interactive Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
+        {/* 6 Core Services Balanced Grid: 3 columns on large screens */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
           {siteConfig.coreServices.map((service) => {
             const Icon = getIcon(service.iconName);
 
@@ -64,15 +66,15 @@ export const ServicesSection: React.FC = () => {
               <div
                 key={service.id}
                 onClick={() => navigate(service.path)}
-                className="group relative rounded-3xl p-6 bg-[#050816]/85 border border-slate-800 hover:border-[#0078FF]/60 transition-all duration-300 hover:-translate-y-1.5 hover:shadow-[0_20px_40px_rgba(0,0,0,0.6),0_0_25px_rgba(0,120,255,0.2)] backdrop-blur-md cursor-pointer flex flex-col justify-between overflow-hidden"
+                className="group relative rounded-3xl p-7 bg-[#050816]/90 border border-slate-800 hover:border-[#0078FF]/60 transition-all duration-300 hover:-translate-y-1.5 hover:shadow-[0_20px_40px_rgba(0,0,0,0.6),0_0_25px_rgba(0,120,255,0.2)] backdrop-blur-md cursor-pointer flex flex-col justify-between overflow-hidden"
               >
-                {/* Glow effect on hover */}
+                {/* Subtle corner glow effect on hover */}
                 <div className="absolute top-0 right-0 w-32 h-32 bg-[#0078FF]/5 rounded-full blur-2xl group-hover:bg-[#0078FF]/20 transition-all pointer-events-none" />
 
                 <div>
-                  <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center justify-between mb-5">
                     {/* Animated icon container */}
-                    <div className="w-12 h-12 rounded-2xl bg-slate-900 border border-slate-800 group-hover:border-[#0078FF] group-hover:bg-gradient-to-tr group-hover:from-[#0078FF] group-hover:to-[#6C4DFF] flex items-center justify-center text-[#0078FF] group-hover:text-white transition-all duration-300 shadow-md group-hover:scale-110">
+                    <div className="w-12 h-12 rounded-2xl bg-slate-900 border border-slate-800 group-hover:border-[#0078FF] group-hover:bg-gradient-to-tr group-hover:from-[#0078FF] group-hover:to-[#6C4DFF] flex items-center justify-center text-[#0078FF] group-hover:text-white transition-all duration-300 shadow-md group-hover:scale-105">
                       <Icon className="w-6 h-6 transition-transform duration-300 group-hover:rotate-6" />
                     </div>
                     <span className="text-[10px] font-mono uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-[#071A35] text-slate-300 border border-slate-800">
@@ -80,16 +82,16 @@ export const ServicesSection: React.FC = () => {
                     </span>
                   </div>
 
-                  <h3 className="text-xl font-bold text-white group-hover:text-[#00C9A7] transition-colors font-display mb-2">
+                  <h3 className="text-xl font-bold text-white group-hover:text-[#00C9A7] transition-colors font-display mb-3">
                     {service.title}
                   </h3>
 
-                  <p className="text-xs sm:text-sm text-slate-300 leading-relaxed mb-5">
+                  <p className="text-xs sm:text-sm text-slate-300 leading-relaxed mb-6">
                     {service.description}
                   </p>
 
                   {/* Sub Pillars Pills */}
-                  <div className="space-y-1.5 mb-6">
+                  <div className="space-y-2 mb-6">
                     {service.subPillars.map((pillar, idx) => (
                       <div key={idx} className="flex items-center gap-2 text-xs text-slate-300">
                         <span className="w-1.5 h-1.5 rounded-full bg-[#00C9A7]" />
@@ -101,7 +103,7 @@ export const ServicesSection: React.FC = () => {
 
                 {/* Learn More Button */}
                 <div className="pt-4 border-t border-slate-800/80 flex items-center justify-between text-xs font-bold text-[#0078FF] group-hover:text-[#00C9A7] transition-colors">
-                  <span>Learn More</span>
+                  <span>Explore Capabilities</span>
                   <ArrowRight className="w-4 h-4 group-hover:translate-x-1.5 transition-transform" />
                 </div>
               </div>
@@ -115,7 +117,7 @@ export const ServicesSection: React.FC = () => {
             onClick={() => navigate('/services')}
             className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-[#050816] hover:bg-slate-900 text-sm font-bold text-white border border-[#0078FF]/30 hover:border-[#0078FF] transition-all cursor-pointer shadow-lg"
           >
-            <span>Explore The Full Services Directory Hub</span>
+            <span>Explore All Capabilities & Roadmaps</span>
             <ArrowRight className="w-4 h-4 text-[#0078FF]" />
           </button>
         </div>
