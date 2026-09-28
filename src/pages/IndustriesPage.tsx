@@ -77,8 +77,8 @@ export const IndustriesPage: React.FC = () => {
         highlightText="Serve"
         description="InfosBrain supports organizations across private, public, and mission-driven sectors. We deliver tailored digital solutions architected around your industry's precise operational realities."
         image={{
-          src: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1200&q=80',
-          alt: 'InfosBrain Enterprise Sector Architectures and Skyline',
+          src: '/assets/industries-banner.png',
+          alt: 'InfosBrain Enterprise Industries and Sector Solutions',
           tag: '12 Sector Playbooks',
           statPill: {
             value: '12 Verticals',
@@ -166,14 +166,14 @@ export const IndustriesPage: React.FC = () => {
               <div className="p-8 sm:p-10 rounded-3xl bg-[#050816] border border-cyan-500/40 shadow-2xl backdrop-blur-xl relative overflow-hidden">
                 {/* Industry Hero Image */}
                 {activeInd.imageUrl && (
-                  <div className="relative h-56 sm:h-64 w-full rounded-2xl overflow-hidden mb-8 border border-cyan-500/30 shadow-[0_0_25px_rgba(6,182,212,0.15)] group">
+                  <div className="relative aspect-[16/9] w-full rounded-2xl overflow-hidden mb-8 border border-cyan-500/30 shadow-[0_0_25px_rgba(6,182,212,0.15)] group bg-slate-950 flex items-center justify-center">
                     <img
                       src={activeInd.imageUrl}
                       alt={activeInd.name}
                       referrerPolicy="no-referrer"
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#050816] via-black/30 to-transparent" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#050816] via-transparent to-transparent pointer-events-none" />
                     <div className="absolute bottom-4 left-4 flex items-center gap-3">
                       <div className="w-12 h-12 rounded-xl bg-cyan-950/90 border border-cyan-400/50 flex items-center justify-center text-cyan-300 shadow-lg backdrop-blur-md">
                         <ActiveIcon className="w-6 h-6" />

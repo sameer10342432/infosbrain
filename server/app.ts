@@ -23,9 +23,22 @@ app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 app.use(cookieParser());
 
-// Static uploads directory
+// Static uploads and assets directory
 const uploadsDir = path.resolve(process.cwd(), 'public', 'uploads');
 app.use('/uploads', express.static(uploadsDir));
+
+const assetDir = path.resolve(process.cwd(), 'Asset');
+app.use(['/assets', '/Asset'], (req, _res, next) => {
+  if (req.url.includes('global-presence-bg')) {
+    req.url = req.url.replace('global-presence-bg', 'global-presence');
+  }
+  if (/\.(jpg|jpeg)$/i.test(req.url)) {
+    req.url = req.url.replace(/\.(jpg|jpeg)$/i, '.png');
+  }
+  next();
+});
+app.use('/assets', express.static(assetDir));
+app.use('/Asset', express.static(assetDir));
 
 // SEO XML routes at root
 app.use('/', seoRoutes);

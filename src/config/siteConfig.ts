@@ -926,7 +926,7 @@ export const siteConfig = {
       category: 'Technology',
       iconName: 'Sparkles',
       featured: true,
-      imageUrl: 'https://images.unsplash.com/photo-1677442136019-21780ecad995?auto=format&fit=crop&w=1200&q=80',
+      imageUrl: '/assets/service-ai-solutions.png',
       shortDescription:
         'Intelligent systems that streamline workflows, improve decision-making, reduce repetitive work, and unlock new opportunities for innovation.',
       heroSubtitle:
@@ -1176,7 +1176,7 @@ export const siteConfig = {
       category: 'Marketing',
       iconName: 'Megaphone',
       featured: true,
-      imageUrl: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=800&q=80',
+      imageUrl: '/assets/service-digital-marketing.png',
       shortDescription:
         'Comprehensive 360-degree digital marketing strategies that attract qualified prospects, build brand authority, and maximize revenue.',
       features: [
@@ -1202,7 +1202,7 @@ export const siteConfig = {
       category: 'Marketing',
       iconName: 'Search',
       featured: true,
-      imageUrl: 'https://images.unsplash.com/photo-1571786256017-aee7a0c009b6?auto=format&fit=crop&w=800&q=80',
+      imageUrl: '/assets/service-seo.png',
       shortDescription:
         'Dominating organic search results through deep technical SEO, authoritative semantic content architecture, and clean link acquisitions.',
       features: [
@@ -1228,7 +1228,7 @@ export const siteConfig = {
       category: 'Design',
       iconName: 'Palette',
       featured: true,
-      imageUrl: 'https://images.unsplash.com/photo-1581291518857-4e27b48ff24e?auto=format&fit=crop&w=800&q=80',
+      imageUrl: '/assets/service-graphic-design.png',
       shortDescription:
         'High-impact visual identities, modern UI/UX design systems, and stunning marketing collateral crafted to command industry respect.',
       features: [
@@ -1254,7 +1254,7 @@ export const siteConfig = {
       category: 'Development',
       iconName: 'Globe',
       featured: false,
-      imageUrl: 'https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?auto=format&fit=crop&w=800&q=80',
+      imageUrl: '/assets/service-wordpress.png',
       shortDescription:
         'High-performance custom WordPress and WooCommerce platforms engineered for speed, enterprise security, and effortless publishing.',
       features: [
@@ -1280,7 +1280,7 @@ export const siteConfig = {
       category: 'Development',
       iconName: 'ShoppingBag',
       featured: true,
-      imageUrl: 'https://images.unsplash.com/photo-1556742049-0a67c5574f73?auto=format&fit=crop&w=800&q=80',
+      imageUrl: '/assets/service-shopify.png',
       shortDescription:
         'Next-generation Shopify and Shopify Plus storefronts tailored to boost average order value (AOV) and streamline checkout conversion.',
       features: [
@@ -1306,7 +1306,7 @@ export const siteConfig = {
       category: 'Development',
       iconName: 'Code2',
       featured: true,
-      imageUrl: 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=800&q=80',
+      imageUrl: '/assets/service-mern.png',
       shortDescription:
         'Full-stack web applications, SaaS dashboards, and reactive real-time portals built with MongoDB, Express.js, React, and Node.js.',
       features: [
@@ -1332,7 +1332,7 @@ export const siteConfig = {
       category: 'Development',
       iconName: 'Terminal',
       featured: false,
-      imageUrl: 'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=800&q=80',
+      imageUrl: '/assets/service-php.png',
       shortDescription:
         'Enterprise-grade custom PHP web applications and Laravel backends engineered for mission-critical business automation.',
       features: [
@@ -1358,7 +1358,7 @@ export const siteConfig = {
       category: 'Marketing',
       iconName: 'FileText',
       featured: false,
-      imageUrl: 'https://images.unsplash.com/photo-1455390582262-044cdead277a?auto=format&fit=crop&w=800&q=80',
+      imageUrl: '/assets/service-content-marketing.png',
       shortDescription:
         'Data-informed storytelling, thought leadership articles, and content funnels that nurture prospects from curiosity to purchase.',
       features: [
@@ -1384,7 +1384,7 @@ export const siteConfig = {
       category: 'Marketing',
       iconName: 'Mail',
       featured: false,
-      imageUrl: 'https://images.unsplash.com/photo-1596526131083-e8c633c948d2?auto=format&fit=crop&w=800&q=80',
+      imageUrl: '/assets/service-email-marketing.png',
       shortDescription:
         'High-converting lifecycle email campaigns, behavioral triggers, and automated nurture sequences that turn subscribers into repeat buyers.',
       features: [
@@ -1410,7 +1410,7 @@ export const siteConfig = {
       category: 'Marketing',
       iconName: 'Share2',
       featured: false,
-      imageUrl: 'https://images.unsplash.com/photo-1611162617474-5b21e879e113?auto=format&fit=crop&w=800&q=80',
+      imageUrl: '/assets/service-social-media.png',
       shortDescription:
         'Strategic organic social growth, community building, and viral content formats that position your brand at the center of culture.',
       features: [
@@ -1436,7 +1436,7 @@ export const siteConfig = {
       category: 'Advertising',
       iconName: 'TrendingUp',
       featured: true,
-      imageUrl: 'https://images.unsplash.com/photo-1533750516457-a7f992034fec?auto=format&fit=crop&w=800&q=80',
+      imageUrl: '/assets/service-paid-ads.png',
       shortDescription:
         'High-precision cross-channel paid media campaigns engineered to yield predictable ROAS and flood your business with qualified leads.',
       features: [
@@ -1462,7 +1462,7 @@ export const siteConfig = {
       category: 'Advertising',
       iconName: 'Target',
       featured: false,
-      imageUrl: 'https://images.unsplash.com/photo-1563986768609-322da13575f3?auto=format&fit=crop&w=800&q=80',
+      imageUrl: '/assets/service-meta-ads.png',
       shortDescription:
         'Hyper-targeted Meta advertising across Facebook and Instagram leveraging algorithmic machine learning and creative-first scaling.',
       features: [
@@ -1488,7 +1488,7 @@ export const siteConfig = {
       category: 'Advertising',
       iconName: 'Zap',
       featured: false,
-      imageUrl: 'https://images.unsplash.com/photo-1553877522-43269d4ea984?auto=format&fit=crop&w=800&q=80',
+      imageUrl: '/assets/service-google-ads.png',
       shortDescription:
         'High-intent Google Search, Performance Max, Display, and YouTube advertising that captures prospects at the exact moment of intent.',
       features: [
@@ -1533,7 +1533,7 @@ export const siteConfig = {
       name: 'SaaS & Cloud Software',
       iconName: 'Cpu',
       tagline: 'Customer acquisition pipelines that turn trial signups into expansion revenue.',
-      imageUrl: 'https://images.unsplash.com/photo-1551836022-d5d88e9218df?auto=format&fit=crop&w=1000&q=80',
+      imageUrl: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=1000&q=80',
       challenges: [
         'Explaining complex technical value propositions',
         'Long B2B enterprise sales cycles',
@@ -1856,7 +1856,7 @@ export const siteConfig = {
       client: 'Apex Living Goods [Demo Client]',
       industry: 'E-commerce & Retail',
       category: 'E-commerce',
-      imageUrl: 'https://images.unsplash.com/photo-1472851294608-062f824d29cc?auto=format&fit=crop&w=1000&q=80',
+      imageUrl: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=1000&q=80',
       challenge:
         'A sluggish monolithic legacy store was experiencing high checkout abandonment (74%) and declining return on ad spend on Meta channels following tracking privacy changes.',
       strategy:
@@ -2147,7 +2147,7 @@ export const siteConfig = {
       readTime: '6 min read',
       date: 'Oct 24, 2025',
       author: 'InfosBrain SEO Strategy Team',
-      imageUrl: 'https://images.unsplash.com/photo-1677442136019-21780ecad995?auto=format&fit=crop&w=800&q=80',
+      imageUrl: 'https://images.unsplash.com/photo-1504868584819-f8e8b4b6d7e3?auto=format&fit=crop&w=800&q=80',
       tags: ['SEO', 'Core Web Vitals', 'Search Engine Optimization', 'Google Algorithms'],
       content: [
         'Search engine optimization has transformed from superficial keyword density into a sophisticated discipline governed by machine learning algorithms and real-world user experience signals.',
@@ -2183,7 +2183,7 @@ export const siteConfig = {
       readTime: '7 min read',
       date: 'Nov 14, 2025',
       author: 'InfosBrain Engineering Group',
-      imageUrl: 'https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=800&q=80',
+      imageUrl: 'https://images.unsplash.com/photo-1556742044-3c52d6e88c62?auto=format&fit=crop&w=800&q=80',
       tags: ['E-commerce', 'Shopify Plus', 'Headless Commerce', 'Next.js'],
       content: [
         'Traditional monolithic e-commerce platforms bundle the frontend display and backend database together. While convenient for beginners, high-volume stores quickly hit performance ceilings.',

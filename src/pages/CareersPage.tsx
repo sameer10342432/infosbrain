@@ -98,8 +98,8 @@ export const CareersPage: React.FC = () => {
         highlightText="Digital Craft"
         description="We are looking for obsessed builders, algorithmic media strategists, and meticulous designers who hold themselves to the highest craftsmanship standards."
         image={{
-          src: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=1200&q=80',
-          alt: 'InfosBrain Collaborative Global Engineering Team',
+          src: '/assets/careers-banner.png',
+          alt: 'InfosBrain High Performance Culture and Careers',
           tag: 'High-Impact Engineering Culture',
           statPill: {
             value: '100%',
@@ -180,17 +180,37 @@ export const CareersPage: React.FC = () => {
               </h3>
             </div>
 
+            {/* Full-Width Engineering Culture & Team Banner */}
+            <div className="mb-10 relative w-full aspect-[21/9] sm:aspect-[2.4/1] rounded-3xl overflow-hidden border border-cyan-500/30 shadow-[0_0_40px_rgba(6,182,212,0.15)] bg-slate-950 flex items-center justify-center group">
+              <img
+                src="/assets/team-banner.png"
+                alt="InfosBrain Engineering Team & Sprint Planning Culture"
+                referrerPolicy="no-referrer"
+                loading="lazy"
+                className="w-full h-full object-contain md:object-cover object-center group-hover:scale-[1.01] transition-transform duration-700 ease-out"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-slate-950/40 via-transparent to-slate-950/15 pointer-events-none" />
+              <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between">
+                <span className="text-xs font-mono text-cyan-300 bg-slate-950/90 px-3 py-1.5 rounded-full border border-cyan-500/30 backdrop-blur-md">
+                  Sprint Strategy & Architecture
+                </span>
+                <span className="hidden sm:inline-block text-xs font-mono text-slate-300 bg-slate-950/80 px-3 py-1.5 rounded-full border border-slate-800">
+                  Global Distributed Engineering
+                </span>
+              </div>
+            </div>
+
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
               <div className="relative h-56 rounded-2xl overflow-hidden border border-slate-800 group shadow-lg">
                 <img
                   src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=800&q=80"
-                  alt="InfosBrain Engineering Standup & Sprint Planning"
+                  alt="InfosBrain Collaborative Sprint Sessions"
                   referrerPolicy="no-referrer"
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#070B1F] via-transparent to-transparent" />
                 <div className="absolute bottom-3 left-3 text-xs font-mono text-slate-300 bg-slate-950/80 px-2.5 py-1 rounded-full border border-slate-800 backdrop-blur-md">
-                  Sprint Strategy & Architecture
+                  Pair Programming & Brainstorms
                 </div>
               </div>
 

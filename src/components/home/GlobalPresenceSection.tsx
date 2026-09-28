@@ -38,6 +38,26 @@ export const GlobalPresenceSection: React.FC = () => {
           description="Local understanding, international collaboration, and scalable digital delivery for organizations operating across regions. We connect ideas and opportunities to create sustainable global impact."
         />
 
+        {/* Global Impact Across Continents Thematic Showcase Banner */}
+        <div className="mb-16 relative w-full aspect-[21/9] sm:aspect-[2.4/1] rounded-3xl overflow-hidden border border-cyan-500/30 shadow-[0_0_40px_rgba(0,120,255,0.18)] bg-slate-950 flex items-center justify-center group">
+          <img
+            src="/assets/global-presence.png"
+            alt="InfosBrain Global Impact Across Continents"
+            referrerPolicy="no-referrer"
+            loading="lazy"
+            className="w-full h-full object-contain md:object-cover object-center group-hover:scale-[1.01] transition-transform duration-700 ease-out"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-slate-950/40 via-transparent to-slate-950/15 pointer-events-none" />
+          <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between">
+            <span className="text-xs font-mono text-cyan-300 bg-slate-950/90 px-3 py-1.5 rounded-full border border-cyan-500/30 backdrop-blur-md">
+              InfosBrain Global Footprint • 25+ Countries
+            </span>
+            <span className="hidden sm:inline-block text-xs font-mono text-slate-300 bg-slate-950/80 px-3 py-1.5 rounded-full border border-slate-800">
+              International Delivery Infrastructure
+            </span>
+          </div>
+        </div>
+
         {/* Global Impact Metric Counters */}
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-16">
           {[

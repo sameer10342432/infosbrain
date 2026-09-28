@@ -18,6 +18,26 @@ export const LeadershipSection: React.FC = () => {
           description="A multidisciplinary executive cadre combining deep technological expertise, global governance acumen, and an uncompromising commitment to client success."
         />
 
+        {/* Executive Leadership & Team Full-Width Banner */}
+        <div className="mb-14 relative w-full aspect-[21/9] sm:aspect-[2.4/1] rounded-3xl overflow-hidden border border-cyan-500/30 shadow-[0_0_40px_rgba(0,120,255,0.18)] bg-slate-950 flex items-center justify-center group">
+          <img
+            src="/assets/team-banner.png"
+            alt="InfosBrain Executive Leadership and Advisory Board"
+            referrerPolicy="no-referrer"
+            loading="lazy"
+            className="w-full h-full object-contain md:object-cover object-center group-hover:scale-[1.01] transition-transform duration-700 ease-out"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-slate-950/40 via-transparent to-slate-950/15 pointer-events-none" />
+          <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between">
+            <span className="text-xs font-mono text-cyan-300 bg-slate-950/90 px-3 py-1.5 rounded-full border border-cyan-500/30 backdrop-blur-md">
+              InfosBrain Executive Leadership • Global Practices
+            </span>
+            <span className="hidden sm:inline-block text-xs font-mono text-slate-300 bg-slate-950/80 px-3 py-1.5 rounded-full border border-slate-800">
+              Senior Practice Directors
+            </span>
+          </div>
+        </div>
+
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {siteConfig.leadership.map((member) => (
             <div

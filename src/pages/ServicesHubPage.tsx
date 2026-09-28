@@ -100,7 +100,7 @@ export const ServicesHubPage: React.FC = () => {
         highlightText="Services"
         description="From software development and artificial intelligence to cloud solutions, cybersecurity, digital strategy, and performance marketing, we combine technology and strategic expertise to help organizations improve performance, strengthen customer engagement, and build future-ready operations."
         image={{
-          src: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=1200&q=80',
+          src: '/assets/hero-digital-growth.png',
           alt: 'InfosBrain Digital Technology & Performance Marketing Command Center',
           tag: 'Multi-Discipline Engineering',
           statPill: {
@@ -187,14 +187,14 @@ export const ServicesHubPage: React.FC = () => {
                   <div>
                     {/* Service Feature Banner */}
                     {service.imageUrl && (
-                      <div className="relative h-44 w-full rounded-2xl overflow-hidden mb-6 border border-slate-800 group-hover:border-cyan-500/40 transition-all">
+                      <div className="relative aspect-[16/9] w-full rounded-2xl overflow-hidden mb-6 border border-slate-800 group-hover:border-cyan-500/40 transition-all bg-slate-950 flex items-center justify-center">
                         <img
                           src={service.imageUrl}
                           alt={service.title}
                           referrerPolicy="no-referrer"
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                          className="w-full h-full object-contain object-center group-hover:scale-105 transition-transform duration-500"
                         />
-                        <div className="absolute inset-0 bg-gradient-to-t from-[#070B1F] via-[#070B1F]/30 to-transparent" />
+                        <div className="absolute inset-0 bg-gradient-to-t from-slate-950/20 via-transparent to-transparent pointer-events-none" />
                         <div className="absolute top-3 right-3">
                           <span className="text-[11px] font-mono uppercase px-3 py-1 rounded-full bg-slate-950/90 text-cyan-300 border border-cyan-500/30 backdrop-blur-md">
                             {service.category}

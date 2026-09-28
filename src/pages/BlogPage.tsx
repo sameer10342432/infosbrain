@@ -116,8 +116,8 @@ export const BlogPage: React.FC = () => {
         highlightText="Modern Scale"
         description="Our practice directors and senior engineers break down algorithmic SEO shifts, high-performance web architecture patterns, and profitable ad spend economics."
         image={{
-          src: 'https://images.unsplash.com/photo-1499750310107-5fef28a66643?auto=format&fit=crop&w=1200&q=80',
-          alt: 'InfosBrain Technical Intelligence and Research Briefs',
+          src: '/assets/blog-banner.png',
+          alt: 'InfosBrain Blog and Technical Insights',
           tag: 'Engineering & Marketing Insights',
           statPill: {
             value: 'Weekly',
@@ -203,20 +203,20 @@ export const BlogPage: React.FC = () => {
                 <div>
                   {/* Article Feature Image */}
                   {post.imageUrl ? (
-                    <div className="h-44 rounded-2xl border border-slate-800 flex items-center justify-center relative overflow-hidden mb-5 group-hover:border-cyan-500/40 transition-all">
+                    <div className="relative aspect-[16/9] w-full rounded-2xl border border-slate-800 flex items-center justify-center overflow-hidden mb-5 group-hover:border-cyan-500/40 transition-all bg-slate-950">
                       <img
                         src={post.imageUrl}
                         alt={post.title}
                         referrerPolicy="no-referrer"
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-[#070B1F] via-[#070B1F]/30 to-transparent" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-slate-950/40 via-transparent to-transparent pointer-events-none" />
                       <span className="absolute bottom-3 left-3 text-[10px] font-mono uppercase tracking-wider px-2.5 py-1 rounded-full bg-slate-950/90 text-cyan-300 border border-cyan-500/30 backdrop-blur-md">
                         {post.category}
                       </span>
                     </div>
                   ) : (
-                    <div className="h-44 rounded-2xl bg-gradient-to-tr from-slate-950 via-blue-950/40 to-slate-900 border border-slate-800 flex items-center justify-center relative overflow-hidden mb-5">
+                    <div className="relative aspect-[16/9] w-full rounded-2xl bg-gradient-to-tr from-slate-950 via-blue-950/40 to-slate-900 border border-slate-800 flex items-center justify-center overflow-hidden mb-5">
                       <div className="absolute inset-0 cyber-grid opacity-40" />
                       <div className="p-3.5 rounded-2xl bg-slate-900/90 border border-cyan-500/30 text-cyan-400">
                         <BookOpen className="w-7 h-7" />
@@ -317,14 +317,14 @@ export const BlogPage: React.FC = () => {
             <div className="space-y-6">
               {/* Article Hero Cover */}
               {activeArticle.imageUrl && (
-                <div className="relative h-56 sm:h-64 w-full rounded-2xl overflow-hidden border border-cyan-500/30">
+                <div className="relative aspect-[16/9] w-full rounded-2xl overflow-hidden border border-cyan-500/30 bg-slate-950">
                   <img
                     src={activeArticle.imageUrl}
                     alt={activeArticle.title}
                     referrerPolicy="no-referrer"
                     className="w-full h-full object-cover"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#070B1F] via-black/20 to-transparent" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-slate-950/40 via-transparent to-transparent pointer-events-none" />
                   <div className="absolute bottom-3 left-3">
                     <span className="text-xs font-mono uppercase tracking-wider px-3 py-1 rounded-full bg-slate-950/90 text-cyan-300 border border-cyan-500/30 font-semibold">
                       {activeArticle.category}

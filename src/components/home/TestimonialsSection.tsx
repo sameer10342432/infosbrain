@@ -33,36 +33,44 @@ export const TestimonialsSection: React.FC<TestimonialsSectionProps> = ({
           description="At InfosBrain, our greatest achievement is the measurable success of our clients. From startups and NGOs to educational institutions and enterprise leaders worldwide."
         />
 
-        {/* Video Testimonial Spotlight Banner */}
-        <div className="mb-16 p-6 sm:p-8 rounded-3xl bg-gradient-to-r from-[#071A35] via-[#050816] to-[#071A35] border border-[#0078FF]/30 shadow-2xl flex flex-col lg:flex-row items-center justify-between gap-8">
-          <div className="relative aspect-video w-full lg:w-[420px] rounded-2xl overflow-hidden border border-slate-700/80 group flex-shrink-0">
-            <img
-              src="https://images.unsplash.com/photo-1557804506-669a67965ba0?auto=format&fit=crop&w=800&q=80"
-              alt="Client Video Testimonial Preview"
-              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-            />
-            <div className="absolute inset-0 bg-black/40 group-hover:bg-black/25 transition-colors flex items-center justify-center">
-              {onOpenVideoModal && (
-                <button
-                  onClick={() =>
-                    onOpenVideoModal(
-                      'Executive Client Testimonial: Global Technology Transformation',
-                      ''
-                    )
-                  }
-                  className="w-16 h-16 rounded-full bg-[#0078FF] hover:bg-[#0078FF]/90 flex items-center justify-center text-white shadow-[0_0_30px_rgba(0,120,255,0.7)] group-hover:scale-110 transition-transform cursor-pointer"
-                  aria-label="Play client video testimonial"
-                >
-                  <Play className="w-7 h-7 translate-x-0.5 fill-white" />
-                </button>
-              )}
-            </div>
-            <div className="absolute bottom-3 left-3 px-2.5 py-1 rounded-md text-[11px] font-mono font-bold bg-black/80 text-white">
-              📹 Video Case: Executive Interview (3:12)
-            </div>
+        {/* Full-Width Verified Client Testimonials Banner */}
+        <div className="mb-10 relative w-full aspect-[21/9] sm:aspect-[2.4/1] rounded-3xl overflow-hidden border border-cyan-500/30 shadow-[0_0_40px_rgba(0,120,255,0.18)] bg-slate-950 flex items-center justify-center group">
+          <img
+            src="/assets/testimonials-banner.png"
+            alt="InfosBrain Verified Client Testimonials"
+            referrerPolicy="no-referrer"
+            loading="lazy"
+            className="w-full h-full object-contain md:object-cover object-center group-hover:scale-[1.01] transition-transform duration-700 ease-out"
+          />
+          <div className="absolute inset-0 bg-black/40 group-hover:bg-black/25 transition-colors flex items-center justify-center">
+            {onOpenVideoModal && (
+              <button
+                onClick={() =>
+                  onOpenVideoModal(
+                    'Executive Client Testimonial: Global Technology Transformation',
+                    ''
+                  )
+                }
+                className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-[#0078FF] hover:bg-[#0078FF]/90 flex items-center justify-center text-white shadow-[0_0_30px_rgba(0,120,255,0.7)] group-hover:scale-110 transition-transform cursor-pointer"
+                aria-label="Play client video testimonial"
+              >
+                <Play className="w-7 h-7 sm:w-8 sm:h-8 translate-x-0.5 fill-white" />
+              </button>
+            )}
           </div>
+          <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between">
+            <span className="text-xs font-mono font-bold bg-black/80 text-white px-3 py-1.5 rounded-full border border-cyan-500/30 backdrop-blur-md">
+              📹 Video Case: Executive Interview (3:12)
+            </span>
+            <span className="hidden sm:inline-block text-xs font-mono text-cyan-300 bg-black/80 px-3 py-1.5 rounded-full border border-slate-700 backdrop-blur-md">
+              Verified Enterprise Impact
+            </span>
+          </div>
+        </div>
 
-          <div className="space-y-4 max-w-xl">
+        {/* Executive Spotlight Testimonial Card */}
+        <div className="mb-14 p-6 sm:p-8 rounded-3xl bg-[#071A35]/80 border border-slate-800 shadow-xl flex flex-col md:flex-row items-center justify-between gap-6">
+          <div className="space-y-3 max-w-3xl">
             <div className="flex items-center gap-1.5 text-amber-400">
               {[...Array(5)].map((_, i) => (
                 <Star key={i} className="w-4 h-4 fill-amber-400" />
@@ -71,12 +79,13 @@ export const TestimonialsSection: React.FC<TestimonialsSectionProps> = ({
             <blockquote className="text-base sm:text-lg text-slate-200 leading-relaxed italic">
               "InfosBrain helped us modernize our operations and accelerate growth through innovative technology solutions. Their team combined technical depth with genuine business acumen."
             </blockquote>
-            <div>
-              <div className="text-sm font-bold text-white font-display">
-                Chief Executive Officer
-              </div>
-              <div className="text-xs text-[#00C9A7] font-mono">Global Technology & Logistics Enterprise</div>
+          </div>
+          <div className="md:text-right shrink-0 border-t md:border-t-0 md:border-l border-slate-800 pt-4 md:pt-0 md:pl-6">
+            <div className="text-sm font-bold text-white font-display">
+              Chief Executive Officer
             </div>
+            <div className="text-xs text-[#00C9A7] font-mono">Global Technology & Logistics Enterprise</div>
+            <div className="text-[11px] text-slate-400 mt-1">Direct Client Partnership</div>
           </div>
         </div>
 

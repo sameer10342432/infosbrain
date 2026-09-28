@@ -50,6 +50,26 @@ export const PartnershipSection: React.FC = () => {
           description="InfosBrain collaborates with enterprises, governments, academic institutions, and investors to co-create scalable solutions, foster digital capacity, and deploy transformative technologies worldwide."
         />
 
+        {/* Strategic Ecosystem Showcase Banner */}
+        <div className="mb-16 relative w-full aspect-[21/9] sm:aspect-[2.4/1] rounded-3xl overflow-hidden border border-cyan-500/30 shadow-[0_0_40px_rgba(0,201,167,0.12)] bg-slate-950 flex items-center justify-center group">
+          <img
+            src="/assets/partnership-banner.png"
+            alt="InfosBrain Strategic Alliances & Ecosystem Partners"
+            referrerPolicy="no-referrer"
+            loading="lazy"
+            className="w-full h-full object-contain md:object-cover object-center group-hover:scale-[1.01] transition-transform duration-700 ease-out"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-slate-950/40 via-transparent to-slate-950/15 pointer-events-none" />
+          <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between">
+            <span className="text-xs font-mono text-[#00C9A7] bg-slate-950/90 px-3 py-1.5 rounded-full border border-[#00C9A7]/30 backdrop-blur-md">
+              InfosBrain Strategic Alliances & Ecosystem Partners
+            </span>
+            <span className="hidden sm:inline-block text-xs font-mono text-slate-300 bg-slate-950/80 px-3 py-1.5 rounded-full border border-slate-800">
+              Global Co-Creation Network
+            </span>
+          </div>
+        </div>
+
         {/* 6 Partner Categories Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
           {siteConfig.partnerships.categories.map((cat, idx) => {

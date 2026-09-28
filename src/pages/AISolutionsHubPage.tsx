@@ -108,8 +108,8 @@ export const AISolutionsHubPage: React.FC = () => {
         highlightText="Enterprise Scale"
         description="Bridge the gap between theoretical AI models and measurable business ROI. We architect, train, and orchestrate production-grade multi-agent pipelines, predictive engines, and private LLMs."
         image={{
-          src: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=1200&q=80',
-          alt: 'InfosBrain Autonomous AI Neural Architecture',
+          src: '/assets/hero-ai-robot.png',
+          alt: 'InfosBrain Autonomous AI Systems and Neural Architecture',
           tag: 'Autonomous AI Practice',
           statPill: {
             value: 'Sub-100ms',
@@ -219,14 +219,14 @@ export const AISolutionsHubPage: React.FC = () => {
               >
                 <div>
                   {/* Cover Image Banner */}
-                  <div className="relative h-48 w-full rounded-2xl overflow-hidden mb-6 border border-slate-800 group-hover:border-cyan-500/30 transition-all">
+                  <div className="relative aspect-[16/9] w-full rounded-2xl overflow-hidden mb-6 border border-slate-800 group-hover:border-cyan-500/30 transition-all bg-slate-950 flex items-center justify-center">
                     <img
                       src={solution.imageUrl}
                       alt={solution.title}
                       referrerPolicy="no-referrer"
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      className="w-full h-full object-contain object-center group-hover:scale-105 transition-transform duration-500"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#070B1F] via-[#070B1F]/40 to-transparent" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-slate-950/30 via-transparent to-transparent pointer-events-none" />
                     
                     <div className="absolute top-3 left-3">
                       <span className="text-[11px] font-mono uppercase tracking-wider px-3 py-1 rounded-full bg-slate-950/90 text-cyan-300 border border-cyan-500/30 backdrop-blur-md font-semibold">

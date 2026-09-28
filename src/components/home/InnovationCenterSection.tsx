@@ -53,6 +53,26 @@ export const InnovationCenterSection: React.FC = () => {
           description="Positioning InfosBrain as an intellectual leader and strategic technology vanguard. We publish empirical analyses on modern AI, enterprise architecture, cybersecurity, and cloud resilience."
         />
 
+        {/* Innovation Center Thematic Showcase Banner */}
+        <div className="mb-16 relative w-full aspect-[21/9] sm:aspect-[2.4/1] rounded-3xl overflow-hidden border border-cyan-500/30 shadow-[0_0_40px_rgba(108,77,255,0.15)] bg-slate-950 flex items-center justify-center group">
+          <img
+            src="/assets/innovation-banner.png"
+            alt="InfosBrain Innovation Center - Turning Ideas Into Real Solutions"
+            referrerPolicy="no-referrer"
+            loading="lazy"
+            className="w-full h-full object-contain md:object-cover object-center group-hover:scale-[1.01] transition-transform duration-700 ease-out"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-slate-950/40 via-transparent to-slate-950/15 pointer-events-none" />
+          <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between">
+            <span className="text-xs font-mono text-[#6C4DFF] bg-slate-950/90 px-3 py-1.5 rounded-full border border-[#6C4DFF]/30 backdrop-blur-md">
+              InfosBrain Innovation Center & R&D Hub
+            </span>
+            <span className="hidden sm:inline-block text-xs font-mono text-slate-300 bg-slate-950/80 px-3 py-1.5 rounded-full border border-slate-800">
+              Turning Ideas Into Solutions
+            </span>
+          </div>
+        </div>
+
         {/* Papers Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
           {siteConfig.researchPapers.map((paper) => {

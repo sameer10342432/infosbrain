@@ -76,8 +76,8 @@ export const ContactPage: React.FC = () => {
         highlightText="Extraordinary"
         description="Whether you need a high-performance web platform, an enterprise SEO overhaul, or high-ROAS paid customer acquisition, our senior practice directors are ready to assist."
         image={{
-          src: 'https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=1200&q=80',
-          alt: 'InfosBrain Global Collaboration Center and Boardroom',
+          src: '/assets/contact-banner.png',
+          alt: 'Contact InfosBrain Digital Strategy Team',
           tag: 'Direct Practice Access',
           statPill: {
             value: '< 24 Hours',
@@ -249,23 +249,6 @@ export const ContactPage: React.FC = () => {
                   </div>
                 </div>
               </div>
-
-              {/* Global Operations Studio Image */}
-              <div className="relative h-44 rounded-2xl overflow-hidden border border-slate-800 shadow-xl group">
-                <img
-                  src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=800&q=80"
-                  alt="InfosBrain Global Digital Operations"
-                  referrerPolicy="no-referrer"
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#050816] via-[#050816]/30 to-transparent" />
-                <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between">
-                  <span className="text-xs font-mono text-cyan-300 bg-slate-950/90 px-3 py-1 rounded-full border border-cyan-500/30 backdrop-blur-md">
-                    InfosBrain Global Operations
-                  </span>
-                  <span className="text-xs font-mono text-slate-400">Async & Live</span>
-                </div>
-              </div>
             </div>
 
             {/* Right Column: Interactive Consultation Form */}
@@ -426,6 +409,42 @@ export const ContactPage: React.FC = () => {
                   </form>
                 )}
               </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Global Locations Full-Width Banner Section */}
+      <section className="py-16 bg-[#070B1F] border-t border-slate-800/80 overflow-hidden">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="mb-8 text-center sm:text-left">
+            <span className="text-xs font-mono text-cyan-400 uppercase tracking-widest font-bold">
+              // GLOBAL LOCATIONS & OPERATIONS
+            </span>
+            <h2 className="text-2xl sm:text-3xl font-bold text-white font-display mt-1">
+              Worldwide Delivery & Technology Hubs
+            </h2>
+            <p className="text-sm text-slate-300 mt-2 max-w-2xl">
+              Continuous 24/7 global operations delivering digital engineering and high-performance marketing across North America, Europe, MENA, and Asia-Pacific.
+            </p>
+          </div>
+
+          <div className="relative w-full aspect-[21/9] sm:aspect-[2.4/1] rounded-3xl overflow-hidden border border-cyan-500/30 shadow-[0_0_40px_rgba(6,182,212,0.15)] bg-slate-950 flex items-center justify-center group">
+            <img
+              src="/assets/locations-banner.png"
+              alt="InfosBrain Global Locations and Delivery Hubs"
+              referrerPolicy="no-referrer"
+              loading="lazy"
+              className="w-full h-full object-contain md:object-cover object-center group-hover:scale-[1.01] transition-transform duration-700 ease-out"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-slate-950/40 via-transparent to-slate-950/15 pointer-events-none" />
+            <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between">
+              <span className="text-xs font-mono text-cyan-300 bg-slate-950/90 px-3 py-1.5 rounded-full border border-cyan-500/30 backdrop-blur-md">
+                InfosBrain Global Operations • 25+ Countries
+              </span>
+              <span className="hidden sm:inline-block text-xs font-mono text-slate-300 bg-slate-950/80 px-3 py-1.5 rounded-full border border-slate-800">
+                Async & Live 24/7 Delivery
+              </span>
             </div>
           </div>
         </div>

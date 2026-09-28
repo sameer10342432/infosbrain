@@ -12,7 +12,7 @@ export const FAQSection: React.FC = () => {
 
   return (
     <section id="faq" className="relative py-24 bg-[#070B1F] border-t border-slate-800/80 overflow-hidden">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <SectionHeading
           badge="CLARITY & TRANSPARENCY"
           title="Frequently Asked"
@@ -20,7 +20,27 @@ export const FAQSection: React.FC = () => {
           description="Everything you need to know about our engagement models, technical standards, project timelines, and growth strategies."
         />
 
-        <div className="space-y-4">
+        {/* FAQ Full-Width Showcase Banner */}
+        <div className="mb-14 relative w-full aspect-[21/9] sm:aspect-[2.4/1] rounded-3xl overflow-hidden border border-cyan-500/30 shadow-[0_0_40px_rgba(6,182,212,0.12)] bg-slate-950 flex items-center justify-center group">
+          <img
+            src="/assets/faq-banner.png"
+            alt="InfosBrain Frequently Asked Questions"
+            referrerPolicy="no-referrer"
+            loading="lazy"
+            className="w-full h-full object-contain md:object-cover object-center group-hover:scale-[1.01] transition-transform duration-700 ease-out"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-slate-950/40 via-transparent to-slate-950/15 pointer-events-none" />
+          <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between">
+            <span className="text-xs font-mono text-cyan-300 bg-slate-950/90 px-3 py-1.5 rounded-full border border-cyan-500/30 backdrop-blur-md">
+              InfosBrain Knowledge Base & Engagement FAQ
+            </span>
+            <span className="hidden sm:inline-block text-xs font-mono text-slate-300 bg-slate-950/80 px-3 py-1.5 rounded-full border border-slate-800">
+              Clear & Transparent Standards
+            </span>
+          </div>
+        </div>
+
+        <div className="max-w-4xl mx-auto space-y-4">
           {siteConfig.faqs.map((faq) => {
             const isOpen = openId === faq.id;
             return (

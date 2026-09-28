@@ -12,6 +12,8 @@ function expressApiPlugin(): Plugin {
         if (
           url.startsWith('/api') ||
           url.startsWith('/uploads') ||
+          url.startsWith('/assets') ||
+          url.startsWith('/Asset') ||
           url.startsWith('/sitemap.xml') ||
           url.startsWith('/rss.xml')
         ) {

@@ -29,4 +29,38 @@ const redirectHtml = `<!DOCTYPE html>
 if (fs.existsSync(distDir)) {
   fs.writeFileSync(dist404, redirectHtml, 'utf8');
   console.log('[Build] Successfully generated dist/404.html with SPA redirect for GitHub Pages');
+
+  const assetDir = path.resolve(process.cwd(), 'Asset');
+  if (fs.existsSync(assetDir)) {
+    const distAssets = path.resolve(distDir, 'assets');
+    const distAssetCap = path.resolve(distDir, 'Asset');
+    fs.cpSync(assetDir, distAssets, { recursive: true });
+    fs.cpSync(assetDir, distAssetCap, { recursive: true });
+
+    // Also support .jpg and global-presence-bg extensions in dist/assets for static deployments
+    [distAssets, distAssetCap].forEach(dir => {
+      if (fs.existsSync(dir)) {
+        const files = fs.readdirSync(dir);
+        files.forEach(f => {
+          if (f.endsWith('.png')) {
+            const jpgName = f.replace(/\.png$/, '.jpg');
+            const jpgPath = path.join(dir, jpgName);
+            if (!fs.existsSync(jpgPath)) {
+              fs.copyFileSync(path.join(dir, f), jpgPath);
+            }
+          }
+        });
+        const gpPng = path.join(dir, 'global-presence.png');
+        const gpBgJpg = path.join(dir, 'global-presence-bg.jpg');
+        const gpBgPng = path.join(dir, 'global-presence-bg.png');
+        if (fs.existsSync(gpPng)) {
+          if (!fs.existsSync(gpBgJpg)) fs.copyFileSync(gpPng, gpBgJpg);
+          if (!fs.existsSync(gpBgPng)) fs.copyFileSync(gpPng, gpBgPng);
+        }
+      }
+    });
+
+    console.log('[Build] Successfully synchronized Asset/ into dist/assets and dist/Asset');
+  }
 }
+

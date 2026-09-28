@@ -45,8 +45,8 @@ export const CaseStudiesPage: React.FC = () => {
         highlightText="Business Outcomes"
         description="See how we transform challenges into opportunities by removing technical barriers, optimizing conversion performance, and driving scalable growth through advanced technology, intelligent automation, and results-focused digital strategies."
         image={{
-          src: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=1200&q=80',
-          alt: 'InfosBrain Verified Client Outcomes and Performance Dashboard',
+          src: '/assets/case-studies-banner.png',
+          alt: 'InfosBrain Case Studies and Proven Business Outcomes',
           tag: 'Verified Client Deployments',
           statPill: {
             value: '340%+',
@@ -116,14 +116,14 @@ export const CaseStudiesPage: React.FC = () => {
                 <div>
                   {/* Case Study Cover Image */}
                   {cs.imageUrl && (
-                    <div className="relative h-48 sm:h-52 w-full rounded-2xl overflow-hidden mb-6 border border-slate-800 group-hover:border-cyan-500/40 transition-all">
+                    <div className="relative aspect-[16/9] w-full rounded-2xl overflow-hidden mb-6 border border-slate-800 group-hover:border-cyan-500/40 transition-all bg-slate-950">
                       <img
                         src={cs.imageUrl}
                         alt={cs.title}
                         referrerPolicy="no-referrer"
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-[#070B1F] via-[#070B1F]/30 to-transparent" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-slate-950/40 via-transparent to-transparent pointer-events-none" />
                       <div className="absolute top-3 left-3">
                         <span className="text-xs font-mono uppercase tracking-wider px-3 py-1 rounded-full bg-slate-950/90 text-cyan-300 border border-cyan-500/30 backdrop-blur-md font-semibold">
                           {cs.industry}
@@ -229,14 +229,14 @@ export const CaseStudiesPage: React.FC = () => {
 
             <div className="space-y-6">
               {activeModalItem.imageUrl && (
-                <div className="relative h-52 sm:h-60 w-full rounded-2xl overflow-hidden border border-cyan-500/30">
+                <div className="relative aspect-[16/9] w-full rounded-2xl overflow-hidden border border-cyan-500/30 bg-slate-950">
                   <img
                     src={activeModalItem.imageUrl}
                     alt={activeModalItem.title}
                     referrerPolicy="no-referrer"
                     className="w-full h-full object-cover"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#070B1F] via-black/30 to-transparent" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-slate-950/40 via-transparent to-transparent pointer-events-none" />
                   <div className="absolute bottom-3 left-3">
                     <span className="text-xs font-mono uppercase tracking-wider px-3 py-1 rounded-full bg-slate-950/90 text-cyan-300 border border-cyan-500/30">
                       {activeModalItem.industry}

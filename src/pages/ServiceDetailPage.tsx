@@ -155,27 +155,6 @@ export const ServiceDetailPage: React.FC<ServiceDetailPageProps> = ({ slug }) =>
                 Strategic Scope & Capabilities
               </h2>
 
-              {/* Service Hero Showcase Image */}
-              {service.imageUrl && (
-                <div className="relative h-64 sm:h-72 w-full rounded-2xl overflow-hidden border border-cyan-500/30 shadow-[0_0_30px_rgba(6,182,212,0.15)] group">
-                  <img
-                    src={service.imageUrl}
-                    alt={service.title}
-                    referrerPolicy="no-referrer"
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#070B1F] via-transparent to-black/30" />
-                  <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between">
-                    <span className="text-xs font-mono font-bold text-cyan-300 bg-slate-950/80 px-3 py-1 rounded-full border border-cyan-500/40 backdrop-blur-md">
-                      InfosBrain {service.category} Practice
-                    </span>
-                    <span className="text-xs font-mono text-slate-300 bg-slate-950/80 px-3 py-1 rounded-full border border-slate-700 backdrop-blur-md">
-                      Production Stack
-                    </span>
-                  </div>
-                </div>
-              )}
-
               <p className="text-base text-slate-300 leading-relaxed">
                 {fullDesc}
               </p>

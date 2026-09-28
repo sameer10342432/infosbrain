@@ -332,7 +332,7 @@ export const BlogArticlePage: React.FC<BlogArticlePageProps> = ({ slug }) => {
                 >
                   <div>
                     {rel.imageUrl && (
-                      <div className="h-32 rounded-xl overflow-hidden mb-4 border border-slate-800">
+                      <div className="relative aspect-[16/9] w-full rounded-xl overflow-hidden mb-4 border border-slate-800 bg-slate-950 flex items-center justify-center">
                         <img
                           src={rel.imageUrl}
                           alt={rel.title}

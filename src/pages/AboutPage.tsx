@@ -61,8 +61,8 @@ export const AboutPage: React.FC = () => {
         highlightText="Measurable Digital Reality"
         description={siteConfig.brand.description}
         image={{
-          src: 'https://images.unsplash.com/photo-1531482615713-2afd69097998?auto=format&fit=crop&w=1200&q=80',
-          alt: 'InfosBrain Strategic Digital Innovation Team',
+          src: '/assets/about-us-banner.png',
+          alt: 'About InfosBrain Strategic Digital Innovation Team',
           tag: 'InfosBrain Innovation Studio',
           statPill: {
             value: '10+ Years',
@@ -119,20 +119,6 @@ export const AboutPage: React.FC = () => {
                 InfosBrain is a technology and digital transformation company dedicated to helping businesses, nonprofits, institutions, and government organizations leverage innovative technologies to achieve their strategic objectives.
               </p>
 
-              {/* Agency Atmosphere Feature Image */}
-              <div className="relative h-56 rounded-2xl overflow-hidden border border-slate-800 shadow-xl group">
-                <img
-                  src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=1000&q=80"
-                  alt="InfosBrain Distributed Tech Ecosystem"
-                  referrerPolicy="no-referrer"
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#070B1F] via-[#070B1F]/20 to-transparent" />
-                <div className="absolute bottom-3 left-3 text-xs font-mono text-cyan-300 bg-slate-950/80 px-3 py-1 rounded-full border border-cyan-500/30 backdrop-blur-md">
-                  InfosBrain Innovation Lab
-                </div>
-              </div>
-
               <p className="text-sm sm:text-base text-slate-300 leading-relaxed">
                 By combining expertise in software development, artificial intelligence, cloud solutions, cybersecurity, and digital transformation consulting, InfosBrain delivers practical, scalable, and future-ready solutions that drive efficiency, growth, and long-term impact.
               </p>
@@ -181,6 +167,26 @@ export const AboutPage: React.FC = () => {
               </div>
             </div>
           </div>
+
+          {/* Collaborative Engineering & Culture Full-Width Showcase */}
+          <div className="mt-12 relative w-full aspect-[21/9] sm:aspect-[2.4/1] rounded-3xl overflow-hidden border border-cyan-500/30 shadow-[0_0_40px_rgba(6,182,212,0.15)] bg-slate-950 flex items-center justify-center group">
+            <img
+              src="/assets/hero-team-work.png"
+              alt="InfosBrain Collaborative Engineering Team Culture"
+              referrerPolicy="no-referrer"
+              loading="lazy"
+              className="w-full h-full object-contain md:object-cover object-center group-hover:scale-[1.01] transition-transform duration-700 ease-out"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-slate-950/40 via-transparent to-slate-950/15 pointer-events-none" />
+            <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between">
+              <span className="text-xs font-mono text-cyan-300 bg-slate-950/90 px-3 py-1.5 rounded-full border border-cyan-500/30 backdrop-blur-md">
+                InfosBrain Innovation Lab & Culture
+              </span>
+              <span className="hidden sm:inline-block text-xs font-mono text-slate-300 bg-slate-950/80 px-3 py-1.5 rounded-full border border-slate-800">
+                Continuous Collaborative Sprints
+              </span>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -224,6 +230,26 @@ export const AboutPage: React.FC = () => {
             highlightText="Engineering Leads"
             description="*Clearly marked placeholder profiles representing our multidisciplinary leadership structure. Easily customized for your leadership team."
           />
+
+          {/* Full-Width Team & Leadership Banner */}
+          <div className="mb-14 relative w-full aspect-[21/9] sm:aspect-[2.4/1] rounded-3xl overflow-hidden border border-cyan-500/30 shadow-[0_0_40px_rgba(6,182,212,0.15)] bg-slate-950 flex items-center justify-center group">
+            <img
+              src="/assets/team-banner.png"
+              alt="InfosBrain Executive Leadership and Engineering Team"
+              referrerPolicy="no-referrer"
+              loading="lazy"
+              className="w-full h-full object-contain md:object-cover object-center group-hover:scale-[1.01] transition-transform duration-700 ease-out"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-slate-950/40 via-transparent to-slate-950/15 pointer-events-none" />
+            <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between">
+              <span className="text-xs font-mono text-cyan-300 bg-slate-950/90 px-3 py-1.5 rounded-full border border-cyan-500/30 backdrop-blur-md">
+                InfosBrain Multidisciplinary Leadership Team
+              </span>
+              <span className="hidden sm:inline-block text-xs font-mono text-slate-300 bg-slate-950/80 px-3 py-1.5 rounded-full border border-slate-800">
+                100% In-House Strategy
+              </span>
+            </div>
+          </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
             {siteConfig.teamMembers.map((member) => (

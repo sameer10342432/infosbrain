@@ -112,47 +112,47 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
               {/* Animated outer glowing halo */}
               <div className="absolute -inset-1 rounded-3xl bg-gradient-to-r from-[#0078FF]/30 via-[#6C4DFF]/30 to-[#00C9A7]/30 blur-xl opacity-75 group-hover:opacity-100 transition duration-1000 group-hover:duration-300" />
 
-              <div className="relative w-full aspect-square rounded-3xl overflow-hidden border border-[#0078FF]/40 bg-slate-950 shadow-[0_0_50px_rgba(0,120,255,0.2)]">
-                {/* Global Command Center Image */}
-                <img
-                  src="https://images.unsplash.com/photo-1551434678-e076c223a692?auto=format&fit=crop&w=1200&q=80"
-                  alt="InfosBrain Global Digital Command Center"
-                  referrerPolicy="no-referrer"
-                  className="absolute inset-0 w-full h-full object-cover opacity-35 filter contrast-125 saturate-125 group-hover:scale-105 transition-transform duration-700 ease-out"
-                />
+              <div className="relative w-full rounded-3xl overflow-hidden border border-[#0078FF]/40 bg-slate-950 shadow-[0_0_50px_rgba(0,120,255,0.2)]">
+                {/* Global Command Center Image with subtle zoom on hover */}
+                <div className="relative w-full aspect-[21/9] sm:aspect-[2.4/1] overflow-hidden bg-slate-950 flex items-center justify-center">
+                  <img
+                    src="/assets/hero-bg-global-network.png"
+                    alt="InfosBrain Global Digital Network Command Center"
+                    referrerPolicy="no-referrer"
+                    className="w-full h-full object-contain object-center filter contrast-110 saturate-110 group-hover:scale-105 transition-transform duration-700 ease-out"
+                  />
 
-                {/* Cyber Gradient Vignettes */}
-                <div className="absolute inset-0 bg-gradient-to-t from-[#071A35] via-[#071A35]/40 to-[#071A35]/30 pointer-events-none" />
-                <div className="absolute inset-0 bg-gradient-to-r from-[#071A35]/40 via-transparent to-[#071A35]/40 pointer-events-none" />
+                  {/* Cyber Gradient Vignette edge blend */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#071A35]/30 via-transparent to-transparent pointer-events-none" />
 
-                {/* Layered Interactive Canvas particles */}
-                <div className="absolute inset-0 z-10">
-                  <HeroCanvas className="w-full h-full" />
-                </div>
-
-                {/* Top Floating Badge */}
-                <div className="absolute top-4 left-4 right-4 z-20 flex items-center justify-between pointer-events-none">
-                  <span className="text-xs font-mono font-semibold text-cyan-300 bg-[#050816]/90 px-3 py-1.5 rounded-full border border-[#0078FF]/30 backdrop-blur-md shadow-md">
-                    InfosBrain Global Delivery Hub
-                  </span>
-                  <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#050816]/90 border border-[#00C9A7]/40 text-[#00C9A7] text-[11px] font-mono backdrop-blur-md">
-                    <span className="w-1.5 h-1.5 rounded-full bg-[#00C9A7] animate-pulse" />
-                    <span>Active Production</span>
+                  {/* Layered Interactive Canvas particles */}
+                  <div className="absolute inset-0 z-10 pointer-events-none opacity-40">
+                    <HeroCanvas className="w-full h-full" />
                   </div>
                 </div>
 
-                {/* Bottom Floating Glassmorphic Stat Card */}
-                <div className="absolute bottom-4 left-4 right-4 z-20 p-4 rounded-2xl bg-[#050816]/90 border border-slate-700/80 backdrop-blur-xl shadow-2xl">
+                {/* Bottom Delivery Stat & Status Bar */}
+                <div className="p-3.5 sm:p-4 bg-slate-950/95 border-t border-slate-800/80 space-y-2.5">
                   <div className="flex items-center justify-between">
+                    <span className="text-xs font-mono font-semibold text-cyan-300 bg-[#050816] px-3 py-1 rounded-full border border-[#0078FF]/30">
+                      InfosBrain Global Delivery Hub
+                    </span>
+                    <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#050816] border border-[#00C9A7]/40 text-[#00C9A7] text-[11px] font-mono">
+                      <span className="w-1.5 h-1.5 rounded-full bg-[#00C9A7] animate-pulse" />
+                      <span>Active Production</span>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center justify-between pt-2 border-t border-slate-900">
                     <div>
-                      <div className="text-lg font-bold text-white font-display">
+                      <div className="text-sm font-bold text-white font-display">
                         Delivering Across Continents
                       </div>
-                      <div className="text-[11px] text-slate-300 font-mono mt-0.5">
+                      <div className="text-[11px] text-slate-400 font-mono mt-0.5">
                         Dublin • Amsterdam • Lahore / Islamabad • Accra
                       </div>
                     </div>
-                    <div className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#0078FF]/20 border border-[#0078FF]/40 text-[#0078FF] text-xs font-mono">
+                    <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#0078FF]/20 border border-[#0078FF]/40 text-[#0078FF] text-xs font-mono shrink-0">
                       <Globe2 className="w-3.5 h-3.5" />
                       <span>25+ Countries</span>
                     </div>

@@ -142,7 +142,7 @@ export const aiSolutionsData: AISolutionItem[] = [
     fullDescription: 'Generative search engines like Google SGE (AI Overviews), Perplexity AI, ChatGPT Search, and Copilot are transforming how users discover brands. If your brand is not synthesized within the neural weights and retrieval indices of these models, you become invisible to modern buyers. InfosBrain provides comprehensive Generative Engine Optimization (GEO) and AI search integration. We audit your entity authority, enrich semantic knowledge graphs, engineer structured data schemas, and deploy proprietary vector search experiences on your own digital properties.',
     iconName: 'Search',
     category: 'Generative Search',
-    imageUrl: 'https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?auto=format&fit=crop&w=1000&q=80',
+    imageUrl: 'https://images.unsplash.com/photo-1507146426996-ef05306b995a?auto=format&fit=crop&w=1000&q=80',
     badge: 'GEO & VECTOR SEARCH',
     statsMetric: { label: 'AI Citation Growth', value: '+140%' },
     capabilities: [
@@ -208,7 +208,7 @@ export const aiSolutionsData: AISolutionItem[] = [
     fullDescription: 'Off-the-shelf chatbots frequently produce generic answers, hallucinate inaccurate data, or leak confidential context. InfosBrain develops enterprise-grade conversational agents grounded strictly in your proprietary documentation through advanced Retrieval-Augmented Generation (RAG) pipelines. Featuring role-based access control, source citation verification, and seamless integration with Slack, WhatsApp, Zendesk, and custom web widgets, our agents resolve complex queries with human-level nuance.',
     iconName: 'Bot',
     category: 'Agents & LLMs',
-    imageUrl: 'https://images.unsplash.com/photo-1531746790731-6c087fecd65a?auto=format&fit=crop&w=1000&q=80',
+    imageUrl: 'https://images.unsplash.com/photo-1535378917042-10a22c95931a?auto=format&fit=crop&w=1000&q=80',
     badge: 'PRIVATE & SECURE RAG',
     statsMetric: { label: 'First Contact Resolution', value: '88%' },
     capabilities: [
@@ -274,7 +274,7 @@ export const aiSolutionsData: AISolutionItem[] = [
     fullDescription: 'Unstructured visual data—from scanned paper invoices and receipts to satellite imagery, medical scans, and manufacturing camera feeds—represents an untapped reservoir of enterprise value. InfosBrain builds bespoke computer vision and Intelligent Document Processing (IDP) systems. By pairing advanced OCR (Optical Character Recognition) with spatial transformers and multimodal LLMs, we transform complex images into validated JSON schemas ready for instant ERP consumption.',
     iconName: 'Eye',
     category: 'Vision & Documents',
-    imageUrl: 'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=1000&q=80',
+    imageUrl: 'https://images.unsplash.com/photo-1563986768494-4dee2763ff3f?auto=format&fit=crop&w=1000&q=80',
     badge: 'MULTIMODAL INTELLIGENCE',
     statsMetric: { label: 'Field Extraction Accuracy', value: '99.4%' },
     capabilities: [
