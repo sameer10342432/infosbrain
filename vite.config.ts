@@ -32,9 +32,9 @@ function expressApiPlugin(): Plugin {
   };
 }
 
-export default defineConfig(() => {
+export default defineConfig(({ command }) => {
   return {
-    base: process.env.VITE_BASE || './',
+    base: process.env.VITE_BASE || (command === 'build' ? './' : '/'),
     plugins: [react(), tailwindcss(), expressApiPlugin()],
     resolve: {
       alias: {

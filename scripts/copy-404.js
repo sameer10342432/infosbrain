@@ -33,34 +33,30 @@ if (fs.existsSync(distDir)) {
   const assetDir = path.resolve(process.cwd(), 'Asset');
   if (fs.existsSync(assetDir)) {
     const distAssets = path.resolve(distDir, 'assets');
-    const distAssetCap = path.resolve(distDir, 'Asset');
     fs.cpSync(assetDir, distAssets, { recursive: true });
-    fs.cpSync(assetDir, distAssetCap, { recursive: true });
 
     // Also support .jpg and global-presence-bg extensions in dist/assets for static deployments
-    [distAssets, distAssetCap].forEach(dir => {
-      if (fs.existsSync(dir)) {
-        const files = fs.readdirSync(dir);
-        files.forEach(f => {
-          if (f.endsWith('.png')) {
-            const jpgName = f.replace(/\.png$/, '.jpg');
-            const jpgPath = path.join(dir, jpgName);
-            if (!fs.existsSync(jpgPath)) {
-              fs.copyFileSync(path.join(dir, f), jpgPath);
-            }
+    if (fs.existsSync(distAssets)) {
+      const files = fs.readdirSync(distAssets);
+      files.forEach(f => {
+        if (f.endsWith('.png')) {
+          const jpgName = f.replace(/\.png$/, '.jpg');
+          const jpgPath = path.join(distAssets, jpgName);
+          if (!fs.existsSync(jpgPath)) {
+            fs.copyFileSync(path.join(distAssets, f), jpgPath);
           }
-        });
-        const gpPng = path.join(dir, 'global-presence.png');
-        const gpBgJpg = path.join(dir, 'global-presence-bg.jpg');
-        const gpBgPng = path.join(dir, 'global-presence-bg.png');
-        if (fs.existsSync(gpPng)) {
-          if (!fs.existsSync(gpBgJpg)) fs.copyFileSync(gpPng, gpBgJpg);
-          if (!fs.existsSync(gpBgPng)) fs.copyFileSync(gpPng, gpBgPng);
         }
+      });
+      const gpPng = path.join(distAssets, 'global-presence.png');
+      const gpBgJpg = path.join(distAssets, 'global-presence-bg.jpg');
+      const gpBgPng = path.join(distAssets, 'global-presence-bg.png');
+      if (fs.existsSync(gpPng)) {
+        if (!fs.existsSync(gpBgJpg)) fs.copyFileSync(gpPng, gpBgJpg);
+        if (!fs.existsSync(gpBgPng)) fs.copyFileSync(gpPng, gpBgPng);
       }
-    });
+    }
 
-    console.log('[Build] Successfully synchronized Asset/ into dist/assets and dist/Asset');
+    console.log('[Build] Successfully synchronized Asset/ into dist/assets');
   }
 }
 
