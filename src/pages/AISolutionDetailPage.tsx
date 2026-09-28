@@ -200,28 +200,30 @@ export const AISolutionDetailPage: React.FC<AISolutionDetailPageProps> = ({ slug
             <div className="relative group w-full max-w-[540px] mx-auto">
               <div className="absolute -inset-1 rounded-3xl bg-gradient-to-r from-cyan-500/30 via-violet-600/30 to-blue-600/30 blur-xl opacity-75 group-hover:opacity-100 transition duration-1000 group-hover:duration-300" />
               <div className="relative rounded-3xl overflow-hidden border border-cyan-500/40 bg-slate-950 shadow-[0_0_50px_rgba(6,182,212,0.2)]">
-                <div className="relative h-72 sm:h-84 md:h-96 w-full overflow-hidden bg-slate-900">
+                {/* 16:9 AI Solution Thematic Graphic */}
+                <div className="relative w-full aspect-[16/9] overflow-hidden bg-slate-950 flex items-center justify-center">
                   <img
                     src={solution.imageUrl}
                     alt={solution.title}
                     referrerPolicy="no-referrer"
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
+                    className="w-full h-full object-contain object-center group-hover:scale-105 transition-transform duration-700 ease-out"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#050816] via-[#050816]/20 to-transparent" />
-                  
-                  {/* Top Bar Tag & Live Status Indicator */}
-                  <div className="absolute top-4 left-4 right-4 flex items-center justify-between pointer-events-none">
-                    <span className="text-xs font-mono font-semibold text-cyan-300 bg-slate-950/85 px-3 py-1.5 rounded-full border border-cyan-500/30 backdrop-blur-md">
+                  <div className="absolute inset-0 bg-gradient-to-t from-slate-950/20 via-transparent to-transparent pointer-events-none" />
+                </div>
+
+                {/* Tech Badge & Live Architecture Bar */}
+                <div className="p-4 bg-slate-950/95 border-t border-slate-800/80 space-y-3">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-mono font-semibold text-cyan-300 bg-slate-900 px-3 py-1 rounded-full border border-cyan-500/30">
                       InfosBrain AI Practice
                     </span>
-                    <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-slate-950/85 border border-emerald-500/40 text-emerald-400 text-[11px] font-mono backdrop-blur-md">
+                    <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-slate-900 border border-emerald-500/40 text-emerald-400 text-[11px] font-mono">
                       <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
                       <span>Live Production</span>
                     </div>
                   </div>
 
-                  {/* Tech Badge Float */}
-                  <div className="absolute bottom-4 left-4 right-4 p-4 rounded-2xl bg-slate-950/90 border border-slate-700/80 backdrop-blur-xl">
+                  <div className="pt-2 border-t border-slate-900">
                     <div className="flex items-center justify-between text-xs font-mono text-slate-400 mb-2">
                       <span className="text-cyan-400 font-bold flex items-center gap-1.5">
                         <Activity className="w-3.5 h-3.5 animate-pulse" />

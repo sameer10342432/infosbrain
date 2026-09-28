@@ -238,7 +238,7 @@ export const AboutPage: React.FC = () => {
               alt="InfosBrain Executive Leadership and Engineering Team"
               referrerPolicy="no-referrer"
               loading="lazy"
-              className="w-full h-full object-contain md:object-cover object-center group-hover:scale-[1.01] transition-transform duration-700 ease-out"
+              className="w-full h-full object-contain object-center group-hover:scale-[1.01] transition-transform duration-700 ease-out"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-slate-950/40 via-transparent to-slate-950/15 pointer-events-none" />
             <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between">
