@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { RouterProvider, useRouter } from './context/RouterContext';
+import { CmsProvider } from './context/CmsContext';
 import { Navbar } from './components/common/Navbar';
 import { Footer } from './components/common/Footer';
 import { FloatingContactCTA } from './components/common/FloatingContactCTA';
@@ -85,6 +86,61 @@ const PageContent: React.FC<PageContentProps> = ({
     case '/ai':
     case '/solutions':
       return <AISolutionsHubPage />;
+    case '/digital-marketing':
+      return <ServiceDetailPage slug="digital-marketing" />;
+    case '/seo':
+      return <ServiceDetailPage slug="seo" />;
+    case '/graphic-design':
+      return <ServiceDetailPage slug="graphic-design" />;
+    case '/wordpress-development':
+    case '/wordpress':
+      return <ServiceDetailPage slug="wordpress-development" />;
+    case '/shopify-development':
+    case '/shopify':
+      return <ServiceDetailPage slug="shopify-development" />;
+    case '/mern-stack-development':
+    case '/mern':
+      return <ServiceDetailPage slug="mern-stack-development" />;
+    case '/php-development':
+    case '/php':
+      return <ServiceDetailPage slug="php-development" />;
+    case '/content-marketing':
+      return <ServiceDetailPage slug="content-marketing" />;
+    case '/email-marketing':
+      return <ServiceDetailPage slug="email-marketing" />;
+    case '/social-media-marketing':
+    case '/social-media':
+      return <ServiceDetailPage slug="social-media-marketing" />;
+    case '/paid-ads':
+      return <ServiceDetailPage slug="paid-ads" />;
+    case '/meta-ads':
+    case '/facebook-meta-ads':
+      return <ServiceDetailPage slug="facebook-meta-ads" />;
+    case '/google-ads':
+      return <ServiceDetailPage slug="google-ads" />;
+    case '/team':
+    case '/leadership':
+      return <AboutPage />;
+    case '/testimonials':
+    case '/reviews':
+      return (
+        <HomePage
+          onOpenConsultation={onOpenConsultation}
+          onOpenVideoModal={onOpenVideoModal}
+          onOpenChatbot={onOpenChatbot}
+        />
+      );
+    case '/faq':
+    case '/faqs':
+      return <ServicesHubPage />;
+    case '/global-locations':
+    case '/locations':
+      return <AboutPage />;
+    case '/partnerships':
+    case '/partners':
+      return <AboutPage />;
+    case '/innovation':
+      return <BlogPage />;
     case '/industries':
       return <IndustriesPage />;
     case '/case-studies':
@@ -172,7 +228,9 @@ const AppShell: React.FC = () => {
 export default function App() {
   return (
     <RouterProvider>
-      <AppShell />
+      <CmsProvider>
+        <AppShell />
+      </CmsProvider>
     </RouterProvider>
   );
 }

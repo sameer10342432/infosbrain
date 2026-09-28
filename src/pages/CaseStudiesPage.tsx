@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useRouter } from '../context/RouterContext';
+import { useCms } from '../context/CmsContext';
 import { siteConfig } from '../config/siteConfig';
 import { SEOHead } from '../components/common/SEOHead';
 import { SectionHeading } from '../components/common/SectionHeading';
@@ -20,15 +21,17 @@ import {
 
 export const CaseStudiesPage: React.FC = () => {
   const { navigate } = useRouter();
+  const { caseStudies } = useCms();
   const [activeFilter, setActiveFilter] = useState<string>('All');
   const [activeModalItem, setActiveModalItem] = useState<CaseStudyItem | null>(null);
 
+  const allCaseStudies = caseStudies && caseStudies.length > 0 ? caseStudies : siteConfig.caseStudies;
   const categories = ['All', 'Web Development', 'SEO', 'E-commerce', 'Branding'];
 
   const filtered =
     activeFilter === 'All'
-      ? siteConfig.caseStudies
-      : siteConfig.caseStudies.filter((c) => c.category === activeFilter);
+      ? allCaseStudies
+      : allCaseStudies.filter((c) => c.category === activeFilter);
 
   return (
     <div className="pt-24 pb-20">

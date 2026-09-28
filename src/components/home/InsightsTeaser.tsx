@@ -60,14 +60,14 @@ export const InsightsTeaser: React.FC = () => {
               <div>
                 {/* Visual Header */}
                 {post.imageUrl ? (
-                  <div className="h-40 rounded-xl border border-slate-800 flex items-center justify-center relative overflow-hidden mb-5 group-hover:border-cyan-500/40 transition-all">
+                  <div className="relative aspect-[16/9] w-full rounded-xl border border-slate-800 flex items-center justify-center overflow-hidden mb-5 group-hover:border-cyan-500/40 transition-all bg-slate-950">
                     <img
                       src={post.imageUrl}
                       alt={post.title}
                       referrerPolicy="no-referrer"
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#070B1F] via-[#070B1F]/30 to-transparent" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-slate-950/40 via-transparent to-transparent pointer-events-none" />
                     <span className="absolute bottom-3 left-3 text-[10px] font-mono uppercase tracking-wider px-2.5 py-1 rounded-full bg-slate-950/90 text-cyan-300 border border-cyan-500/30 backdrop-blur-md">
                       {post.category}
                     </span>

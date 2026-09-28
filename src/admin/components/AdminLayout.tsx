@@ -17,6 +17,13 @@ import {
   X,
   ChevronRight,
   ShieldAlert,
+  Layers,
+  Briefcase,
+  FolderKanban,
+  MessageSquareQuote,
+  HelpCircle,
+  GraduationCap,
+  Globe,
 } from 'lucide-react';
 
 interface AdminLayoutProps {
@@ -66,7 +73,20 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({
       ],
     },
     {
-      group: 'Content & CMS',
+      group: 'Website CMS',
+      items: [
+        { label: 'Sections & Visibility', route: '/admin/sections', icon: Layers },
+        { label: 'Team & Leadership', route: '/admin/team', icon: Users },
+        { label: 'Services', route: '/admin/services-manage', icon: Briefcase },
+        { label: 'Case Studies', route: '/admin/case-studies', icon: FolderKanban },
+        { label: 'Testimonials', route: '/admin/testimonials', icon: MessageSquareQuote },
+        { label: 'FAQs', route: '/admin/faqs', icon: HelpCircle },
+        { label: 'Careers', route: '/admin/careers', icon: GraduationCap },
+        { label: 'Global Locations', route: '/admin/locations', icon: Globe },
+      ],
+    },
+    {
+      group: 'Blog & Media',
       items: [
         { label: 'All Posts', route: '/admin/posts', icon: FileText },
         { label: 'Add New Post', route: '/admin/posts/new', icon: PlusCircle },

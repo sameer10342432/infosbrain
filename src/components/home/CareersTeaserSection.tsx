@@ -1,4 +1,5 @@
 import React from 'react';
+import { useCms } from '../../context/CmsContext';
 import { siteConfig } from '../../config/siteConfig';
 import { SectionHeading } from '../common/SectionHeading';
 import { Globe, Rocket, GraduationCap, Code2, ArrowRight, CheckCircle2 } from 'lucide-react';
@@ -6,6 +7,11 @@ import { useRouter } from '../../context/RouterContext';
 
 export const CareersTeaserSection: React.FC = () => {
   const { navigate } = useRouter();
+  const { isSectionVisible } = useCms();
+
+  if (!isSectionVisible('home_careers')) {
+    return null;
+  }
 
   const careerTracks = [
     {

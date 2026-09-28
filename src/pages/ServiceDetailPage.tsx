@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useRouter } from '../context/RouterContext';
+import { useCms } from '../context/CmsContext';
 import { siteConfig } from '../config/siteConfig';
 import { SEOHead } from '../components/common/SEOHead';
 import { Button } from '../components/common/Button';
@@ -25,10 +26,21 @@ interface ServiceDetailPageProps {
 
 export const ServiceDetailPage: React.FC<ServiceDetailPageProps> = ({ slug }) => {
   const { navigate } = useRouter();
+  const { services } = useCms();
   const [openFaq, setOpenFaq] = useState<number | null>(0);
   const [isConsultModalOpen, setIsConsultModalOpen] = useState(false);
 
-  const service = siteConfig.services.find((s) => s.slug === slug);
+  const normalizedSlug =
+    slug === 'meta-ads' || slug === 'facebook-ads' ? 'facebook-meta-ads' :
+    slug === 'cybersecurity-compliance' ? 'cybersecurity' :
+    slug === 'seo-growth' ? 'seo-digital-growth' :
+    slug === 'cloud' ? 'cloud-solutions' :
+    slug === 'ai' || slug === 'ai-automation' ? 'artificial-intelligence-automation' :
+    slug === 'digital-transformation' ? 'digital-transformation-consulting' :
+    slug;
+
+  const allServices = services && services.length > 0 ? services : siteConfig.services;
+  const service = allServices.find((s) => s.slug === slug || s.slug === normalizedSlug);
 
   if (!service) {
     return (

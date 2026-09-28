@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useCms } from '../../context/CmsContext';
 import { siteConfig } from '../../config/siteConfig';
 import { SectionHeading } from '../common/SectionHeading';
 import { Star, Play, Quote, ChevronLeft, ChevronRight, CheckCircle2, ShieldCheck, Award } from 'lucide-react';
@@ -10,11 +11,18 @@ interface TestimonialsSectionProps {
 export const TestimonialsSection: React.FC<TestimonialsSectionProps> = ({
   onOpenVideoModal,
 }) => {
+  const { testimonials, isSectionVisible, getSection } = useCms();
   const [activePageIndex, setActivePageIndex] = useState(0);
-  const itemsPerPage = 3;
-  const totalPages = Math.ceil(siteConfig.testimonials.length / itemsPerPage);
 
-  const currentTestimonials = siteConfig.testimonials.slice(
+  if (!isSectionVisible('home_testimonials')) {
+    return null;
+  }
+
+  const allTestimonials = testimonials && testimonials.length > 0 ? testimonials : siteConfig.testimonials;
+  const itemsPerPage = 3;
+  const totalPages = Math.ceil(allTestimonials.length / itemsPerPage);
+
+  const currentTestimonials = allTestimonials.slice(
     activePageIndex * itemsPerPage,
     (activePageIndex + 1) * itemsPerPage
   );

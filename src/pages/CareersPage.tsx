@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useRouter } from '../context/RouterContext';
+import { useCms } from '../context/CmsContext';
 import { siteConfig } from '../config/siteConfig';
 import { SEOHead } from '../components/common/SEOHead';
 import { SectionHeading } from '../components/common/SectionHeading';
@@ -23,6 +24,8 @@ import {
 
 export const CareersPage: React.FC = () => {
   const { navigate } = useRouter();
+  const { careers, settings } = useCms();
+  const displayCareers = careers && careers.length > 0 ? careers : siteConfig.careers;
   const [selectedRole, setSelectedRole] = useState<any | null>(null);
   const [applicationSent, setApplicationSent] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -262,7 +265,7 @@ export const CareersPage: React.FC = () => {
           </div>
 
           <div className="space-y-4">
-            {siteConfig.careers.map((job) => (
+            {displayCareers.map((job) => (
               <div
                 key={job.id}
                 className="p-6 rounded-2xl bg-[#070B1F] border border-slate-800 hover:border-cyan-500/50 transition-all flex flex-col md:flex-row md:items-center justify-between gap-6 group"

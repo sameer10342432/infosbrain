@@ -16,6 +16,14 @@ import {
   ExternalLink,
   ChevronRight,
   Eye,
+  Users,
+  Briefcase,
+  FolderKanban,
+  MessageSquareQuote,
+  HelpCircle,
+  GraduationCap,
+  Globe,
+  Layers,
 } from 'lucide-react';
 
 interface DashboardStats {
@@ -27,6 +35,14 @@ interface DashboardStats {
   tags: number;
   inquiries: number;
   newInquiries: number;
+  teamMembers: number;
+  services: number;
+  caseStudies: number;
+  testimonials: number;
+  faqs: number;
+  careers: number;
+  locations: number;
+  sections: number;
 }
 
 interface DashboardPageProps {
@@ -44,6 +60,14 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ onNavigate }) => {
     tags: 0,
     inquiries: 0,
     newInquiries: 0,
+    teamMembers: 0,
+    services: 0,
+    caseStudies: 0,
+    testimonials: 0,
+    faqs: 0,
+    careers: 0,
+    locations: 0,
+    sections: 0,
   });
 
   const [recentPosts, setRecentPosts] = useState<any[]>([]);
@@ -71,11 +95,23 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ onNavigate }) => {
         const tagsRes = await fetch('/api/tags', { headers });
         const tagsData = await tagsRes.json();
 
+        // Fetch CMS data bundle
+        let cmsData: any = {};
+        try {
+          const cmsRes = await fetch('/api/cms/all');
+          if (cmsRes.ok) {
+            cmsData = await cmsRes.json();
+          }
+        } catch {
+          // ignore
+        }
+
         const allPosts = postsData.posts || [];
         setRecentPosts(allPosts);
         setRecentInquiries(inqData.inquiries || []);
 
         const statusCounts = inqData.statusCounts || {};
+        const teamTotal = ((cmsData.leadership || []).length) + ((cmsData.teamMembers || []).length);
 
         setStats({
           totalPosts: postsData.pagination?.total || allPosts.length,
@@ -86,6 +122,14 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ onNavigate }) => {
           tags: tagsData.tags?.length || 0,
           inquiries: inqData.pagination?.total || 0,
           newInquiries: statusCounts.New || 0,
+          teamMembers: teamTotal,
+          services: cmsData.services?.length || 0,
+          caseStudies: cmsData.caseStudies?.length || 0,
+          testimonials: cmsData.testimonials?.length || 0,
+          faqs: cmsData.faqs?.length || 0,
+          careers: cmsData.careers?.length || 0,
+          locations: cmsData.locations?.length || 0,
+          sections: Object.keys(cmsData.sections || {}).length,
         });
       } catch (err) {
         console.error('Failed to load dashboard data:', err);
@@ -232,6 +276,55 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ onNavigate }) => {
             </div>
           );
         })}
+      </div>
+
+      {/* Website CMS Content Modules */}
+      <div className="space-y-3">
+        <div className="flex items-center justify-between">
+          <div>
+            <h3 className="text-sm font-bold text-white tracking-tight flex items-center gap-2">
+              <Layers className="w-4 h-4 text-cyan-400" />
+              Website CMS Modules
+            </h3>
+            <p className="text-xs text-slate-400">Direct access to manage public content, team, services, testimonials, and visibility.</p>
+          </div>
+          <button
+            onClick={() => onNavigate('/admin/sections')}
+            className="text-xs text-cyan-400 hover:text-cyan-300 flex items-center gap-1 font-semibold cursor-pointer"
+          >
+            Section Visibility Matrix <ArrowRight className="w-3.5 h-3.5" />
+          </button>
+        </div>
+
+        <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-3">
+          {[
+            { label: 'Sections', count: stats.sections, icon: Layers, route: '/admin/sections', color: 'text-cyan-400', bg: 'bg-cyan-950/40 border-cyan-500/30' },
+            { label: 'Team', count: stats.teamMembers, icon: Users, route: '/admin/team', color: 'text-blue-400', bg: 'bg-blue-950/40 border-blue-500/30' },
+            { label: 'Services', count: stats.services, icon: Briefcase, route: '/admin/services-manage', color: 'text-purple-400', bg: 'bg-purple-950/40 border-purple-500/30' },
+            { label: 'Case Studies', count: stats.caseStudies, icon: FolderKanban, route: '/admin/case-studies', color: 'text-emerald-400', bg: 'bg-emerald-950/40 border-emerald-500/30' },
+            { label: 'Reviews', count: stats.testimonials, icon: MessageSquareQuote, route: '/admin/testimonials', color: 'text-amber-400', bg: 'bg-amber-950/40 border-amber-500/30' },
+            { label: 'FAQs', count: stats.faqs, icon: HelpCircle, route: '/admin/faqs', color: 'text-teal-400', bg: 'bg-teal-950/40 border-teal-500/30' },
+            { label: 'Careers', count: stats.careers, icon: GraduationCap, route: '/admin/careers', color: 'text-pink-400', bg: 'bg-pink-950/40 border-pink-500/30' },
+            { label: 'Locations', count: stats.locations, icon: Globe, route: '/admin/locations', color: 'text-indigo-400', bg: 'bg-indigo-950/40 border-indigo-500/30' },
+          ].map((item) => {
+            const ItemIcon = item.icon;
+            return (
+              <div
+                key={item.label}
+                onClick={() => onNavigate(item.route)}
+                className="p-3.5 rounded-xl bg-[#090E1F] border border-slate-800/90 hover:border-slate-700 cursor-pointer transition-all hover:-translate-y-0.5 flex flex-col justify-between"
+              >
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-[11px] font-semibold text-slate-300 truncate">{item.label}</span>
+                  <div className={`p-1 rounded-md ${item.bg} border ${item.color}`}>
+                    <ItemIcon className="w-3 h-3" />
+                  </div>
+                </div>
+                <span className="text-xl font-bold text-white font-mono">{item.count}</span>
+              </div>
+            );
+          })}
+        </div>
       </div>
 
       {/* Dual Column: Recent Posts & Recent Inquiries */}

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useCms } from '../../context/CmsContext';
 import { siteConfig } from '../../config/siteConfig';
 import { SectionHeading } from '../common/SectionHeading';
 import {
@@ -16,11 +17,18 @@ import {
 } from 'lucide-react';
 
 export const GlobalPresenceSection: React.FC = () => {
+  const { locations, isSectionVisible } = useCms();
+
+  if (!isSectionVisible('home_global_presence')) {
+    return null;
+  }
+
+  const allLocations = locations && locations.length > 0 ? locations : siteConfig.globalOffices;
   const [selectedOfficeId, setSelectedOfficeId] = useState<string>('dublin-hq');
   const [activeRegionTab, setActiveRegionTab] = useState<string>('Europe');
 
   const selectedOffice =
-    siteConfig.globalOffices.find((o) => o.id === selectedOfficeId) || siteConfig.globalOffices[0];
+    allLocations.find((o) => o.id === selectedOfficeId) || allLocations[0];
 
   return (
     <section id="global" className="relative py-24 bg-[#050816] overflow-hidden">
@@ -203,7 +211,7 @@ export const GlobalPresenceSection: React.FC = () => {
             </svg>
 
             {/* Glowing Interactive Office Markers */}
-            {siteConfig.globalOffices.map((office) => {
+            {allLocations.map((office) => {
               const isSelected = selectedOfficeId === office.id;
               return (
                 <div

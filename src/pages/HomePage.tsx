@@ -1,4 +1,5 @@
 import React from 'react';
+import { useCms } from '../context/CmsContext';
 import { SEOHead } from '../components/common/SEOHead';
 import { HeroSection } from '../components/home/HeroSection';
 import { TrustMetrics } from '../components/home/TrustMetrics';
@@ -30,6 +31,8 @@ export const HomePage: React.FC<HomePageProps> = ({
   onOpenVideoModal,
   onOpenChatbot,
 }) => {
+  const { isSectionVisible } = useCms();
+
   return (
     <>
       <SEOHead
@@ -38,64 +41,74 @@ export const HomePage: React.FC<HomePageProps> = ({
       />
       <main className="w-full">
         {/* 1. Hero Section */}
-        <HeroSection
-          onOpenConsultation={onOpenConsultation}
-          onOpenVideoModal={onOpenVideoModal}
-        />
+        {isSectionVisible('home_hero') && (
+          <HeroSection
+            onOpenConsultation={onOpenConsultation}
+            onOpenVideoModal={onOpenVideoModal}
+          />
+        )}
 
         {/* 2. Trust Metrics Bar */}
-        <TrustMetrics />
+        {isSectionVisible('home_metrics') && <TrustMetrics />}
 
         {/* 3. Who We Are (About Teaser) */}
-        <AboutTeaserSection />
+        {isSectionVisible('home_about') && <AboutTeaserSection />}
 
         {/* 4. Our Services (6 Core Practices) */}
-        <ServicesSection />
+        {isSectionVisible('home_services') && <ServicesSection />}
 
         {/* 5. Why Choose InfosBrain (4 Cards) */}
-        <WhyChooseUsSection />
+        {isSectionVisible('home_why_us') && <WhyChooseUsSection />}
 
         {/* 6. Our Approach (4-Stage Process Timeline) */}
-        <ProcessSection />
+        {isSectionVisible('home_process') && <ProcessSection />}
 
         {/* 7. Industries We Serve (8 Sectors) */}
-        <IndustriesTeaser />
+        {isSectionVisible('home_industries') && <IndustriesTeaser />}
 
         {/* 8. Case Studies & Proven Business Outcomes */}
-        <CaseStudiesTeaser />
+        {isSectionVisible('home_case_studies') && <CaseStudiesTeaser />}
 
         {/* 9. Your Trusted Partner in Digital Innovation */}
-        <PartnershipSection />
+        {isSectionVisible('home_partnerships') && <PartnershipSection />}
 
         {/* 10. AI Tools & Interactive Demos */}
-        <AIToolsSection onOpenConsultation={onOpenConsultation} />
+        {isSectionVisible('home_ai_tools') && (
+          <AIToolsSection onOpenConsultation={onOpenConsultation} />
+        )}
 
         {/* 11. Global Presence Hubs */}
-        <GlobalPresenceSection />
+        {isSectionVisible('home_global_presence') && <GlobalPresenceSection />}
 
         {/* 12. Featured Innovations Lab */}
-        <FeaturedInnovationsSection />
+        {isSectionVisible('home_innovations') && <FeaturedInnovationsSection />}
 
         {/* 13. Leadership Advisory */}
-        <LeadershipSection />
+        {isSectionVisible('home_leadership') && <LeadershipSection />}
 
         {/* 14. Innovation Center & Thought Leadership */}
-        <InnovationCenterSection />
+        {isSectionVisible('home_thought_leadership') && <InnovationCenterSection />}
 
         {/* 15. Client Testimonials */}
-        <TestimonialsSection onOpenVideoModal={onOpenVideoModal} />
+        {isSectionVisible('home_testimonials') && (
+          <TestimonialsSection onOpenVideoModal={onOpenVideoModal} />
+        )}
 
         {/* 16. Careers & Culture */}
-        <CareersTeaserSection />
+        {isSectionVisible('home_careers') && <CareersTeaserSection />}
 
         {/* 17. Grand CTA: Let's Build Something Extraordinary Together */}
-        <GrandCTASection onOpenConsultation={onOpenConsultation} />
+        {isSectionVisible('home_cta') && (
+          <GrandCTASection onOpenConsultation={onOpenConsultation} />
+        )}
 
         {/* 18. Contact Section & Inquiries */}
-        <ContactSection
-          onOpenConsultation={onOpenConsultation}
-          onOpenChatbot={onOpenChatbot}
-        />
+        {isSectionVisible('home_contact') && (
+          <ContactSection
+            onOpenConsultation={onOpenConsultation}
+            onOpenChatbot={onOpenChatbot}
+          />
+        )}
       </main>
     </>
   );

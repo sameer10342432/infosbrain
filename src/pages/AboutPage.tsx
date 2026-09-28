@@ -1,5 +1,6 @@
 import React from 'react';
 import { useRouter } from '../context/RouterContext';
+import { useCms } from '../context/CmsContext';
 import { siteConfig } from '../config/siteConfig';
 import { SEOHead } from '../components/common/SEOHead';
 import { SectionHeading } from '../components/common/SectionHeading';
@@ -22,6 +23,8 @@ import {
 
 export const AboutPage: React.FC = () => {
   const { navigate } = useRouter();
+  const { teamMembers, settings } = useCms();
+  const displayTeam = teamMembers && teamMembers.length > 0 ? teamMembers : siteConfig.teamMembers;
 
   const values = [
     {
@@ -252,7 +255,7 @@ export const AboutPage: React.FC = () => {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-            {siteConfig.teamMembers.map((member) => (
+            {displayTeam.map((member) => (
               <div
                 key={member.id}
                 className="p-6 rounded-2xl bg-[#050816] border border-slate-800 hover:border-cyan-500/40 transition-all flex flex-col justify-between group overflow-hidden"

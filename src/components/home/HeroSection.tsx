@@ -1,5 +1,6 @@
 import React from 'react';
 import { useRouter } from '../../context/RouterContext';
+import { useCms } from '../../context/CmsContext';
 import { siteConfig } from '../../config/siteConfig';
 import { Button } from '../common/Button';
 import { HeroCanvas } from '../common/HeroCanvas';
@@ -15,6 +16,23 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
   onOpenVideoModal,
 }) => {
   const { navigate } = useRouter();
+  const { isSectionVisible, getSection } = useCms();
+
+  if (!isSectionVisible('home_hero')) {
+    return null;
+  }
+
+  const heroData = getSection('home_hero');
+  const badge = heroData?.badge || 'Build Smarter. Scale Faster. Grow with Confidence.';
+  const title = heroData?.title || 'Digital Transformation Solutions for Organizations Ready to';
+  const highlightText = heroData?.highlightText || 'Scale, Innovate, and Lead.';
+  const description =
+    heroData?.description ||
+    'InfosBrain helps businesses, nonprofits, institutions, and government organizations turn complex challenges into practical, measurable digital solutions.';
+  const primaryCtaText = heroData?.primaryCtaText || 'Start Your Digital Transformation';
+  const primaryCtaUrl = heroData?.primaryCtaUrl || '/contact';
+  const secondaryCtaText = heroData?.secondaryCtaText || 'Explore Our Services';
+  const secondaryCtaUrl = heroData?.secondaryCtaUrl || '/services';
 
   return (
     <section className="relative min-h-[94vh] flex items-center justify-center pt-24 sm:pt-28 pb-16 overflow-hidden bg-[#071A35]">
@@ -33,20 +51,20 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
             {/* Brand Statement Badge */}
             <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold uppercase tracking-wider bg-gradient-to-r from-[#0078FF]/20 via-[#6C4DFF]/20 to-transparent text-[#00C9A7] border border-[#00C9A7]/30 backdrop-blur-md shadow-[0_0_20px_rgba(0,201,167,0.2)]">
               <span className="w-2 h-2 rounded-full bg-[#00C9A7] animate-pulse" />
-              <span>Build Smarter. Scale Faster. Grow with Confidence.</span>
+              <span>{badge}</span>
             </div>
 
             {/* Main Headline */}
             <h1 className="text-4xl sm:text-5xl md:text-6xl xl:text-7xl font-extrabold text-white tracking-tight leading-[1.08] font-display">
-              Digital Transformation Solutions for Organizations Ready to{' '}
+              {title}{' '}
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#0078FF] via-[#6C4DFF] to-[#00C9A7] drop-shadow-sm">
-                Scale, Innovate, and Lead.
+                {highlightText}
               </span>
             </h1>
 
             {/* Supporting Text */}
             <p className="text-base sm:text-lg text-slate-200 max-w-2xl leading-relaxed mx-auto lg:mx-0 font-normal">
-              InfosBrain helps businesses, nonprofits, institutions, and government organizations turn complex challenges into practical, measurable digital solutions.
+              {description}
             </p>
 
             {/* Supporting Service / Value Statement */}
@@ -57,23 +75,27 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
             {/* Action Buttons */}
             <div className="pt-2 flex flex-wrap items-center justify-center lg:justify-start gap-3.5">
               <button
-                onClick={() => (onOpenConsultation ? onOpenConsultation() : navigate('/contact'))}
+                onClick={() => (onOpenConsultation && primaryCtaUrl === '/contact' ? onOpenConsultation() : navigate(primaryCtaUrl))}
                 className="px-6 py-3.5 rounded-xl bg-gradient-to-r from-[#0078FF] to-[#0060df] hover:from-[#006ee6] hover:to-[#0050c0] text-white font-bold text-sm shadow-[0_0_25px_rgba(0,120,255,0.4)] flex items-center gap-2 cursor-pointer transition-all"
               >
-                <span>Start Your Digital Transformation</span>
+                <span>{primaryCtaText}</span>
                 <ArrowRight className="w-4 h-4" />
               </button>
 
               <button
                 onClick={() => {
-                  const el = document.getElementById('services');
-                  if (el) el.scrollIntoView({ behavior: 'smooth' });
-                  else navigate('/services');
+                  if (secondaryCtaUrl === '/services') {
+                    const el = document.getElementById('services');
+                    if (el) el.scrollIntoView({ behavior: 'smooth' });
+                    else navigate('/services');
+                  } else {
+                    navigate(secondaryCtaUrl);
+                  }
                 }}
                 className="px-6 py-3.5 rounded-xl bg-slate-900/90 border border-slate-700 hover:border-[#00C9A7] text-slate-100 font-semibold text-sm transition-all flex items-center gap-2 cursor-pointer backdrop-blur-md"
               >
                 <Layers className="w-4 h-4 text-[#00C9A7]" />
-                <span>Explore Our Services</span>
+                <span>{secondaryCtaText}</span>
               </button>
 
               {onOpenVideoModal && (

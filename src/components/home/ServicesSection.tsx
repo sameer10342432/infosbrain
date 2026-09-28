@@ -1,5 +1,6 @@
 import React from 'react';
 import { useRouter } from '../../context/RouterContext';
+import { useCms } from '../../context/CmsContext';
 import { siteConfig } from '../../config/siteConfig';
 import { SectionHeading } from '../common/SectionHeading';
 import {
@@ -17,6 +18,33 @@ import {
 
 export const ServicesSection: React.FC = () => {
   const { navigate } = useRouter();
+  const { services, isSectionVisible, getSection } = useCms();
+
+  if (!isSectionVisible('home_services')) {
+    return null;
+  }
+
+  const sectionData = getSection('home_services');
+  const badge = sectionData?.badge || 'CAPABILITIES & PRACTICES';
+  const title = sectionData?.title || 'Our';
+  const highlightText = sectionData?.highlightText || 'Services';
+  const description =
+    sectionData?.description ||
+    'We deliver high-impact digital solutions across software development, artificial intelligence, cloud infrastructure, cybersecurity, and strategic growth.';
+
+  // Format dynamic services or fallback to coreServices
+  const displayServices =
+    services && services.length > 0
+      ? services.slice(0, 6).map((s) => ({
+          id: s.id,
+          title: s.title,
+          badge: s.category?.toUpperCase() || 'PRACTICE',
+          iconName: s.iconName || 'Code2',
+          description: s.shortDescription || '',
+          subPillars: Array.isArray(s.features) && s.features.length > 0 ? s.features.slice(0, 4) : ['Custom Architecture', 'Enterprise Scale', 'High Performance'],
+          path: `/services/${s.slug}`,
+        }))
+      : siteConfig.coreServices;
 
   const getIcon = (name: string) => {
     switch (name) {
@@ -59,7 +87,7 @@ export const ServicesSection: React.FC = () => {
 
         {/* 6 Core Services Balanced Grid: 3 columns on large screens */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
-          {siteConfig.coreServices.map((service) => {
+          {displayServices.map((service) => {
             const Icon = getIcon(service.iconName);
 
             return (

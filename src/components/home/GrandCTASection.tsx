@@ -1,5 +1,6 @@
 import React from 'react';
 import { useRouter } from '../../context/RouterContext';
+import { useCms } from '../../context/CmsContext';
 import { siteConfig } from '../../config/siteConfig';
 import { Button } from '../common/Button';
 import { ArrowRight, Mail, Sparkles, MessageSquare, CheckCircle2 } from 'lucide-react';
@@ -10,6 +11,23 @@ interface GrandCTASectionProps {
 
 export const GrandCTASection: React.FC<GrandCTASectionProps> = ({ onOpenConsultation }) => {
   const { navigate } = useRouter();
+  const { isSectionVisible, getSection, settings } = useCms();
+
+  if (!isSectionVisible('home_cta')) {
+    return null;
+  }
+
+  const ctaData = getSection('home_cta');
+  const badge = ctaData?.badge || 'DIGITAL INNOVATION & TRANSFORMATION';
+  const title = ctaData?.title || "Let's Build Something";
+  const highlightText = ctaData?.highlightText || 'Extraordinary Together';
+  const description =
+    ctaData?.description ||
+    'From enterprise-grade web platforms and digital transformation initiatives to advanced SEO strategies and high-ROI customer acquisition campaigns, our senior consultants and practice leaders are committed to helping you achieve your goals.';
+  const primaryCtaText = ctaData?.primaryCtaText || 'Start a Conversation';
+  const primaryCtaUrl = ctaData?.primaryCtaUrl || '/contact';
+  const primaryEmail = settings?.contact_email || siteConfig.contact.primaryEmail;
+  const secondaryEmail = settings?.secondary_email || siteConfig.contact.secondaryEmail;
 
   return (
     <section className="relative py-24 bg-[#050816] overflow-hidden">
@@ -24,20 +42,20 @@ export const GrandCTASection: React.FC<GrandCTASectionProps> = ({ onOpenConsulta
           {/* Glowing Badge */}
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold uppercase tracking-wider bg-[#0078FF]/15 text-[#00C9A7] border border-[#00C9A7]/30 mb-6 shadow-[0_0_15px_rgba(0,201,167,0.2)]">
             <Sparkles className="w-3.5 h-3.5 text-[#00C9A7]" />
-            <span>DIGITAL INNOVATION & TRANSFORMATION</span>
+            <span>{badge}</span>
           </div>
 
           {/* Headline */}
           <h2 className="text-3xl sm:text-5xl md:text-6xl font-extrabold text-white tracking-tight leading-tight font-display mb-6">
-            Let's Build Something{' '}
+            {title}{' '}
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#0078FF] via-[#6C4DFF] to-[#00C9A7]">
-              Extraordinary Together
+              {highlightText}
             </span>
           </h2>
 
           {/* Supporting Text */}
           <p className="text-base sm:text-lg text-slate-200 max-w-3xl mx-auto leading-relaxed mb-4 font-normal">
-            From enterprise-grade web platforms and digital transformation initiatives to advanced SEO strategies and high-ROI customer acquisition campaigns, our senior consultants and practice leaders are committed to helping you achieve your goals.
+            {description}
           </p>
 
           <p className="text-sm text-slate-300 max-w-2xl mx-auto leading-relaxed mb-8">
@@ -49,10 +67,10 @@ export const GrandCTASection: React.FC<GrandCTASectionProps> = ({ onOpenConsulta
             <Button
               size="lg"
               variant="primary"
-              onClick={() => (onOpenConsultation ? onOpenConsultation() : navigate('/contact'))}
+              onClick={() => (onOpenConsultation && primaryCtaUrl === '/contact' ? onOpenConsultation() : navigate(primaryCtaUrl))}
               icon={<ArrowRight className="w-5 h-5" />}
             >
-              Start a Conversation
+              {primaryCtaText}
             </Button>
 
             <Button
@@ -80,16 +98,16 @@ export const GrandCTASection: React.FC<GrandCTASectionProps> = ({ onOpenConsulta
             <div className="flex items-center gap-2">
               <Mail className="w-4 h-4 text-[#00C9A7]" />
               <span>General Inquiries:</span>
-              <a href={`mailto:${siteConfig.contact.primaryEmail}`} className="text-cyan-300 hover:underline font-mono">
-                {siteConfig.contact.primaryEmail}
+              <a href={`mailto:${primaryEmail}`} className="text-cyan-300 hover:underline font-mono">
+                {primaryEmail}
               </a>
             </div>
             <div className="hidden sm:block text-slate-700">•</div>
             <div className="flex items-center gap-2">
               <Mail className="w-4 h-4 text-[#00C9A7]" />
               <span>Strategic Partnerships:</span>
-              <a href={`mailto:${siteConfig.contact.secondaryEmail}`} className="text-cyan-300 hover:underline font-mono">
-                {siteConfig.contact.secondaryEmail}
+              <a href={`mailto:${secondaryEmail}`} className="text-cyan-300 hover:underline font-mono">
+                {secondaryEmail}
               </a>
             </div>
           </div>

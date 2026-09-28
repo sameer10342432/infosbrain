@@ -1,4 +1,5 @@
 import React from 'react';
+import { useCms } from '../../context/CmsContext';
 import { siteConfig } from '../../config/siteConfig';
 import { SectionHeading } from '../common/SectionHeading';
 import {
@@ -16,6 +17,11 @@ import { useRouter } from '../../context/RouterContext';
 
 export const PartnershipSection: React.FC = () => {
   const { navigate } = useRouter();
+  const { isSectionVisible } = useCms();
+
+  if (!isSectionVisible('home_partnerships')) {
+    return null;
+  }
 
   const getCategoryIcon = (name: string) => {
     switch (name) {

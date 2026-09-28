@@ -1,18 +1,25 @@
 import React, { useState } from 'react';
 import { useRouter } from '../../context/RouterContext';
+import { useCms } from '../../context/CmsContext';
 import { siteConfig } from '../../config/siteConfig';
 import { ArrowRight, Quote, CheckCircle2, ShieldCheck } from 'lucide-react';
 
 export const CaseStudiesTeaser: React.FC = () => {
   const { navigate } = useRouter();
+  const { caseStudies, isSectionVisible } = useCms();
   const [filter, setFilter] = useState<string>('All');
 
+  if (!isSectionVisible('home_case_studies')) {
+    return null;
+  }
+
+  const allCaseStudies = caseStudies && caseStudies.length > 0 ? caseStudies : siteConfig.caseStudies;
   const categories = ['All', 'Nonprofits & NGOs', 'Retail & E-Commerce', 'Education & Institutions', 'SaaS / Enterprise Software'];
 
   const filtered =
     filter === 'All'
-      ? siteConfig.caseStudies.slice(0, 4)
-      : siteConfig.caseStudies.filter((c) => c.industry.includes(filter) || filter === 'All');
+      ? allCaseStudies.slice(0, 4)
+      : allCaseStudies.filter((c) => c.industry.includes(filter) || filter === 'All');
 
   return (
     <section id="work" className="relative py-24 bg-[#050816] border-t border-slate-800/80 overflow-hidden">
@@ -66,14 +73,14 @@ export const CaseStudiesTeaser: React.FC = () => {
               <div>
                 {/* Case Study Image Banner */}
                 {cs.imageUrl && (
-                  <div className="relative h-48 sm:h-52 w-full rounded-2xl overflow-hidden mb-6 border border-slate-800 group-hover:border-[#0078FF]/40 transition-all">
+                  <div className="relative aspect-[16/9] w-full rounded-2xl overflow-hidden mb-6 border border-slate-800 group-hover:border-[#0078FF]/40 transition-all bg-slate-950 flex items-center justify-center">
                     <img
                       src={cs.imageUrl}
                       alt={cs.title}
                       referrerPolicy="no-referrer"
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#071A35] via-[#071A35]/30 to-transparent" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-slate-950/40 via-transparent to-transparent pointer-events-none" />
                     <div className="absolute top-3 left-3">
                       <span className="text-xs font-mono uppercase tracking-wider px-3 py-1 rounded-full bg-[#050816]/90 text-[#00C9A7] border border-[#00C9A7]/40 backdrop-blur-md font-semibold">
                         {cs.industry}

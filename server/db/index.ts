@@ -3,6 +3,7 @@ import path from 'path';
 import fs from 'fs';
 import bcrypt from 'bcryptjs';
 import dotenv from 'dotenv';
+import { seedCmsData } from './seedCms.js';
 
 dotenv.config();
 
@@ -357,6 +358,13 @@ export function seedDatabase() {
         item.createdAt
       );
     });
+  }
+
+  // Seed extended CMS tables
+  try {
+    seedCmsData(db);
+  } catch (err) {
+    console.error('[CMS Seeding Error]', err);
   }
 }
 

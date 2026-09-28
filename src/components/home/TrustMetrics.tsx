@@ -1,9 +1,23 @@
 import React from 'react';
+import { useCms } from '../../context/CmsContext';
 import { siteConfig } from '../../config/siteConfig';
 import { Globe, Rocket, Handshake, Star, ShieldCheck, Headphones } from 'lucide-react';
 
 export const TrustMetrics: React.FC = () => {
+  const { statistics, isSectionVisible } = useCms();
+
+  if (!isSectionVisible('home_metrics')) {
+    return null;
+  }
+
   const icons = [Globe, Rocket, Star, Handshake, ShieldCheck, Headphones];
+  const displayStats =
+    statistics && statistics.length > 0
+      ? statistics.map((s) => ({
+          value: s.suffix ? `${s.value}${s.suffix}` : s.value,
+          label: s.label,
+        }))
+      : siteConfig.stats;
 
   return (
     <section className="relative py-10 bg-[#050816] border-y border-[#0078FF]/20 overflow-hidden">
@@ -20,7 +34,7 @@ export const TrustMetrics: React.FC = () => {
 
         {/* Horizontal scroll on mobile, responsive grid on sm+ */}
         <div className="flex sm:grid sm:grid-cols-3 lg:grid-cols-6 gap-3.5 sm:gap-4 overflow-x-auto no-scrollbar pb-2 sm:pb-0">
-          {siteConfig.stats.map((stat, idx) => {
+          {displayStats.map((stat, idx) => {
             const Icon = icons[idx % icons.length];
             return (
               <div

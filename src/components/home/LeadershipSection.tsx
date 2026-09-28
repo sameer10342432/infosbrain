@@ -1,9 +1,25 @@
 import React from 'react';
+import { useCms } from '../../context/CmsContext';
 import { siteConfig } from '../../config/siteConfig';
 import { SectionHeading } from '../common/SectionHeading';
 import { Linkedin, Award, CheckCircle2, ArrowUpRight } from 'lucide-react';
 
 export const LeadershipSection: React.FC = () => {
+  const { leadership, isSectionVisible, getSection } = useCms();
+
+  if (!isSectionVisible('home_leadership')) {
+    return null;
+  }
+
+  const sectionData = getSection('home_leadership');
+  const badge = sectionData?.badge || 'EXECUTIVE LEADERSHIP & ADVISORY';
+  const title = sectionData?.title || 'Meet the Visionaries';
+  const highlightText = sectionData?.highlightText || 'Behind InfosBrain';
+  const description =
+    sectionData?.description ||
+    'A multidisciplinary executive cadre combining deep technological expertise, global governance acumen, and an uncompromising commitment to client success.';
+  const members = leadership && leadership.length > 0 ? leadership : siteConfig.leadership;
+
   return (
     <section id="leadership" className="relative py-24 bg-[#050816] overflow-hidden">
       {/* Background radial spotlight */}
@@ -12,10 +28,10 @@ export const LeadershipSection: React.FC = () => {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <SectionHeading
-          badge="EXECUTIVE LEADERSHIP & ADVISORY"
-          title="Meet the Visionaries"
-          highlightText="Behind InfosBrain"
-          description="A multidisciplinary executive cadre combining deep technological expertise, global governance acumen, and an uncompromising commitment to client success."
+          badge={badge}
+          title={title}
+          highlightText={highlightText}
+          description={description}
         />
 
         {/* Executive Leadership & Team Full-Width Banner */}
@@ -39,7 +55,7 @@ export const LeadershipSection: React.FC = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {siteConfig.leadership.map((member) => (
+          {members.map((member) => (
             <div
               key={member.id}
               className="group p-6 rounded-3xl bg-[#071A35]/80 border border-slate-800 hover:border-[#0078FF]/50 transition-all flex flex-col justify-between shadow-lg"

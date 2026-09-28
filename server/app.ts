@@ -14,6 +14,9 @@ import inquiriesRoutes from './routes/inquiries.js';
 import settingsRoutes from './routes/settings.js';
 import seoRoutes from './routes/seo.js';
 import cronRoutes, { initScheduledPublisher } from './cron.js';
+import teamRoutes from './routes/team.js';
+import servicesRoutes from './routes/services.js';
+import cmsRoutes from './routes/cms.js';
 
 export const app = express();
 
@@ -53,6 +56,9 @@ app.use('/api/media', mediaRoutes);
 app.use('/api/inquiries', inquiriesRoutes);
 app.use('/api/settings', settingsRoutes);
 app.use('/api/cron', cronRoutes);
+app.use('/api/team', teamRoutes);
+app.use('/api/services', servicesRoutes);
+app.use('/api/cms', cmsRoutes);
 
 // Health check endpoint
 app.get('/api/health', (_req, res) => {

@@ -13,6 +13,14 @@ import { MediaPage } from './pages/MediaPage';
 import { InquiriesPage } from './pages/InquiriesPage';
 import { SettingsPage } from './pages/SettingsPage';
 import { ProfilePage } from './pages/ProfilePage';
+import { TeamAdminPage } from './pages/TeamAdminPage';
+import { ServicesAdminPage } from './pages/ServicesAdminPage';
+import { CaseStudiesAdminPage } from './pages/CaseStudiesAdminPage';
+import { TestimonialsAdminPage } from './pages/TestimonialsAdminPage';
+import { FaqsAdminPage } from './pages/FaqsAdminPage';
+import { CareersAdminPage } from './pages/CareersAdminPage';
+import { LocationsAdminPage } from './pages/LocationsAdminPage';
+import { SectionsAdminPage } from './pages/SectionsAdminPage';
 import { useRouter } from '../context/RouterContext';
 
 const AdminRouteController: React.FC = () => {
@@ -167,6 +175,94 @@ const AdminRouteController: React.FC = () => {
           breadcrumbs={[{ label: 'Communication' }, { label: 'Contact Inquiries' }]}
         >
           <InquiriesPage />
+        </AdminLayout>
+      );
+
+    case '/admin/sections':
+      return (
+        <AdminLayout
+          currentRoute="/admin/sections"
+          onNavigate={navigate}
+          breadcrumbs={[{ label: 'Website CMS' }, { label: 'Sections & Visibility' }]}
+        >
+          <SectionsAdminPage />
+        </AdminLayout>
+      );
+
+    case '/admin/team':
+      return (
+        <AdminLayout
+          currentRoute="/admin/team"
+          onNavigate={navigate}
+          breadcrumbs={[{ label: 'Website CMS' }, { label: 'Team & Leadership' }]}
+        >
+          <TeamAdminPage />
+        </AdminLayout>
+      );
+
+    case '/admin/services-manage':
+      return (
+        <AdminLayout
+          currentRoute="/admin/services-manage"
+          onNavigate={navigate}
+          breadcrumbs={[{ label: 'Website CMS' }, { label: 'Services' }]}
+        >
+          <ServicesAdminPage />
+        </AdminLayout>
+      );
+
+    case '/admin/case-studies':
+      return (
+        <AdminLayout
+          currentRoute="/admin/case-studies"
+          onNavigate={navigate}
+          breadcrumbs={[{ label: 'Website CMS' }, { label: 'Case Studies' }]}
+        >
+          <CaseStudiesAdminPage />
+        </AdminLayout>
+      );
+
+    case '/admin/testimonials':
+      return (
+        <AdminLayout
+          currentRoute="/admin/testimonials"
+          onNavigate={navigate}
+          breadcrumbs={[{ label: 'Website CMS' }, { label: 'Testimonials' }]}
+        >
+          <TestimonialsAdminPage />
+        </AdminLayout>
+      );
+
+    case '/admin/faqs':
+      return (
+        <AdminLayout
+          currentRoute="/admin/faqs"
+          onNavigate={navigate}
+          breadcrumbs={[{ label: 'Website CMS' }, { label: 'FAQs' }]}
+        >
+          <FaqsAdminPage />
+        </AdminLayout>
+      );
+
+    case '/admin/careers':
+      return (
+        <AdminLayout
+          currentRoute="/admin/careers"
+          onNavigate={navigate}
+          breadcrumbs={[{ label: 'Website CMS' }, { label: 'Careers' }]}
+        >
+          <CareersAdminPage />
+        </AdminLayout>
+      );
+
+    case '/admin/locations':
+      return (
+        <AdminLayout
+          currentRoute="/admin/locations"
+          onNavigate={navigate}
+          breadcrumbs={[{ label: 'Website CMS' }, { label: 'Global Locations' }]}
+        >
+          <LocationsAdminPage />
         </AdminLayout>
       );
 

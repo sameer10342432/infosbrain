@@ -1,10 +1,26 @@
 import React, { useState } from 'react';
+import { useCms } from '../../context/CmsContext';
 import { siteConfig } from '../../config/siteConfig';
 import { SectionHeading } from '../common/SectionHeading';
 import { ChevronDown, HelpCircle, Mail } from 'lucide-react';
 
 export const FAQSection: React.FC = () => {
+  const { faqs, settings, isSectionVisible, getSection } = useCms();
   const [openId, setOpenId] = useState<string | null>('faq-1');
+
+  if (!isSectionVisible('home_faq')) {
+    return null;
+  }
+
+  const sectionData = getSection('home_faq');
+  const badge = sectionData?.badge || 'CLARITY & TRANSPARENCY';
+  const title = sectionData?.title || 'Frequently Asked';
+  const highlightText = sectionData?.highlightText || 'Questions';
+  const description =
+    sectionData?.description ||
+    'Everything you need to know about our engagement models, technical standards, project timelines, and growth strategies.';
+  const displayFaqs = faqs && faqs.length > 0 ? faqs : siteConfig.faqs;
+  const supportEmail = settings?.secondary_email || settings?.contact_email || 'contact@infosbrain.com';
 
   const toggleFAQ = (id: string) => {
     setOpenId(openId === id ? null : id);
@@ -14,10 +30,10 @@ export const FAQSection: React.FC = () => {
     <section id="faq" className="relative py-24 bg-[#070B1F] border-t border-slate-800/80 overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <SectionHeading
-          badge="CLARITY & TRANSPARENCY"
-          title="Frequently Asked"
-          highlightText="Questions"
-          description="Everything you need to know about our engagement models, technical standards, project timelines, and growth strategies."
+          badge={badge}
+          title={title}
+          highlightText={highlightText}
+          description={description}
         />
 
         {/* FAQ Full-Width Showcase Banner */}
@@ -41,7 +57,7 @@ export const FAQSection: React.FC = () => {
         </div>
 
         <div className="max-w-4xl mx-auto space-y-4">
-          {siteConfig.faqs.map((faq) => {
+          {displayFaqs.map((faq) => {
             const isOpen = openId === faq.id;
             return (
               <div
@@ -91,11 +107,11 @@ export const FAQSection: React.FC = () => {
             </div>
           </div>
           <a
-            href="mailto:contact@infosbrain.com"
+            href={`mailto:${supportEmail}`}
             className="px-5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-bold text-cyan-300 border border-slate-700 hover:border-cyan-400/40 flex items-center gap-2 transition-colors cursor-pointer"
           >
             <Mail className="w-4 h-4" />
-            <span>contact@infosbrain.com</span>
+            <span>{supportEmail}</span>
           </a>
         </div>
       </div>

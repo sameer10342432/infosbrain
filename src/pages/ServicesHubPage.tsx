@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useRouter } from '../context/RouterContext';
+import { useCms } from '../context/CmsContext';
 import { siteConfig } from '../config/siteConfig';
 import { SEOHead } from '../components/common/SEOHead';
 import { SectionHeading } from '../components/common/SectionHeading';
@@ -30,8 +31,11 @@ import {
 
 export const ServicesHubPage: React.FC = () => {
   const { navigate } = useRouter();
+  const { services } = useCms();
   const [activeCategory, setActiveCategory] = useState<string>('All');
   const [searchTerm, setSearchTerm] = useState<string>('');
+
+  const allServices = services && services.length > 0 ? services : siteConfig.services;
 
   const getIcon = (name: string) => {
     switch (name) {
@@ -76,7 +80,7 @@ export const ServicesHubPage: React.FC = () => {
 
   const categories = ['All', 'Technology', 'Development', 'Marketing', 'Consulting', 'Advertising', 'Design'];
 
-  const filtered = siteConfig.services.filter((s) => {
+  const filtered = allServices.filter((s) => {
     const matchesCat = activeCategory === 'All' || s.category === activeCategory;
     const matchesSearch =
       s.title.toLowerCase().includes(searchTerm.toLowerCase()) ||

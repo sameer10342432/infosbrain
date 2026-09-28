@@ -1,5 +1,6 @@
 import React from 'react';
 import { useRouter } from '../../context/RouterContext';
+import { useCms } from '../../context/CmsContext';
 import { siteConfig } from '../../config/siteConfig';
 import { BrandLogo } from './BrandLogo';
 import {
@@ -21,9 +22,21 @@ import {
 
 export const Footer: React.FC = () => {
   const { navigate } = useRouter();
+  const { settings } = useCms();
   const [newsletterEmail, setNewsletterEmail] = React.useState('');
   const [isSubscribing, setIsSubscribing] = React.useState(false);
   const [isSubscribed, setIsSubscribed] = React.useState(false);
+
+  const linkedinUrl = settings?.social_linkedin || siteConfig.contact.social.linkedin;
+  const facebookUrl = settings?.social_facebook || siteConfig.contact.social.facebook;
+  const instagramUrl = settings?.social_instagram || siteConfig.contact.social.instagram;
+  const xUrl = settings?.social_x || siteConfig.contact.social.x;
+  const youtubeUrl = settings?.social_youtube || siteConfig.contact.social.youtube;
+  const contactEmail = settings?.contact_email || siteConfig.contact.primaryEmail;
+  const secondaryEmail = settings?.secondary_email || siteConfig.contact.secondaryEmail;
+  const phone = settings?.phone || siteConfig.contact.phone;
+  const address = settings?.address || siteConfig.contact.address;
+  const brandTagline = settings?.tagline || siteConfig.brand.tagline;
 
   const handleScrollTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -162,7 +175,7 @@ export const Footer: React.FC = () => {
               </div>
               <div className="flex items-center gap-3">
                 <a
-                  href={siteConfig.contact.social.linkedin}
+                  href={linkedinUrl}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="w-8 h-8 rounded-lg bg-[#071A35] border border-slate-800 hover:border-[#0078FF] flex items-center justify-center text-slate-300 hover:text-white transition-all"
@@ -171,7 +184,7 @@ export const Footer: React.FC = () => {
                   <Linkedin className="w-4 h-4" />
                 </a>
                 <a
-                  href={siteConfig.contact.social.youtube}
+                  href={youtubeUrl}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="w-8 h-8 rounded-lg bg-[#071A35] border border-slate-800 hover:border-red-500 flex items-center justify-center text-slate-300 hover:text-white transition-all"
@@ -180,7 +193,7 @@ export const Footer: React.FC = () => {
                   <Youtube className="w-4 h-4" />
                 </a>
                 <a
-                  href={siteConfig.contact.social.facebook}
+                  href={facebookUrl}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="w-8 h-8 rounded-lg bg-[#071A35] border border-slate-800 hover:border-blue-500 flex items-center justify-center text-slate-300 hover:text-white transition-all"
@@ -189,7 +202,7 @@ export const Footer: React.FC = () => {
                   <Facebook className="w-4 h-4" />
                 </a>
                 <a
-                  href={siteConfig.contact.social.x}
+                  href={xUrl}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="w-8 h-8 rounded-lg bg-[#071A35] border border-slate-800 hover:border-slate-400 flex items-center justify-center text-slate-300 hover:text-white transition-all"
@@ -198,7 +211,7 @@ export const Footer: React.FC = () => {
                   <Twitter className="w-4 h-4" />
                 </a>
                 <a
-                  href={siteConfig.contact.social.instagram}
+                  href={instagramUrl}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="w-8 h-8 rounded-lg bg-[#071A35] border border-slate-800 hover:border-pink-500 flex items-center justify-center text-slate-300 hover:text-white transition-all"
@@ -211,82 +224,134 @@ export const Footer: React.FC = () => {
           </div>
 
           {/* Col 2: Core Services */}
-          <div className="space-y-3">
-            <h4 className="text-xs font-bold uppercase tracking-wider text-white font-mono">
+          <div className="space-y-4 text-left">
+            <h4 className="text-xs font-bold uppercase tracking-wider text-white font-mono text-left m-0 p-0">
               Core Services
             </h4>
-            <ul className="space-y-2 text-xs sm:text-sm text-slate-400">
-              <li>
-                <button onClick={() => navigate('/services/software-development')} className="hover:text-white transition-colors cursor-pointer">
+            <ul className="flex flex-col space-y-2.5 text-xs sm:text-sm text-slate-400 p-0 m-0 list-none text-left">
+              <li className="w-full text-left">
+                <button
+                  type="button"
+                  onClick={() => navigate('/services/software-development')}
+                  className="text-left block w-full hover:text-white transition-colors cursor-pointer text-xs sm:text-sm leading-relaxed py-0.5 focus:outline-none focus:text-white"
+                >
                   Software Development
                 </button>
               </li>
-              <li>
-                <button onClick={() => navigate('/services/artificial-intelligence-automation')} className="hover:text-white transition-colors cursor-pointer">
-                  Artificial Intelligence & Automation
+              <li className="w-full text-left">
+                <button
+                  type="button"
+                  onClick={() => navigate('/services/artificial-intelligence-automation')}
+                  className="text-left block w-full hover:text-white transition-colors cursor-pointer text-xs sm:text-sm leading-relaxed py-0.5 focus:outline-none focus:text-white"
+                >
+                  Artificial Intelligence &amp; Automation
                 </button>
               </li>
-              <li>
-                <button onClick={() => navigate('/services/cloud-solutions')} className="hover:text-white transition-colors cursor-pointer">
-                  Cloud Solutions & Infrastructure
+              <li className="w-full text-left">
+                <button
+                  type="button"
+                  onClick={() => navigate('/services/cloud-solutions')}
+                  className="text-left block w-full hover:text-white transition-colors cursor-pointer text-xs sm:text-sm leading-relaxed py-0.5 focus:outline-none focus:text-white"
+                >
+                  Cloud Solutions &amp; Infrastructure
                 </button>
               </li>
-              <li>
-                <button onClick={() => navigate('/services/cybersecurity')} className="hover:text-white transition-colors cursor-pointer">
-                  Cybersecurity & Compliance
+              <li className="w-full text-left">
+                <button
+                  type="button"
+                  onClick={() => navigate('/services/cybersecurity')}
+                  className="text-left block w-full hover:text-white transition-colors cursor-pointer text-xs sm:text-sm leading-relaxed py-0.5 focus:outline-none focus:text-white"
+                >
+                  Cybersecurity &amp; Compliance
                 </button>
               </li>
-              <li>
-                <button onClick={() => navigate('/services/seo-digital-growth')} className="hover:text-white transition-colors cursor-pointer">
-                  SEO & Digital Growth
+              <li className="w-full text-left">
+                <button
+                  type="button"
+                  onClick={() => navigate('/services/seo-digital-growth')}
+                  className="text-left block w-full hover:text-white transition-colors cursor-pointer text-xs sm:text-sm leading-relaxed py-0.5 focus:outline-none focus:text-white"
+                >
+                  SEO &amp; Digital Growth
                 </button>
               </li>
-              <li>
-                <button onClick={() => navigate('/services/digital-transformation-consulting')} className="hover:text-white transition-colors cursor-pointer">
+              <li className="w-full text-left">
+                <button
+                  type="button"
+                  onClick={() => navigate('/services/digital-transformation-consulting')}
+                  className="text-left block w-full hover:text-white transition-colors cursor-pointer text-xs sm:text-sm leading-relaxed py-0.5 focus:outline-none focus:text-white"
+                >
                   Digital Transformation Consulting
                 </button>
               </li>
-              <li>
-                <button onClick={() => navigate('/services')} className="hover:text-white text-cyan-400 transition-colors cursor-pointer">
-                  View All Services →
+              <li className="w-full text-left">
+                <button
+                  type="button"
+                  onClick={() => navigate('/services')}
+                  className="text-left block w-full hover:text-cyan-300 text-cyan-400 font-medium transition-colors cursor-pointer text-xs sm:text-sm leading-relaxed py-0.5 focus:outline-none"
+                >
+                  View All Services &rarr;
                 </button>
               </li>
             </ul>
           </div>
 
           {/* Col 3: AI-Powered Tools */}
-          <div className="space-y-3">
-            <h4 className="text-xs font-bold uppercase tracking-wider text-white font-mono">
+          <div className="space-y-4 text-left">
+            <h4 className="text-xs font-bold uppercase tracking-wider text-white font-mono text-left m-0 p-0">
               AI-Powered Tools
             </h4>
-            <ul className="space-y-2 text-xs sm:text-sm text-slate-400">
-              <li>
-                <button onClick={() => navigate('/ai-solutions/ai-chatbots-agents')} className="hover:text-white transition-colors cursor-pointer">
+            <ul className="flex flex-col space-y-2.5 text-xs sm:text-sm text-slate-400 p-0 m-0 list-none text-left">
+              <li className="w-full text-left">
+                <button
+                  type="button"
+                  onClick={() => navigate('/ai-solutions/ai-chatbots-agents')}
+                  className="text-left block w-full hover:text-white transition-colors cursor-pointer text-xs sm:text-sm leading-relaxed py-0.5 focus:outline-none focus:text-white"
+                >
                   AI Business Assistant
                 </button>
               </li>
-              <li>
-                <button onClick={() => navigate('/ai-solutions/ai-computer-vision')} className="hover:text-white transition-colors cursor-pointer">
+              <li className="w-full text-left">
+                <button
+                  type="button"
+                  onClick={() => navigate('/ai-solutions/ai-computer-vision')}
+                  className="text-left block w-full hover:text-white transition-colors cursor-pointer text-xs sm:text-sm leading-relaxed py-0.5 focus:outline-none focus:text-white"
+                >
                   Intelligent Document Processing
                 </button>
               </li>
-              <li>
-                <button onClick={() => navigate('/ai-solutions/predictive-analytics')} className="hover:text-white transition-colors cursor-pointer">
+              <li className="w-full text-left">
+                <button
+                  type="button"
+                  onClick={() => navigate('/ai-solutions/predictive-analytics')}
+                  className="text-left block w-full hover:text-white transition-colors cursor-pointer text-xs sm:text-sm leading-relaxed py-0.5 focus:outline-none focus:text-white"
+                >
                   Predictive Analytics Forecaster
                 </button>
               </li>
-              <li>
-                <button onClick={() => navigate('/ai-solutions/ai-chatbots-agents')} className="hover:text-white transition-colors cursor-pointer">
+              <li className="w-full text-left">
+                <button
+                  type="button"
+                  onClick={() => navigate('/ai-solutions/ai-chatbots-agents')}
+                  className="text-left block w-full hover:text-white transition-colors cursor-pointer text-xs sm:text-sm leading-relaxed py-0.5 focus:outline-none focus:text-white"
+                >
                   Customer Service Automation
                 </button>
               </li>
-              <li>
-                <button onClick={() => navigate('/ai-solutions/ai-generative-content')} className="hover:text-white transition-colors cursor-pointer">
+              <li className="w-full text-left">
+                <button
+                  type="button"
+                  onClick={() => navigate('/ai-solutions/ai-generative-content')}
+                  className="text-left block w-full hover:text-white transition-colors cursor-pointer text-xs sm:text-sm leading-relaxed py-0.5 focus:outline-none focus:text-white"
+                >
                   AI Content Studio
                 </button>
               </li>
-              <li>
-                <button onClick={() => navigate('/ai-solutions/workflow-automation')} className="hover:text-white transition-colors cursor-pointer">
+              <li className="w-full text-left">
+                <button
+                  type="button"
+                  onClick={() => navigate('/ai-solutions/workflow-automation')}
+                  className="text-left block w-full hover:text-white transition-colors cursor-pointer text-xs sm:text-sm leading-relaxed py-0.5 focus:outline-none focus:text-white"
+                >
                   Workflow Automation Engine
                 </button>
               </li>
@@ -294,39 +359,63 @@ export const Footer: React.FC = () => {
           </div>
 
           {/* Col 4: Quick Links & Hubs */}
-          <div className="space-y-3">
-            <h4 className="text-xs font-bold uppercase tracking-wider text-white font-mono">
+          <div className="space-y-4 text-left">
+            <h4 className="text-xs font-bold uppercase tracking-wider text-white font-mono text-left m-0 p-0">
               Organization
             </h4>
-            <ul className="space-y-2 text-xs sm:text-sm text-slate-400">
-              <li>
-                <button onClick={() => navigate('/about')} className="hover:text-white transition-colors cursor-pointer">
-                  About Us & Vision
+            <ul className="flex flex-col space-y-2.5 text-xs sm:text-sm text-slate-400 p-0 m-0 list-none text-left">
+              <li className="w-full text-left">
+                <button
+                  type="button"
+                  onClick={() => navigate('/about')}
+                  className="text-left block w-full hover:text-white transition-colors cursor-pointer text-xs sm:text-sm leading-relaxed py-0.5 focus:outline-none focus:text-white"
+                >
+                  About Us &amp; Vision
                 </button>
               </li>
-              <li>
-                <button onClick={() => navigate('/industries')} className="hover:text-white transition-colors cursor-pointer">
+              <li className="w-full text-left">
+                <button
+                  type="button"
+                  onClick={() => navigate('/industries')}
+                  className="text-left block w-full hover:text-white transition-colors cursor-pointer text-xs sm:text-sm leading-relaxed py-0.5 focus:outline-none focus:text-white"
+                >
                   Industries We Serve
                 </button>
               </li>
-              <li>
-                <button onClick={() => navigate('/case-studies')} className="hover:text-white transition-colors cursor-pointer">
+              <li className="w-full text-left">
+                <button
+                  type="button"
+                  onClick={() => navigate('/case-studies')}
+                  className="text-left block w-full hover:text-white transition-colors cursor-pointer text-xs sm:text-sm leading-relaxed py-0.5 focus:outline-none focus:text-white"
+                >
                   Verified Case Studies
                 </button>
               </li>
-              <li>
-                <button onClick={() => navigate('/blog')} className="hover:text-white transition-colors cursor-pointer">
-                  Innovation Center & Insights
+              <li className="w-full text-left">
+                <button
+                  type="button"
+                  onClick={() => navigate('/blog')}
+                  className="text-left block w-full hover:text-white transition-colors cursor-pointer text-xs sm:text-sm leading-relaxed py-0.5 focus:outline-none focus:text-white"
+                >
+                  Innovation Center &amp; Insights
                 </button>
               </li>
-              <li>
-                <button onClick={() => navigate('/careers')} className="hover:text-white transition-colors cursor-pointer">
-                  Careers & Fellowships
+              <li className="w-full text-left">
+                <button
+                  type="button"
+                  onClick={() => navigate('/careers')}
+                  className="text-left block w-full hover:text-white transition-colors cursor-pointer text-xs sm:text-sm leading-relaxed py-0.5 focus:outline-none focus:text-white"
+                >
+                  Careers &amp; Fellowships
                 </button>
               </li>
-              <li>
-                <button onClick={() => navigate('/contact')} className="hover:text-white transition-colors cursor-pointer">
-                  Contact & Consultations
+              <li className="w-full text-left">
+                <button
+                  type="button"
+                  onClick={() => navigate('/contact')}
+                  className="text-left block w-full hover:text-white transition-colors cursor-pointer text-xs sm:text-sm leading-relaxed py-0.5 focus:outline-none focus:text-white"
+                >
+                  Contact &amp; Consultations
                 </button>
               </li>
             </ul>
@@ -356,7 +445,7 @@ export const Footer: React.FC = () => {
           <div className="flex items-center gap-2">
             <Shield className="w-3.5 h-3.5 text-[#00C9A7]" />
             <span>
-              &copy; {new Date().getFullYear()} {siteConfig.brand.name}. All rights reserved.
+              &copy; {new Date().getFullYear()} {settings?.brand_name || siteConfig.brand.name}. All rights reserved.
             </span>
           </div>
 
