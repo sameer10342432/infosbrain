@@ -41,6 +41,17 @@ export const AdminAuthProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   // Validate session with server on mount
   useEffect(() => {
     async function verifySession() {
+      if (!token) {
+        setIsLoading(false);
+        return;
+      }
+
+      // Offline sessions stay valid locally
+      if (token.startsWith('offline_token_')) {
+        setIsLoading(false);
+        return;
+      }
+
       try {
         const res = await fetch('/api/auth/me', {
           headers: token ? { Authorization: `Bearer ${token}` } : {},
@@ -48,16 +59,25 @@ export const AdminAuthProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         });
 
         if (res.ok) {
-          const data = await res.json();
-          setUser(data.user);
-          localStorage.setItem('infosbrain_admin_user', JSON.stringify(data.user));
-        } else {
-          // Token invalid or expired
+          const contentType = res.headers.get('content-type') || '';
+          if (contentType.includes('application/json')) {
+            const data = await res.json();
+            if (data?.user) {
+              setUser(data.user);
+              localStorage.setItem('infosbrain_admin_user', JSON.stringify(data.user));
+              return;
+            }
+          }
+        }
+
+        // Only explicitly unauthorized from real API resets credentials
+        if (res.status === 401 || res.status === 403) {
           setUser(null);
           setToken(null);
           localStorage.removeItem('infosbrain_admin_user');
           localStorage.removeItem('infosbrain_admin_token');
         }
+        // If 404 (static host / GitHub Pages) or 500, keep cached user
       } catch {
         // Offline or network error - keep cached state if exists
       } finally {

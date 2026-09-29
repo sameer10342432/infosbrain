@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "node ./node_modules/vite/bin/vite.js --port=3000 --host=0.0.0.0",
+    "dev": "node --import tsx ./node_modules/vite/bin/vite.js --port=3000 --host=0.0.0.0",
     "build": "node ./node_modules/vite/bin/vite.js build && node scripts/copy-404.js",
     "preview": "node ./node_modules/vite/bin/vite.js preview",
     "server": "node --import tsx server/index.ts",

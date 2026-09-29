@@ -80,26 +80,54 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ onNavigate }) => {
         const headers = token ? { Authorization: `Bearer ${token}` } : {};
 
         // Fetch posts
-        const postsRes = await fetch('/api/posts/admin/all?limit=5', { headers });
-        const postsData = await postsRes.json();
+        let postsData: any = {};
+        try {
+          const postsRes = await fetch('/api/posts/admin/all?limit=5', { headers });
+          if (postsRes.ok && postsRes.headers.get('content-type')?.includes('application/json')) {
+            postsData = await postsRes.json();
+          }
+        } catch {
+          // offline
+        }
 
         // Fetch inquiries
-        const inqRes = await fetch('/api/inquiries/admin?limit=5', { headers });
-        const inqData = await inqRes.json();
+        let inqData: any = {};
+        try {
+          const inqRes = await fetch('/api/inquiries/admin?limit=5', { headers });
+          if (inqRes.ok && inqRes.headers.get('content-type')?.includes('application/json')) {
+            inqData = await inqRes.json();
+          }
+        } catch {
+          // offline
+        }
 
         // Fetch categories
-        const catRes = await fetch('/api/categories/admin', { headers });
-        const catData = await catRes.json();
+        let catData: any = {};
+        try {
+          const catRes = await fetch('/api/categories/admin', { headers });
+          if (catRes.ok && catRes.headers.get('content-type')?.includes('application/json')) {
+            catData = await catRes.json();
+          }
+        } catch {
+          // offline
+        }
 
         // Fetch tags
-        const tagsRes = await fetch('/api/tags', { headers });
-        const tagsData = await tagsRes.json();
+        let tagsData: any = {};
+        try {
+          const tagsRes = await fetch('/api/tags', { headers });
+          if (tagsRes.ok && tagsRes.headers.get('content-type')?.includes('application/json')) {
+            tagsData = await tagsRes.json();
+          }
+        } catch {
+          // offline
+        }
 
         // Fetch CMS data bundle
         let cmsData: any = {};
         try {
           const cmsRes = await fetch('/api/cms/all');
-          if (cmsRes.ok) {
+          if (cmsRes.ok && cmsRes.headers.get('content-type')?.includes('application/json')) {
             cmsData = await cmsRes.json();
           }
         } catch {

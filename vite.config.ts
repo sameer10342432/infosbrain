@@ -22,7 +22,11 @@ function expressApiPlugin(): Plugin {
             app(req as any, res as any, next);
           } catch (err) {
             console.error('[API Middleware Error]', err);
-            next(err);
+            if (!res.headersSent) {
+              res.statusCode = 500;
+              res.setHeader('Content-Type', 'application/json');
+              res.end(JSON.stringify({ success: false, error: 'Internal server error in API middleware' }));
+            }
           }
         } else {
           next();
