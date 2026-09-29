@@ -14,6 +14,43 @@
           );
         }
       }(window.location));
+
+      // Asset path resolver for GitHub Pages subpath deployment
+      (function() {
+        try {
+          if (typeof window === 'undefined') return;
+          var hostname = window.location.hostname;
+          var pathname = window.location.pathname;
+          if (hostname.includes('github.io')) {
+            var segment = pathname.split('/').filter(Boolean)[0];
+            var base = segment ? '/' + segment : '/infosbrain';
+
+            var desc = Object.getOwnPropertyDescriptor(HTMLImageElement.prototype, 'src');
+            if (desc && desc.set) {
+              var origSrcSet = desc.set;
+              Object.defineProperty(HTMLImageElement.prototype, 'src', {
+                set: function(val) {
+                  if (typeof val === 'string' && (val.startsWith('/assets/') || val.startsWith('/Asset/'))) {
+                    val = base + val;
+                  }
+                  return origSrcSet.call(this, val);
+                },
+                get: desc.get,
+                configurable: true,
+                enumerable: true
+              });
+            }
+
+            var origSetAttr = Element.prototype.setAttribute;
+            Element.prototype.setAttribute = function(name, val) {
+              if (name === 'src' && typeof val === 'string' && (val.startsWith('/assets/') || val.startsWith('/Asset/'))) {
+                val = base + val;
+              }
+              return origSetAttr.call(this, name, val);
+            };
+          }
+        } catch (_) {}
+      })();
     </script>
     <script>
       (function () {
@@ -109,8 +146,8 @@
       "sameAs": []
     }
     </script>
-    <script type="module" crossorigin src="./assets/index-CBeX0LYo.js"></script>
-    <link rel="stylesheet" crossorigin href="./assets/index-BXIqG98f.css">
+    <script type="module" crossorigin src="/infosbrain/assets/index-CFgb6yI9.js"></script>
+    <link rel="stylesheet" crossorigin href="/infosbrain/assets/index-4wKKHmPl.css">
   </head>
   <body class="bg-[#050816] text-slate-100 font-sans antialiased selection:bg-cyan-500/30 selection:text-cyan-200 overflow-x-hidden min-h-screen">
     <div id="root"></div>
