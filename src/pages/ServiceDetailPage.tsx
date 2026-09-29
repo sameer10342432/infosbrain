@@ -40,7 +40,9 @@ export const ServiceDetailPage: React.FC<ServiceDetailPageProps> = ({ slug }) =>
     slug;
 
   const allServices = services && services.length > 0 ? services : siteConfig.services;
-  const service = allServices.find((s) => s.slug === slug || s.slug === normalizedSlug);
+  const service =
+    allServices.find((s) => s.slug === slug || s.slug === normalizedSlug) ||
+    siteConfig.services.find((s) => s.slug === slug || s.slug === normalizedSlug);
 
   if (!service) {
     return (

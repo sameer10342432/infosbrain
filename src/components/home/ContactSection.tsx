@@ -35,13 +35,15 @@ export const ContactSection: React.FC<ContactSectionProps> = ({
   const [message, setMessage] = useState('');
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!name.trim() || !email.trim()) return;
     setIsSubmitting(true);
+    setErrorMessage(null);
     try {
-      await fetch('/api/inquiries', {
+      const res = await fetch('/api/inquiries', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -54,11 +56,16 @@ export const ContactSection: React.FC<ContactSectionProps> = ({
           source: `Homepage Contact Section (${activeTab.toUpperCase()})`,
         }),
       });
+      if (res.ok) {
+        setIsSubmitted(true);
+      } else {
+        setErrorMessage('Inquiry service is currently offline or unreachable. Please contact info@infosbrain.com directly.');
+      }
     } catch (err) {
       console.error('Inquiry submission error:', err);
+      setErrorMessage('Unable to connect to inquiry server. Please contact info@infosbrain.com directly.');
     } finally {
       setIsSubmitting(false);
-      setIsSubmitted(true);
     }
   };
 
@@ -265,6 +272,12 @@ export const ContactSection: React.FC<ContactSectionProps> = ({
                     className="w-full px-4 py-3 rounded-xl bg-[#050816] border border-slate-800 focus:border-[#0078FF] text-white text-sm focus:outline-none transition-all resize-none"
                   />
                 </div>
+
+                {errorMessage && (
+                  <div className="p-3 text-xs text-amber-300 bg-amber-950/50 border border-amber-500/40 rounded-xl">
+                    {errorMessage}
+                  </div>
+                )}
 
                 <div className="pt-2">
                   <button

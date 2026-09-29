@@ -40,10 +40,15 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({
     'In 3 Days, 1:00 PM GMT',
   ];
 
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsSubmitting(true);
+    setErrorMessage(null);
     try {
-      await fetch('/api/inquiries', {
+      const res = await fetch('/api/inquiries', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -56,10 +61,17 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({
           source: 'Consultation Modal',
         }),
       });
+      if (res.ok) {
+        setIsSubmitted(true);
+      } else {
+        setErrorMessage('Consultation service is currently offline. Please email info@infosbrain.com directly.');
+      }
     } catch (err) {
       console.error('Inquiry submission error:', err);
+      setErrorMessage('Unable to connect to consultation server. Please email info@infosbrain.com directly.');
+    } finally {
+      setIsSubmitting(false);
     }
-    setIsSubmitted(true);
   };
 
   const handleResetAndClose = () => {
@@ -218,14 +230,21 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({
                 />
               </div>
 
+              {errorMessage && (
+                <div className="p-3 text-xs text-amber-300 bg-amber-950/50 border border-amber-500/40 rounded-xl">
+                  {errorMessage}
+                </div>
+              )}
+
               {/* Submit CTA */}
               <div className="pt-3">
                 <button
                   type="submit"
-                  className="w-full py-3 px-6 rounded-xl bg-gradient-to-r from-[#0078FF] via-[#6C4DFF] to-[#00C9A7] hover:opacity-95 text-white font-bold text-sm transition-all shadow-[0_0_25px_rgba(0,120,255,0.4)] flex items-center justify-center gap-2 cursor-pointer"
+                  disabled={isSubmitting}
+                  className="w-full py-3 px-6 rounded-xl bg-gradient-to-r from-[#0078FF] via-[#6C4DFF] to-[#00C9A7] hover:opacity-95 text-white font-bold text-sm transition-all shadow-[0_0_25px_rgba(0,120,255,0.4)] flex items-center justify-center gap-2 cursor-pointer disabled:opacity-60"
                 >
                   <Send className="w-4 h-4" />
-                  <span>Confirm Strategic Consultation Booking</span>
+                  <span>{isSubmitting ? 'Booking...' : 'Confirm Strategic Consultation Booking'}</span>
                 </button>
                 <div className="mt-2 text-center text-[11px] text-slate-400">
                   🔒 Zero commitment • Non-disclosure agreement guaranteed • 100% confidential

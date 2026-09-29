@@ -180,7 +180,11 @@ export const CmsProvider: React.FC<{ children: React.ReactNode }> = ({ children 
           setTeamMembers(data.teamMembers);
         }
         if (data.services && data.services.length > 0) {
-          setServices(data.services);
+          setServices((prev) => {
+            const cmsServices: ServiceItem[] = data.services;
+            const cmsSlugSet = new Set(cmsServices.map((s: any) => s.slug));
+            return [...cmsServices, ...prev.filter((p: any) => !cmsSlugSet.has(p.slug))];
+          });
         }
         if (data.statistics && data.statistics.length > 0) {
           setStatistics(data.statistics);
@@ -195,7 +199,11 @@ export const CmsProvider: React.FC<{ children: React.ReactNode }> = ({ children 
           setLocations(data.locations);
         }
         if (data.caseStudies && data.caseStudies.length > 0) {
-          setCaseStudies(data.caseStudies);
+          setCaseStudies((prev) => {
+            const cmsItems: CaseStudyItem[] = data.caseStudies;
+            const cmsSlugSet = new Set(cmsItems.map((c: any) => c.slug || c.id));
+            return [...cmsItems, ...prev.filter((p: any) => !cmsSlugSet.has(p.slug || p.id))];
+          });
         }
         if (data.careers && data.careers.length > 0) {
           setCareers(data.careers);

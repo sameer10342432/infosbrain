@@ -56,7 +56,12 @@ if (fs.existsSync(distDir)) {
       }
     }
 
-    console.log('[Build] Successfully synchronized Asset/ into dist/assets');
+    const distAssetCap = path.resolve(distDir, 'Asset');
+    if (!fs.existsSync(distAssetCap)) {
+      fs.cpSync(distAssets, distAssetCap, { recursive: true });
+    }
+
+    console.log('[Build] Successfully synchronized Asset/ into dist/assets and dist/Asset');
   }
 }
 

@@ -20,6 +20,8 @@ import {
 export const ContactPage: React.FC = () => {
   const { navigate } = useRouter();
   const [submitted, setSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [formData, setFormData] = useState({
     fullName: '',
     email: '',
@@ -33,8 +35,10 @@ export const ContactPage: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (formData.fullName && formData.email && formData.message) {
+      setIsSubmitting(true);
+      setErrorMessage(null);
       try {
-        await fetch('/api/inquiries', {
+        const res = await fetch('/api/inquiries', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -48,10 +52,17 @@ export const ContactPage: React.FC = () => {
             source: 'Website Contact Page',
           }),
         });
+        if (res.ok) {
+          setSubmitted(true);
+        } else {
+          setErrorMessage('Inquiry service is currently offline or unreachable. Please email info@infosbrain.com directly.');
+        }
       } catch (err) {
         console.error('Inquiry submission error:', err);
+        setErrorMessage('Unable to connect to the inquiry server. Please email info@infosbrain.com directly.');
+      } finally {
+        setIsSubmitting(false);
       }
-      setSubmitted(true);
     }
   };
 
@@ -399,11 +410,18 @@ export const ContactPage: React.FC = () => {
                       />
                     </div>
 
+                    {errorMessage && (
+                      <div className="p-3 text-xs text-amber-300 bg-amber-950/50 border border-amber-500/40 rounded-xl">
+                        {errorMessage}
+                      </div>
+                    )}
+
                     <button
                       type="submit"
-                      className="w-full py-3.5 px-6 rounded-xl font-bold text-sm text-white bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 shadow-[0_0_25px_rgba(6,182,212,0.4)] transition-all cursor-pointer flex items-center justify-center gap-2"
+                      disabled={isSubmitting}
+                      className="w-full py-3.5 px-6 rounded-xl font-bold text-sm text-white bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 shadow-[0_0_25px_rgba(6,182,212,0.4)] transition-all cursor-pointer flex items-center justify-center gap-2 disabled:opacity-50"
                     >
-                      <span>Send Project Inquiry</span>
+                      <span>{isSubmitting ? 'Sending...' : 'Send Project Inquiry'}</span>
                       <Send className="w-4 h-4" />
                     </button>
                   </form>
