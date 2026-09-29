@@ -34,7 +34,7 @@ function expressApiPlugin(): Plugin {
 
 export default defineConfig(({ command }) => {
   return {
-    base: process.env.VITE_BASE || (process.env.GITHUB_ACTIONS ? '/infosbrain/' : (command === 'build' ? './' : '/')),
+    base: process.env.VITE_BASE || (process.env.GITHUB_ACTIONS ? '/infosbrain/' : '/'),
     plugins: [react(), tailwindcss(), expressApiPlugin()],
     resolve: {
       alias: {

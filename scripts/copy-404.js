@@ -63,5 +63,16 @@ if (fs.existsSync(distDir)) {
 
     console.log('[Build] Successfully synchronized Asset/ into dist/assets and dist/Asset');
   }
+
+  // Ensure Hostinger deployment files (.htaccess, robots.txt, sitemap.xml) are present in dist/
+  const publicDir = path.resolve(process.cwd(), 'public');
+  ['.htaccess', 'robots.txt', 'sitemap.xml', 'favicon.svg'].forEach(file => {
+    const src = path.join(publicDir, file);
+    const dest = path.join(distDir, file);
+    if (fs.existsSync(src)) {
+      fs.copyFileSync(src, dest);
+    }
+  });
+  console.log('[Build] Successfully verified Hostinger .htaccess, robots.txt, and sitemap.xml in dist/');
 }
 

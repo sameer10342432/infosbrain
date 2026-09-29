@@ -7,6 +7,8 @@ node_modules/
 dist/
 build/
 out/
+hostinger-deploy/
+*.zip
 coverage/
 .vite/
 
