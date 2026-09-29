@@ -201,8 +201,8 @@ export const CmsProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         if (data.caseStudies && data.caseStudies.length > 0) {
           setCaseStudies((prev) => {
             const cmsItems: CaseStudyItem[] = data.caseStudies;
-            const cmsSlugSet = new Set(cmsItems.map((c: any) => c.slug || c.id));
-            return [...cmsItems, ...prev.filter((p: any) => !cmsSlugSet.has(p.slug || p.id))];
+            const cmsKeySet = new Set(cmsItems.flatMap((c: any) => [c.id, c.slug].filter(Boolean)));
+            return [...cmsItems, ...prev.filter((p: any) => !cmsKeySet.has(p.id) && !cmsKeySet.has(p.slug))];
           });
         }
         if (data.careers && data.careers.length > 0) {

@@ -10,6 +10,7 @@ import { StickyMobileNav } from './components/common/StickyMobileNav';
 import { ConsultationModal } from './components/common/ConsultationModal';
 import { VideoModal } from './components/common/VideoModal';
 import { AIAssistantModal } from './components/common/AIAssistantModal';
+import { InteractiveBackground } from './components/common/InteractiveBackground';
 
 // Pages
 import { HomePage } from './pages/HomePage';
@@ -186,9 +187,12 @@ const AppShell: React.FC = () => {
   const handleOpenChatbot = () => setIsChatbotOpen(true);
 
   return (
-    <div className="min-h-screen bg-[#071A35] text-slate-100 flex flex-col font-sans selection:bg-[#0078FF] selection:text-white transition-colors duration-250 pb-16 md:pb-0">
+    <div className="min-h-screen bg-[#071A35] text-slate-100 flex flex-col font-sans selection:bg-[#0078FF] selection:text-white transition-colors duration-250 pb-16 md:pb-0 relative overflow-x-hidden">
+      {/* Interactive Ambient Background Layer */}
+      <InteractiveBackground />
+
       <Navbar onOpenConsultation={handleOpenConsultation} />
-      <div className="flex-grow">
+      <div className="flex-grow relative z-10">
         <PageContent
           onOpenConsultation={handleOpenConsultation}
           onOpenVideoModal={handleOpenVideo}
