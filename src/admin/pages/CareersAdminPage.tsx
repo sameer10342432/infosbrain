@@ -34,12 +34,17 @@ interface CareerItem {
   updatedAt: string;
 }
 
+import { safeApiFetch, loadOfflineCache, saveOfflineCache } from '../utils/adminFallbackData';
+import { siteConfig } from '../../config/siteConfig';
+
 export const CareersAdminPage: React.FC = () => {
   const { token } = useAdminAuth();
   const { success, error } = useToast();
 
-  const [careers, setCareers] = useState<CareerItem[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [careers, setCareers] = useState<CareerItem[]>(() =>
+    loadOfflineCache('infosbrain_cms_careers', (siteConfig.careers as any) || [])
+  );
+  const [loading, setLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
 
   // Modal State
@@ -68,17 +73,19 @@ export const CareersAdminPage: React.FC = () => {
   const fetchCareers = async () => {
     setLoading(true);
     try {
-      const res = await fetch('/api/cms/careers/admin', {
+      const res = await safeApiFetch('/api/cms/careers/admin', {
         headers: token ? { Authorization: `Bearer ${token}` } : {},
       });
-      if (res.ok) {
-        const data = await res.json();
-        setCareers(data.careers || []);
+      if (!res.isOffline && res.ok && Array.isArray(res.data?.careers) && res.data.careers.length > 0) {
+        setCareers(res.data.careers);
+        saveOfflineCache('infosbrain_cms_careers', res.data.careers);
       } else {
-        error('Failed to load careers.');
+        const cached = loadOfflineCache('infosbrain_cms_careers', (siteConfig.careers as any) || []);
+        setCareers(cached);
       }
     } catch {
-      error('Network error loading careers.');
+      const cached = loadOfflineCache('infosbrain_cms_careers', (siteConfig.careers as any) || []);
+      setCareers(cached);
     } finally {
       setLoading(false);
     }

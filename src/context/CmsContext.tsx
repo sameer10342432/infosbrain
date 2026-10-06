@@ -168,10 +168,30 @@ export const CmsProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const [settings, setSettings] = useState<Record<string, string>>(defaultSettings);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
+  const syncOfflineSections = useCallback(() => {
+    try {
+      const saved = localStorage.getItem('infosbrain_cms_sections');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          const customSectionsMap: Record<string, CmsSection> = {};
+          parsed.forEach((sec: any) => {
+            customSectionsMap[sec.sectionKey] = {
+              ...sec,
+              isVisible: sec.status === 'visible',
+            };
+          });
+          setSections((prev) => ({ ...prev, ...customSectionsMap }));
+        }
+      }
+    } catch {}
+  }, []);
+
   const fetchCmsData = useCallback(async () => {
     try {
       const res = await fetch('/api/cms/all');
-      if (res.ok) {
+      const contentType = res.headers.get('content-type') || '';
+      if (res.ok && contentType.includes('application/json')) {
         const data = await res.json();
         if (data.leadership && data.leadership.length > 0) {
           setLeadership(data.leadership);
@@ -221,13 +241,23 @@ export const CmsProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     } catch (err) {
       console.warn('[CMS Provider] Falling back to default site configuration:', err);
     } finally {
+      syncOfflineSections();
       setIsLoading(false);
     }
-  }, []);
+  }, [syncOfflineSections]);
 
   useEffect(() => {
+    syncOfflineSections();
     fetchCmsData();
-  }, [fetchCmsData]);
+
+    const handleCmsUpdate = () => {
+      syncOfflineSections();
+    };
+    window.addEventListener('infosbrain_cms_updated', handleCmsUpdate);
+    return () => {
+      window.removeEventListener('infosbrain_cms_updated', handleCmsUpdate);
+    };
+  }, [fetchCmsData, syncOfflineSections]);
 
   const isSectionVisible = useCallback(
     (sectionKey: string): boolean => {

@@ -22,6 +22,9 @@ import {
   ExternalLink,
 } from 'lucide-react';
 
+import { safeApiFetch, loadOfflineCache, saveOfflineCache } from '../utils/adminFallbackData';
+import { siteConfig } from '../../config/siteConfig';
+
 interface ProcessStep {
   step: string;
   title: string;
@@ -64,8 +67,10 @@ export const ServicesAdminPage: React.FC = () => {
   const { token } = useAdminAuth();
   const { success, error } = useToast();
 
-  const [services, setServices] = useState<ServiceItem[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [services, setServices] = useState<ServiceItem[]>(() =>
+    loadOfflineCache('infosbrain_cms_services', (siteConfig.services as any) || [])
+  );
+  const [loading, setLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [filterCategory, setFilterCategory] = useState<string>('all');
 
@@ -111,17 +116,19 @@ export const ServicesAdminPage: React.FC = () => {
   const fetchServices = async () => {
     setLoading(true);
     try {
-      const res = await fetch('/api/services/admin/all', {
+      const res = await safeApiFetch('/api/services/admin/all', {
         headers: token ? { Authorization: `Bearer ${token}` } : {},
       });
-      if (res.ok) {
-        const data = await res.json();
-        setServices(data.services || []);
+      if (!res.isOffline && res.ok && Array.isArray(res.data?.services) && res.data.services.length > 0) {
+        setServices(res.data.services);
+        saveOfflineCache('infosbrain_cms_services', res.data.services);
       } else {
-        error('Failed to load services.');
+        const cached = loadOfflineCache('infosbrain_cms_services', (siteConfig.services as any) || []);
+        setServices(cached);
       }
     } catch {
-      error('Network error loading services.');
+      const cached = loadOfflineCache('infosbrain_cms_services', (siteConfig.services as any) || []);
+      setServices(cached);
     } finally {
       setLoading(false);
     }

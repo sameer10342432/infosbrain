@@ -34,12 +34,17 @@ interface TestimonialItem {
   updatedAt: string;
 }
 
+import { safeApiFetch, loadOfflineCache, saveOfflineCache } from '../utils/adminFallbackData';
+import { siteConfig } from '../../config/siteConfig';
+
 export const TestimonialsAdminPage: React.FC = () => {
   const { token } = useAdminAuth();
   const { success, error } = useToast();
 
-  const [testimonials, setTestimonials] = useState<TestimonialItem[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [testimonials, setTestimonials] = useState<TestimonialItem[]>(() =>
+    loadOfflineCache('infosbrain_cms_testimonials', (siteConfig.testimonials as any) || [])
+  );
+  const [loading, setLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
 
   // Modal State
@@ -71,17 +76,19 @@ export const TestimonialsAdminPage: React.FC = () => {
   const fetchTestimonials = async () => {
     setLoading(true);
     try {
-      const res = await fetch('/api/cms/testimonials/admin', {
+      const res = await safeApiFetch('/api/cms/testimonials/admin', {
         headers: token ? { Authorization: `Bearer ${token}` } : {},
       });
-      if (res.ok) {
-        const data = await res.json();
-        setTestimonials(data.testimonials || []);
+      if (!res.isOffline && res.ok && Array.isArray(res.data?.testimonials) && res.data.testimonials.length > 0) {
+        setTestimonials(res.data.testimonials);
+        saveOfflineCache('infosbrain_cms_testimonials', res.data.testimonials);
       } else {
-        error('Failed to load testimonials.');
+        const cached = loadOfflineCache('infosbrain_cms_testimonials', (siteConfig.testimonials as any) || []);
+        setTestimonials(cached);
       }
     } catch {
-      error('Network error loading testimonials.');
+      const cached = loadOfflineCache('infosbrain_cms_testimonials', (siteConfig.testimonials as any) || []);
+      setTestimonials(cached);
     } finally {
       setLoading(false);
     }

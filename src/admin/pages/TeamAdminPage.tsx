@@ -40,12 +40,36 @@ interface TeamMemberItem {
   updatedAt: string;
 }
 
+import { safeApiFetch, loadOfflineCache, saveOfflineCache } from '../utils/adminFallbackData';
+import { siteConfig } from '../../config/siteConfig';
+
+const initialTeamFallback: any[] = [
+  ...(siteConfig.leadership || []).map((m: any, idx: number) => ({
+    ...m,
+    designation: m.role || m.designation,
+    profileImage: m.imageUrl || m.profileImage,
+    category: 'leadership',
+    displayOrder: idx + 1,
+    status: 'published',
+  })),
+  ...(siteConfig.teamMembers || []).map((m: any, idx: number) => ({
+    ...m,
+    designation: m.role || m.designation,
+    profileImage: m.imageUrl || m.profileImage,
+    category: 'team',
+    displayOrder: idx + 10,
+    status: 'published',
+  })),
+];
+
 export const TeamAdminPage: React.FC = () => {
   const { token } = useAdminAuth();
   const { success, error } = useToast();
 
-  const [members, setMembers] = useState<TeamMemberItem[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [members, setMembers] = useState<TeamMemberItem[]>(() =>
+    loadOfflineCache('infosbrain_cms_team', initialTeamFallback)
+  );
+  const [loading, setLoading] = useState(false);
   const [filterCategory, setFilterCategory] = useState<'all' | 'leadership' | 'team'>('all');
 
   // Modal State
@@ -76,17 +100,19 @@ export const TeamAdminPage: React.FC = () => {
   const fetchMembers = async () => {
     setLoading(true);
     try {
-      const res = await fetch('/api/team/admin', {
+      const res = await safeApiFetch('/api/team/admin', {
         headers: token ? { Authorization: `Bearer ${token}` } : {},
       });
-      if (res.ok) {
-        const data = await res.json();
-        setMembers(data.members || []);
+      if (!res.isOffline && res.ok && Array.isArray(res.data?.members) && res.data.members.length > 0) {
+        setMembers(res.data.members);
+        saveOfflineCache('infosbrain_cms_team', res.data.members);
       } else {
-        error('Failed to load team members.');
+        const cached = loadOfflineCache('infosbrain_cms_team', initialTeamFallback);
+        setMembers(cached);
       }
     } catch {
-      error('Network error loading team members.');
+      const cached = loadOfflineCache('infosbrain_cms_team', initialTeamFallback);
+      setMembers(cached);
     } finally {
       setLoading(false);
     }

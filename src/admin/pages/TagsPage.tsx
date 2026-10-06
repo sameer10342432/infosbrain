@@ -11,12 +11,25 @@ interface TagItem {
   postCount?: number;
 }
 
+import { safeApiFetch, loadOfflineCache, saveOfflineCache } from '../utils/adminFallbackData';
+
+const initialTagsFallback: TagItem[] = [
+  { id: 'tag-1', name: 'Artificial Intelligence', slug: 'artificial-intelligence' },
+  { id: 'tag-2', name: 'Cloud Migration', slug: 'cloud-migration' },
+  { id: 'tag-3', name: 'Next.js', slug: 'nextjs' },
+  { id: 'tag-4', name: 'Cybersecurity', slug: 'cybersecurity' },
+  { id: 'tag-5', name: 'SEO Strategy', slug: 'seo-strategy' },
+  { id: 'tag-6', name: 'Enterprise SaaS', slug: 'enterprise-saas' },
+];
+
 export const TagsPage: React.FC = () => {
   const { token } = useAdminAuth();
   const { success, error } = useToast();
 
-  const [tags, setTags] = useState<TagItem[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [tags, setTags] = useState<TagItem[]>(() =>
+    loadOfflineCache('infosbrain_cms_tags', initialTagsFallback)
+  );
+  const [loading, setLoading] = useState(false);
   const [search, setSearch] = useState('');
 
   const [modalOpen, setModalOpen] = useState(false);
@@ -32,15 +45,17 @@ export const TagsPage: React.FC = () => {
   const fetchTags = async () => {
     setLoading(true);
     try {
-      const res = await fetch('/api/tags');
-      if (res.ok) {
-        const data = await res.json();
-        setTags(data.tags || []);
+      const res = await safeApiFetch('/api/tags');
+      if (!res.isOffline && res.ok && Array.isArray(res.data?.tags) && res.data.tags.length > 0) {
+        setTags(res.data.tags);
+        saveOfflineCache('infosbrain_cms_tags', res.data.tags);
       } else {
-        error('Failed to load tags.');
+        const cached = loadOfflineCache('infosbrain_cms_tags', initialTagsFallback);
+        setTags(cached);
       }
     } catch {
-      error('Network error loading tags.');
+      const cached = loadOfflineCache('infosbrain_cms_tags', initialTagsFallback);
+      setTags(cached);
     } finally {
       setLoading(false);
     }

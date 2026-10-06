@@ -24,12 +24,27 @@ interface CategoryItem {
   publishedPosts?: number;
 }
 
+import { safeApiFetch, loadOfflineCache, saveOfflineCache } from '../utils/adminFallbackData';
+
+const initialCategoriesFallback: CategoryItem[] = [
+  { id: 'cat_seo', name: 'SEO', slug: 'seo', description: 'Technical SEO, search engine algorithms, and organic visibility.' },
+  { name: 'Digital Marketing', slug: 'digital-marketing', id: 'cat_digital-marketing', description: 'Holistic multi-channel digital marketing playbooks.' },
+  { name: 'Web Development', slug: 'web-development', id: 'cat_web-development', description: 'Modern frontend architecture, headless platforms, and high-performance engineering.' },
+  { name: 'E-commerce', slug: 'ecommerce', id: 'cat_ecommerce', description: 'Storefront optimization, conversion acceleration, and scalable retail architecture.' },
+  { name: 'Social Media', slug: 'social-media', id: 'cat_social-media', description: 'Organic audience building, brand advocacy, and content distribution.' },
+  { name: 'Paid Advertising', slug: 'paid-advertising', id: 'cat_paid-advertising', description: 'Targeted ROAS optimization, PPC, server-side tracking, and performance media.' },
+  { name: 'Business Growth', slug: 'business-growth', id: 'cat_business-growth', description: 'Strategic scaling, revenue operations, and digital transformation insights.' },
+  { name: 'Technology', slug: 'technology', id: 'cat_technology', description: 'Emerging tech, artificial intelligence integrations, and enterprise cloud solutions.' },
+];
+
 export const CategoriesPage: React.FC = () => {
   const { token } = useAdminAuth();
   const { success, error } = useToast();
 
-  const [categories, setCategories] = useState<CategoryItem[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [categories, setCategories] = useState<CategoryItem[]>(() =>
+    loadOfflineCache('infosbrain_cms_categories', initialCategoriesFallback)
+  );
+  const [loading, setLoading] = useState(false);
   const [search, setSearch] = useState('');
 
   // Modal State for Create/Edit
@@ -50,17 +65,19 @@ export const CategoriesPage: React.FC = () => {
   const fetchCategories = async () => {
     setLoading(true);
     try {
-      const res = await fetch('/api/categories/admin', {
+      const res = await safeApiFetch('/api/categories/admin', {
         headers: token ? { Authorization: `Bearer ${token}` } : {},
       });
-      if (res.ok) {
-        const data = await res.json();
-        setCategories(data.categories || []);
+      if (!res.isOffline && res.ok && Array.isArray(res.data?.categories) && res.data.categories.length > 0) {
+        setCategories(res.data.categories);
+        saveOfflineCache('infosbrain_cms_categories', res.data.categories);
       } else {
-        error('Failed to load categories.');
+        const cached = loadOfflineCache('infosbrain_cms_categories', initialCategoriesFallback);
+        setCategories(cached);
       }
     } catch {
-      error('Network error loading categories.');
+      const cached = loadOfflineCache('infosbrain_cms_categories', initialCategoriesFallback);
+      setCategories(cached);
     } finally {
       setLoading(false);
     }

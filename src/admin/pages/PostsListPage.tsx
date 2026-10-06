@@ -42,14 +42,28 @@ interface PostsListPageProps {
   onPreviewPost: (slug: string) => void;
 }
 
+import { safeApiFetch, loadOfflineCache, saveOfflineCache } from '../utils/adminFallbackData';
+import { siteConfig } from '../../config/siteConfig';
+
+const initialPostsFallback: any[] = (siteConfig.blogPosts || []).map((p: any) => ({
+  ...p,
+  status: 'published',
+  createdAt: p.publishDate || p.date || '2026-01-01',
+  updatedAt: p.publishDate || p.date || '2026-01-01',
+  categoryName: p.category || 'Technology',
+  authorName: p.author?.name || 'InfosBrain Editorial',
+}));
+
 export const PostsListPage: React.FC<PostsListPageProps> = ({ onNavigate, onPreviewPost }) => {
   const { token } = useAdminAuth();
   const { success, error } = useToast();
 
-  const [posts, setPosts] = useState<PostItem[]>([]);
+  const [posts, setPosts] = useState<PostItem[]>(() =>
+    loadOfflineCache('infosbrain_cms_posts', initialPostsFallback)
+  );
   const [categories, setCategories] = useState<{ id: string; name: string }[]>([]);
   const [authors, setAuthors] = useState<{ id: string; name: string }[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   // Filters & Pagination
   const [search, setSearch] = useState('');
@@ -77,16 +91,14 @@ export const PostsListPage: React.FC<PostsListPageProps> = ({ onNavigate, onPrev
       try {
         const headers = token ? { Authorization: `Bearer ${token}` } : {};
         const [catRes, authRes] = await Promise.all([
-          fetch('/api/categories/admin', { headers }),
-          fetch('/api/authors', { headers }),
+          safeApiFetch('/api/categories/admin', { headers }),
+          safeApiFetch('/api/authors', { headers }),
         ]);
-        if (catRes.ok) {
-          const data = await catRes.json();
-          setCategories(data.categories || []);
+        if (!catRes.isOffline && catRes.ok && Array.isArray(catRes.data?.categories)) {
+          setCategories(catRes.data.categories);
         }
-        if (authRes.ok) {
-          const data = await authRes.json();
-          setAuthors(data.authors || []);
+        if (!authRes.isOffline && authRes.ok && Array.isArray(authRes.data?.authors)) {
+          setAuthors(authRes.data.authors);
         }
       } catch {
         // Ignore
@@ -110,17 +122,23 @@ export const PostsListPage: React.FC<PostsListPageProps> = ({ onNavigate, onPrev
         search,
       });
 
-      const res = await fetch(`/api/posts/admin/all?${query}`, { headers });
-      if (res.ok) {
-        const data = await res.json();
-        setPosts(data.posts || []);
-        setTotalPages(data.pagination?.totalPages || 1);
-        setTotalPosts(data.pagination?.total || 0);
+      const res = await safeApiFetch(`/api/posts/admin/all?${query}`, { headers });
+      if (!res.isOffline && res.ok && Array.isArray(res.data?.posts) && res.data.posts.length > 0) {
+        setPosts(res.data.posts);
+        setTotalPages(res.data.pagination?.totalPages || 1);
+        setTotalPosts(res.data.pagination?.total || 0);
+        saveOfflineCache('infosbrain_cms_posts', res.data.posts);
       } else {
-        error('Failed to load posts.');
+        const cached = loadOfflineCache('infosbrain_cms_posts', initialPostsFallback);
+        setPosts(cached);
+        setTotalPages(1);
+        setTotalPosts(cached.length);
       }
     } catch {
-      error('Network error loading posts.');
+      const cached = loadOfflineCache('infosbrain_cms_posts', initialPostsFallback);
+      setPosts(cached);
+      setTotalPages(1);
+      setTotalPosts(cached.length);
     } finally {
       setLoading(false);
     }

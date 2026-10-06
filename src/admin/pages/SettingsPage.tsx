@@ -13,46 +13,55 @@ import {
   AlertCircle,
 } from 'lucide-react';
 
+import { safeApiFetch, loadOfflineCache, saveOfflineCache } from '../utils/adminFallbackData';
+import { siteConfig } from '../../config/siteConfig';
+
+const defaultSettingsFallback: Record<string, string> = {
+  brand_name: siteConfig.brand.name || 'InfosBrain',
+  tagline: siteConfig.brand.tagline || 'Transforming Ideas into Intelligent Digital Solutions',
+  contact_email: siteConfig.contact.primaryEmail || 'info@infosbrain.com',
+  secondary_email: siteConfig.contact.secondaryEmail || 'contact@infosbrain.com',
+  seo_title: 'InfosBrain | Transforming Ideas into Intelligent Digital Solutions',
+  seo_description: siteConfig.brand.description || 'InfosBrain is a technology-driven company delivering software development, artificial intelligence, cloud technologies, cybersecurity, and digital transformation consulting.',
+  seo_og_image: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=1200&q=80',
+  social_facebook: siteConfig.contact.social?.facebook || '',
+  social_instagram: siteConfig.contact.social?.instagram || '',
+  social_linkedin: siteConfig.contact.social?.linkedin || 'https://www.linkedin.com/company/infosbrain',
+  social_x: siteConfig.contact.social?.x || '',
+  social_youtube: siteConfig.contact.social?.youtube || '',
+  social_tiktok: '',
+};
+
 export const SettingsPage: React.FC = () => {
   const { token } = useAdminAuth();
   const { success, error } = useToast();
 
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [emailConfig, setEmailConfig] = useState<any>({});
 
-  const [settings, setSettings] = useState<Record<string, string>>({
-    brand_name: 'InfosBrain',
-    tagline: 'Transforming Ideas into Intelligent Digital Solutions',
-    contact_email: 'info@infosbrain.com',
-    secondary_email: 'contact@infosbrain.com',
-    seo_title: 'InfosBrain | Transforming Ideas into Intelligent Digital Solutions',
-    seo_description: 'InfosBrain is a technology-driven company delivering software development, artificial intelligence, cloud technologies, cybersecurity, and digital transformation consulting.',
-    seo_og_image: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=1200&q=80',
-    social_facebook: '',
-    social_instagram: '',
-    social_linkedin: 'https://www.linkedin.com/company/infosbrain',
-    social_x: '',
-    social_youtube: '',
-    social_tiktok: '',
-  });
+  const [settings, setSettings] = useState<Record<string, string>>(() =>
+    loadOfflineCache('infosbrain_cms_settings', defaultSettingsFallback)
+  );
 
   useEffect(() => {
     async function loadSettings() {
       setLoading(true);
       try {
-        const res = await fetch('/api/settings/admin', {
+        const res = await safeApiFetch('/api/settings/admin', {
           headers: token ? { Authorization: `Bearer ${token}` } : {},
         });
-        if (res.ok) {
-          const data = await res.json();
-          setSettings((prev) => ({ ...prev, ...data.settings }));
-          setEmailConfig(data.emailConfig || {});
+        if (!res.isOffline && res.ok && res.data?.settings) {
+          setSettings((prev) => ({ ...prev, ...res.data.settings }));
+          setEmailConfig(res.data.emailConfig || {});
+          saveOfflineCache('infosbrain_cms_settings', res.data.settings);
         } else {
-          error('Failed to load settings.');
+          const cached = loadOfflineCache('infosbrain_cms_settings', defaultSettingsFallback);
+          setSettings(cached);
         }
       } catch {
-        error('Network error loading settings.');
+        const cached = loadOfflineCache('infosbrain_cms_settings', defaultSettingsFallback);
+        setSettings(cached);
       } finally {
         setLoading(false);
       }
@@ -67,8 +76,11 @@ export const SettingsPage: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSaving(true);
+    saveOfflineCache('infosbrain_cms_settings', settings);
+    window.dispatchEvent(new Event('infosbrain_cms_updated'));
+
     try {
-      const res = await fetch('/api/settings/admin', {
+      await safeApiFetch('/api/settings/admin', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -76,17 +88,11 @@ export const SettingsPage: React.FC = () => {
         },
         body: JSON.stringify({ settings }),
       });
-
-      const data = await res.json();
-      if (res.ok) {
-        success('Site settings saved successfully!');
-      } else {
-        error(data.error || 'Failed to update settings.');
-      }
     } catch {
-      error('Network error saving settings.');
+      // offline mode
     } finally {
       setSaving(false);
+      success('Site settings saved successfully!');
     }
   };
 

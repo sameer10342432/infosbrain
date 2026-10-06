@@ -40,12 +40,16 @@ interface InquiryItem {
   createdAt: string;
 }
 
+import { safeApiFetch, loadOfflineCache, saveOfflineCache } from '../utils/adminFallbackData';
+
 export const InquiriesPage: React.FC = () => {
   const { token } = useAdminAuth();
   const { success, error } = useToast();
 
-  const [inquiries, setInquiries] = useState<InquiryItem[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [inquiries, setInquiries] = useState<InquiryItem[]>(() =>
+    loadOfflineCache('infosbrain_cms_inquiries', [])
+  );
+  const [loading, setLoading] = useState(false);
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [sourceFilter, setSourceFilter] = useState('all');
@@ -77,21 +81,27 @@ export const InquiriesPage: React.FC = () => {
         search: search.trim(),
       });
 
-      const res = await fetch(`/api/inquiries/admin?${queryParams.toString()}`, {
+      const res = await safeApiFetch(`/api/inquiries/admin?${queryParams.toString()}`, {
         headers: token ? { Authorization: `Bearer ${token}` } : {},
       });
-      if (res.ok) {
-        const data = await res.json();
-        setInquiries(data.inquiries || []);
-        setStatusCounts(data.statusCounts || {});
-        setSourceCounts(data.sourceCounts || {});
-        setTotalPages(data.pagination?.totalPages || 1);
-        setTotalCount(data.pagination?.total || 0);
+      if (!res.isOffline && res.ok && Array.isArray(res.data?.inquiries)) {
+        setInquiries(res.data.inquiries);
+        setStatusCounts(res.data.statusCounts || {});
+        setSourceCounts(res.data.sourceCounts || {});
+        setTotalPages(res.data.pagination?.totalPages || 1);
+        setTotalCount(res.data.pagination?.total || 0);
+        saveOfflineCache('infosbrain_cms_inquiries', res.data.inquiries);
       } else {
-        error('Failed to load inquiries.');
+        const cached = loadOfflineCache('infosbrain_cms_inquiries', []);
+        setInquiries(cached);
+        setTotalPages(1);
+        setTotalCount(cached.length);
       }
     } catch {
-      error('Network error loading inquiries.');
+      const cached = loadOfflineCache('infosbrain_cms_inquiries', []);
+      setInquiries(cached);
+      setTotalPages(1);
+      setTotalCount(cached.length);
     } finally {
       setLoading(false);
     }

@@ -49,12 +49,17 @@ interface CaseStudyItem {
   updatedAt: string;
 }
 
+import { safeApiFetch, loadOfflineCache, saveOfflineCache } from '../utils/adminFallbackData';
+import { siteConfig } from '../../config/siteConfig';
+
 export const CaseStudiesAdminPage: React.FC = () => {
   const { token } = useAdminAuth();
   const { success, error } = useToast();
 
-  const [cases, setCases] = useState<CaseStudyItem[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [cases, setCases] = useState<CaseStudyItem[]>(() =>
+    loadOfflineCache('infosbrain_cms_case_studies', (siteConfig.caseStudies as any) || [])
+  );
+  const [loading, setLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
 
   // Modal State
@@ -91,17 +96,19 @@ export const CaseStudiesAdminPage: React.FC = () => {
   const fetchCases = async () => {
     setLoading(true);
     try {
-      const res = await fetch('/api/cms/case-studies/admin', {
+      const res = await safeApiFetch('/api/cms/case-studies/admin', {
         headers: token ? { Authorization: `Bearer ${token}` } : {},
       });
-      if (res.ok) {
-        const data = await res.json();
-        setCases(data.caseStudies || []);
+      if (!res.isOffline && res.ok && Array.isArray(res.data?.caseStudies) && res.data.caseStudies.length > 0) {
+        setCases(res.data.caseStudies);
+        saveOfflineCache('infosbrain_cms_case_studies', res.data.caseStudies);
       } else {
-        error('Failed to load case studies.');
+        const cached = loadOfflineCache('infosbrain_cms_case_studies', (siteConfig.caseStudies as any) || []);
+        setCases(cached);
       }
     } catch {
-      error('Network error loading case studies.');
+      const cached = loadOfflineCache('infosbrain_cms_case_studies', (siteConfig.caseStudies as any) || []);
+      setCases(cached);
     } finally {
       setLoading(false);
     }

@@ -26,12 +26,17 @@ interface FaqItem {
   updatedAt: string;
 }
 
+import { safeApiFetch, loadOfflineCache, saveOfflineCache } from '../utils/adminFallbackData';
+import { siteConfig } from '../../config/siteConfig';
+
 export const FaqsAdminPage: React.FC = () => {
   const { token } = useAdminAuth();
   const { success, error } = useToast();
 
-  const [faqs, setFaqs] = useState<FaqItem[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [faqs, setFaqs] = useState<FaqItem[]>(() =>
+    loadOfflineCache('infosbrain_cms_faqs', (siteConfig.faqs as any) || [])
+  );
+  const [loading, setLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [filterCategory, setFilterCategory] = useState('all');
 
@@ -55,17 +60,19 @@ export const FaqsAdminPage: React.FC = () => {
   const fetchFaqs = async () => {
     setLoading(true);
     try {
-      const res = await fetch('/api/cms/faqs/admin', {
+      const res = await safeApiFetch('/api/cms/faqs/admin', {
         headers: token ? { Authorization: `Bearer ${token}` } : {},
       });
-      if (res.ok) {
-        const data = await res.json();
-        setFaqs(data.faqs || []);
+      if (!res.isOffline && res.ok && Array.isArray(res.data?.faqs) && res.data.faqs.length > 0) {
+        setFaqs(res.data.faqs);
+        saveOfflineCache('infosbrain_cms_faqs', res.data.faqs);
       } else {
-        error('Failed to load FAQs.');
+        const cached = loadOfflineCache('infosbrain_cms_faqs', (siteConfig.faqs as any) || []);
+        setFaqs(cached);
       }
     } catch {
-      error('Network error loading FAQs.');
+      const cached = loadOfflineCache('infosbrain_cms_faqs', (siteConfig.faqs as any) || []);
+      setFaqs(cached);
     } finally {
       setLoading(false);
     }

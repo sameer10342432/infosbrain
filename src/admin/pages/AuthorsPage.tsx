@@ -25,12 +25,26 @@ interface AuthorItem {
   postCount?: number;
 }
 
+import { safeApiFetch, loadOfflineCache, saveOfflineCache } from '../utils/adminFallbackData';
+
+const initialAuthorsFallback: AuthorItem[] = [
+  {
+    id: 'auth_editorial',
+    name: 'InfosBrain Editorial Team',
+    role: 'Technology & Strategy Editorial Board',
+    bio: 'Cross-functional engineering and digital growth specialists documenting tactical playbooks and industry analyses.',
+    profileImage: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80',
+  },
+];
+
 export const AuthorsPage: React.FC = () => {
   const { token } = useAdminAuth();
   const { success, error } = useToast();
 
-  const [authors, setAuthors] = useState<AuthorItem[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [authors, setAuthors] = useState<AuthorItem[]>(() =>
+    loadOfflineCache('infosbrain_cms_authors', initialAuthorsFallback)
+  );
+  const [loading, setLoading] = useState(false);
 
   // Modal State
   const [modalOpen, setModalOpen] = useState(false);
@@ -54,15 +68,17 @@ export const AuthorsPage: React.FC = () => {
   const fetchAuthors = async () => {
     setLoading(true);
     try {
-      const res = await fetch('/api/authors');
-      if (res.ok) {
-        const data = await res.json();
-        setAuthors(data.authors || []);
+      const res = await safeApiFetch('/api/authors');
+      if (!res.isOffline && res.ok && Array.isArray(res.data?.authors) && res.data.authors.length > 0) {
+        setAuthors(res.data.authors);
+        saveOfflineCache('infosbrain_cms_authors', res.data.authors);
       } else {
-        error('Failed to load authors.');
+        const cached = loadOfflineCache('infosbrain_cms_authors', initialAuthorsFallback);
+        setAuthors(cached);
       }
     } catch {
-      error('Network error loading authors.');
+      const cached = loadOfflineCache('infosbrain_cms_authors', initialAuthorsFallback);
+      setAuthors(cached);
     } finally {
       setLoading(false);
     }

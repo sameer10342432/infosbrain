@@ -39,12 +39,17 @@ interface LocationItem {
   updatedAt: string;
 }
 
+import { safeApiFetch, loadOfflineCache, saveOfflineCache } from '../utils/adminFallbackData';
+import { siteConfig } from '../../config/siteConfig';
+
 export const LocationsAdminPage: React.FC = () => {
   const { token } = useAdminAuth();
   const { success, error } = useToast();
 
-  const [locations, setLocations] = useState<LocationItem[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [locations, setLocations] = useState<LocationItem[]>(() =>
+    loadOfflineCache('infosbrain_cms_locations', (siteConfig.globalOffices as any) || [])
+  );
+  const [loading, setLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
 
   // Modal State
@@ -79,17 +84,19 @@ export const LocationsAdminPage: React.FC = () => {
   const fetchLocations = async () => {
     setLoading(true);
     try {
-      const res = await fetch('/api/cms/locations/admin', {
+      const res = await safeApiFetch('/api/cms/locations/admin', {
         headers: token ? { Authorization: `Bearer ${token}` } : {},
       });
-      if (res.ok) {
-        const data = await res.json();
-        setLocations(data.locations || []);
+      if (!res.isOffline && res.ok && Array.isArray(res.data?.locations) && res.data.locations.length > 0) {
+        setLocations(res.data.locations);
+        saveOfflineCache('infosbrain_cms_locations', res.data.locations);
       } else {
-        error('Failed to load locations.');
+        const cached = loadOfflineCache('infosbrain_cms_locations', (siteConfig.globalOffices as any) || []);
+        setLocations(cached);
       }
     } catch {
-      error('Network error loading locations.');
+      const cached = loadOfflineCache('infosbrain_cms_locations', (siteConfig.globalOffices as any) || []);
+      setLocations(cached);
     } finally {
       setLoading(false);
     }
