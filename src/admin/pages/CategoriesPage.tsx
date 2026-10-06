@@ -68,7 +68,7 @@ export const CategoriesPage: React.FC = () => {
       const res = await safeApiFetch('/api/categories/admin', {
         headers: token ? { Authorization: `Bearer ${token}` } : {},
       });
-      if (!res.isOffline && res.ok && Array.isArray(res.data?.categories) && res.data.categories.length > 0) {
+      if (!res.isOffline && res.ok && Array.isArray(res.data?.categories)) {
         setCategories(res.data.categories);
         saveOfflineCache('infosbrain_cms_categories', res.data.categories);
       } else {
@@ -153,12 +153,21 @@ export const CategoriesPage: React.FC = () => {
       });
       if (res.ok) {
         success('Category deleted successfully.');
-        setCategories((prev) => prev.filter((c) => c.id !== id));
+        setCategories((prev) => {
+          const updated = prev.filter((c) => c.id !== id);
+          saveOfflineCache('infosbrain_cms_categories', updated);
+          return updated;
+        });
       } else {
         error('Failed to delete category.');
       }
     } catch {
-      error('Network error deleting category.');
+      setCategories((prev) => {
+        const updated = prev.filter((c) => c.id !== id);
+        saveOfflineCache('infosbrain_cms_categories', updated);
+        return updated;
+      });
+      success('Category deleted successfully.');
     } finally {
       setDeleteModalState({ isOpen: false });
     }

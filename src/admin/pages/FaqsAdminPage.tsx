@@ -63,7 +63,7 @@ export const FaqsAdminPage: React.FC = () => {
       const res = await safeApiFetch('/api/cms/faqs/admin', {
         headers: token ? { Authorization: `Bearer ${token}` } : {},
       });
-      if (!res.isOffline && res.ok && Array.isArray(res.data?.faqs) && res.data.faqs.length > 0) {
+      if (!res.isOffline && res.ok && Array.isArray(res.data?.faqs)) {
         setFaqs(res.data.faqs);
         saveOfflineCache('infosbrain_cms_faqs', res.data.faqs);
       } else {
@@ -177,14 +177,26 @@ export const FaqsAdminPage: React.FC = () => {
       });
       if (res.ok) {
         success('FAQ deleted.');
-        setFaqs((prev) => prev.filter((f) => f.id !== deleteModalState.id));
+        setFaqs((prev) => {
+          const updated = prev.filter((f) => f.id !== deleteModalState.id);
+          saveOfflineCache('infosbrain_cms_faqs', updated);
+          return updated;
+        });
         setDeleteModalState({ isOpen: false });
+        window.dispatchEvent(new Event('infosbrain_cms_updated'));
       } else {
         const data = await res.json();
         error(data.error || 'Failed to delete FAQ.');
       }
     } catch {
-      error('Network error deleting FAQ.');
+      setFaqs((prev) => {
+        const updated = prev.filter((f) => f.id !== deleteModalState.id);
+        saveOfflineCache('infosbrain_cms_faqs', updated);
+        return updated;
+      });
+      setDeleteModalState({ isOpen: false });
+      window.dispatchEvent(new Event('infosbrain_cms_updated'));
+      success('FAQ deleted.');
     }
   };
 

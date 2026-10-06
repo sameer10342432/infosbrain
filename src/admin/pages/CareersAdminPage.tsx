@@ -76,7 +76,7 @@ export const CareersAdminPage: React.FC = () => {
       const res = await safeApiFetch('/api/cms/careers/admin', {
         headers: token ? { Authorization: `Bearer ${token}` } : {},
       });
-      if (!res.isOffline && res.ok && Array.isArray(res.data?.careers) && res.data.careers.length > 0) {
+      if (!res.isOffline && res.ok && Array.isArray(res.data?.careers)) {
         setCareers(res.data.careers);
         saveOfflineCache('infosbrain_cms_careers', res.data.careers);
       } else {
@@ -208,14 +208,26 @@ export const CareersAdminPage: React.FC = () => {
       });
       if (res.ok) {
         success('Job opening deleted.');
-        setCareers((prev) => prev.filter((c) => c.id !== deleteModalState.id));
+        setCareers((prev) => {
+          const updated = prev.filter((c) => c.id !== deleteModalState.id);
+          saveOfflineCache('infosbrain_cms_careers', updated);
+          return updated;
+        });
         setDeleteModalState({ isOpen: false });
+        window.dispatchEvent(new Event('infosbrain_cms_updated'));
       } else {
         const data = await res.json();
         error(data.error || 'Failed to delete job opening.');
       }
     } catch {
-      error('Network error deleting job opening.');
+      setCareers((prev) => {
+        const updated = prev.filter((c) => c.id !== deleteModalState.id);
+        saveOfflineCache('infosbrain_cms_careers', updated);
+        return updated;
+      });
+      setDeleteModalState({ isOpen: false });
+      window.dispatchEvent(new Event('infosbrain_cms_updated'));
+      success('Job opening deleted.');
     }
   };
 

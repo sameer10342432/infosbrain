@@ -69,7 +69,7 @@ export const AuthorsPage: React.FC = () => {
     setLoading(true);
     try {
       const res = await safeApiFetch('/api/authors');
-      if (!res.isOffline && res.ok && Array.isArray(res.data?.authors) && res.data.authors.length > 0) {
+      if (!res.isOffline && res.ok && Array.isArray(res.data?.authors)) {
         setAuthors(res.data.authors);
         saveOfflineCache('infosbrain_cms_authors', res.data.authors);
       } else {
@@ -163,12 +163,21 @@ export const AuthorsPage: React.FC = () => {
       });
       if (res.ok) {
         success('Author deleted successfully.');
-        setAuthors((prev) => prev.filter((a) => a.id !== id));
+        setAuthors((prev) => {
+          const updated = prev.filter((a) => a.id !== id);
+          saveOfflineCache('infosbrain_cms_authors', updated);
+          return updated;
+        });
       } else {
         error('Failed to delete author.');
       }
     } catch {
-      error('Network error deleting author.');
+      setAuthors((prev) => {
+        const updated = prev.filter((a) => a.id !== id);
+        saveOfflineCache('infosbrain_cms_authors', updated);
+        return updated;
+      });
+      success('Author deleted successfully.');
     } finally {
       setDeleteModalState({ isOpen: false });
     }

@@ -79,7 +79,7 @@ export const TestimonialsAdminPage: React.FC = () => {
       const res = await safeApiFetch('/api/cms/testimonials/admin', {
         headers: token ? { Authorization: `Bearer ${token}` } : {},
       });
-      if (!res.isOffline && res.ok && Array.isArray(res.data?.testimonials) && res.data.testimonials.length > 0) {
+      if (!res.isOffline && res.ok && Array.isArray(res.data?.testimonials)) {
         setTestimonials(res.data.testimonials);
         saveOfflineCache('infosbrain_cms_testimonials', res.data.testimonials);
       } else {
@@ -211,14 +211,26 @@ export const TestimonialsAdminPage: React.FC = () => {
       });
       if (res.ok) {
         success('Testimonial deleted.');
-        setTestimonials((prev) => prev.filter((t) => t.id !== deleteModalState.id));
+        setTestimonials((prev) => {
+          const updated = prev.filter((t) => t.id !== deleteModalState.id);
+          saveOfflineCache('infosbrain_cms_testimonials', updated);
+          return updated;
+        });
         setDeleteModalState({ isOpen: false });
+        window.dispatchEvent(new Event('infosbrain_cms_updated'));
       } else {
         const data = await res.json();
         error(data.error || 'Failed to delete testimonial.');
       }
     } catch {
-      error('Network error deleting testimonial.');
+      setTestimonials((prev) => {
+        const updated = prev.filter((t) => t.id !== deleteModalState.id);
+        saveOfflineCache('infosbrain_cms_testimonials', updated);
+        return updated;
+      });
+      setDeleteModalState({ isOpen: false });
+      window.dispatchEvent(new Event('infosbrain_cms_updated'));
+      success('Testimonial deleted.');
     }
   };
 

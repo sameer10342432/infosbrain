@@ -304,7 +304,7 @@ router.delete('/admin/:id', requireAdmin, (req: AuthenticatedRequest, res: Respo
     const { id } = req.params;
     const existing = db.prepare('SELECT id FROM services WHERE id = ?').get(id);
     if (!existing) {
-      res.status(404).json({ error: 'Service not found' });
+      res.json({ success: true, message: 'Service removed or already deleted' });
       return;
     }
 

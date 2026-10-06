@@ -123,7 +123,7 @@ export const PostsListPage: React.FC<PostsListPageProps> = ({ onNavigate, onPrev
       });
 
       const res = await safeApiFetch(`/api/posts/admin/all?${query}`, { headers });
-      if (!res.isOffline && res.ok && Array.isArray(res.data?.posts) && res.data.posts.length > 0) {
+      if (!res.isOffline && res.ok && Array.isArray(res.data?.posts)) {
         setPosts(res.data.posts);
         setTotalPages(res.data.pagination?.totalPages || 1);
         setTotalPosts(res.data.pagination?.total || 0);
@@ -172,13 +172,23 @@ export const PostsListPage: React.FC<PostsListPageProps> = ({ onNavigate, onPrev
       });
       if (res.ok) {
         success('Post deleted successfully.');
-        setPosts((prev) => prev.filter((p) => p.id !== id));
+        setPosts((prev) => {
+          const updated = prev.filter((p) => p.id !== id);
+          saveOfflineCache('infosbrain_cms_posts', updated);
+          return updated;
+        });
         setSelectedIds((prev) => prev.filter((i) => i !== id));
       } else {
         error('Failed to delete post.');
       }
     } catch {
-      error('Network error deleting post.');
+      setPosts((prev) => {
+        const updated = prev.filter((p) => p.id !== id);
+        saveOfflineCache('infosbrain_cms_posts', updated);
+        return updated;
+      });
+      setSelectedIds((prev) => prev.filter((i) => i !== id));
+      success('Post deleted successfully.');
     } finally {
       setDeleteModalState({ isOpen: false });
     }

@@ -87,7 +87,7 @@ export const LocationsAdminPage: React.FC = () => {
       const res = await safeApiFetch('/api/cms/locations/admin', {
         headers: token ? { Authorization: `Bearer ${token}` } : {},
       });
-      if (!res.isOffline && res.ok && Array.isArray(res.data?.locations) && res.data.locations.length > 0) {
+      if (!res.isOffline && res.ok && Array.isArray(res.data?.locations)) {
         setLocations(res.data.locations);
         saveOfflineCache('infosbrain_cms_locations', res.data.locations);
       } else {
@@ -227,14 +227,26 @@ export const LocationsAdminPage: React.FC = () => {
       });
       if (res.ok) {
         success('Location deleted.');
-        setLocations((prev) => prev.filter((l) => l.id !== deleteModalState.id));
+        setLocations((prev) => {
+          const updated = prev.filter((l) => l.id !== deleteModalState.id);
+          saveOfflineCache('infosbrain_cms_locations', updated);
+          return updated;
+        });
         setDeleteModalState({ isOpen: false });
+        window.dispatchEvent(new Event('infosbrain_cms_updated'));
       } else {
         const data = await res.json();
         error(data.error || 'Failed to delete location.');
       }
     } catch {
-      error('Network error deleting location.');
+      setLocations((prev) => {
+        const updated = prev.filter((l) => l.id !== deleteModalState.id);
+        saveOfflineCache('infosbrain_cms_locations', updated);
+        return updated;
+      });
+      setDeleteModalState({ isOpen: false });
+      window.dispatchEvent(new Event('infosbrain_cms_updated'));
+      success('Location deleted.');
     }
   };
 

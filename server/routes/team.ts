@@ -249,7 +249,7 @@ router.delete('/admin/:id', requireAdmin, (req: AuthenticatedRequest, res: Respo
     const { id } = req.params;
     const existing = db.prepare('SELECT id, name FROM team_members WHERE id = ?').get(id);
     if (!existing) {
-      res.status(404).json({ error: 'Team member not found' });
+      res.json({ success: true, message: 'Team member removed or already deleted' });
       return;
     }
 

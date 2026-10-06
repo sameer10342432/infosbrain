@@ -193,10 +193,10 @@ export const CmsProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       const contentType = res.headers.get('content-type') || '';
       if (res.ok && contentType.includes('application/json')) {
         const data = await res.json();
-        if (data.leadership && data.leadership.length > 0) {
+        if (Array.isArray(data.leadership)) {
           setLeadership(data.leadership);
         }
-        if (data.teamMembers && data.teamMembers.length > 0) {
+        if (Array.isArray(data.teamMembers)) {
           setTeamMembers(data.teamMembers);
         }
         if (data.services && data.services.length > 0) {
@@ -252,6 +252,7 @@ export const CmsProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
     const handleCmsUpdate = () => {
       syncOfflineSections();
+      fetchCmsData();
     };
     window.addEventListener('infosbrain_cms_updated', handleCmsUpdate);
     return () => {

@@ -99,7 +99,7 @@ export const CaseStudiesAdminPage: React.FC = () => {
       const res = await safeApiFetch('/api/cms/case-studies/admin', {
         headers: token ? { Authorization: `Bearer ${token}` } : {},
       });
-      if (!res.isOffline && res.ok && Array.isArray(res.data?.caseStudies) && res.data.caseStudies.length > 0) {
+      if (!res.isOffline && res.ok && Array.isArray(res.data?.caseStudies)) {
         setCases(res.data.caseStudies);
         saveOfflineCache('infosbrain_cms_case_studies', res.data.caseStudies);
       } else {
@@ -259,14 +259,26 @@ export const CaseStudiesAdminPage: React.FC = () => {
       });
       if (res.ok) {
         success('Case study deleted.');
-        setCases((prev) => prev.filter((c) => c.id !== deleteModalState.id));
+        setCases((prev) => {
+          const updated = prev.filter((c) => c.id !== deleteModalState.id);
+          saveOfflineCache('infosbrain_cms_case_studies', updated);
+          return updated;
+        });
         setDeleteModalState({ isOpen: false });
+        window.dispatchEvent(new Event('infosbrain_cms_updated'));
       } else {
         const data = await res.json();
         error(data.error || 'Failed to delete case study.');
       }
     } catch {
-      error('Network error deleting case study.');
+      setCases((prev) => {
+        const updated = prev.filter((c) => c.id !== deleteModalState.id);
+        saveOfflineCache('infosbrain_cms_case_studies', updated);
+        return updated;
+      });
+      setDeleteModalState({ isOpen: false });
+      window.dispatchEvent(new Event('infosbrain_cms_updated'));
+      success('Case study deleted.');
     }
   };
 

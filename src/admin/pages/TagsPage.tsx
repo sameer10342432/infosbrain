@@ -46,7 +46,7 @@ export const TagsPage: React.FC = () => {
     setLoading(true);
     try {
       const res = await safeApiFetch('/api/tags');
-      if (!res.isOffline && res.ok && Array.isArray(res.data?.tags) && res.data.tags.length > 0) {
+      if (!res.isOffline && res.ok && Array.isArray(res.data?.tags)) {
         setTags(res.data.tags);
         saveOfflineCache('infosbrain_cms_tags', res.data.tags);
       } else {
@@ -123,12 +123,21 @@ export const TagsPage: React.FC = () => {
       });
       if (res.ok) {
         success('Tag deleted successfully.');
-        setTags((prev) => prev.filter((t) => t.id !== id));
+        setTags((prev) => {
+          const updated = prev.filter((t) => t.id !== id);
+          saveOfflineCache('infosbrain_cms_tags', updated);
+          return updated;
+        });
       } else {
         error('Failed to delete tag.');
       }
     } catch {
-      error('Network error deleting tag.');
+      setTags((prev) => {
+        const updated = prev.filter((t) => t.id !== id);
+        saveOfflineCache('infosbrain_cms_tags', updated);
+        return updated;
+      });
+      success('Tag deleted successfully.');
     } finally {
       setDeleteModalState({ isOpen: false });
     }

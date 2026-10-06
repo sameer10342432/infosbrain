@@ -319,7 +319,7 @@ router.post('/testimonials/admin', requireAdmin, (req: AuthenticatedRequest, res
       now
     );
 
-    res.status(201).json({ success: true, message: 'Testimonial created successfully' });
+    res.status(201).json({ success: true, id, message: 'Testimonial created successfully' });
   } catch (err: any) {
     res.status(500).json({ error: err.message });
   }
@@ -429,7 +429,7 @@ router.post('/faqs/admin', requireAdmin, (req: AuthenticatedRequest, res: Respon
       VALUES (?, ?, ?, ?, ?, ?, ?, ?)
     `).run(id, question.trim(), answer.trim(), category, Number(displayOrder) || 0, status, now, now);
 
-    res.status(201).json({ success: true, message: 'FAQ created successfully' });
+    res.status(201).json({ success: true, id, message: 'FAQ created successfully' });
   } catch (err: any) {
     res.status(500).json({ error: err.message });
   }
@@ -643,7 +643,7 @@ router.post('/case-studies/admin', requireAdmin, (req: AuthenticatedRequest, res
       now
     );
 
-    res.status(201).json({ success: true, message: 'Case study created successfully' });
+    res.status(201).json({ success: true, id, message: 'Case study created successfully' });
   } catch (err: any) {
     res.status(500).json({ error: err.message });
   }
@@ -809,7 +809,7 @@ router.post('/careers/admin', requireAdmin, (req: AuthenticatedRequest, res: Res
       now
     );
 
-    res.status(201).json({ success: true, message: 'Career position created successfully' });
+    res.status(201).json({ success: true, id, message: 'Career position created successfully' });
   } catch (err: any) {
     res.status(500).json({ error: err.message });
   }
@@ -961,7 +961,7 @@ router.post('/locations/admin', requireAdmin, (req: AuthenticatedRequest, res: R
       now
     );
 
-    res.status(201).json({ success: true, message: 'Location created successfully' });
+    res.status(201).json({ success: true, id, message: 'Location created successfully' });
   } catch (err: any) {
     res.status(500).json({ error: err.message });
   }

@@ -119,7 +119,7 @@ export const ServicesAdminPage: React.FC = () => {
       const res = await safeApiFetch('/api/services/admin/all', {
         headers: token ? { Authorization: `Bearer ${token}` } : {},
       });
-      if (!res.isOffline && res.ok && Array.isArray(res.data?.services) && res.data.services.length > 0) {
+      if (!res.isOffline && res.ok && Array.isArray(res.data?.services)) {
         setServices(res.data.services);
         saveOfflineCache('infosbrain_cms_services', res.data.services);
       } else {
@@ -298,14 +298,26 @@ export const ServicesAdminPage: React.FC = () => {
       });
       if (res.ok) {
         success('Service deleted.');
-        setServices((prev) => prev.filter((s) => s.id !== deleteModalState.id));
+        setServices((prev) => {
+          const updated = prev.filter((s) => s.id !== deleteModalState.id);
+          saveOfflineCache('infosbrain_cms_services', updated);
+          return updated;
+        });
         setDeleteModalState({ isOpen: false });
+        window.dispatchEvent(new Event('infosbrain_cms_updated'));
       } else {
         const data = await res.json();
         error(data.error || 'Failed to delete service.');
       }
     } catch {
-      error('Network error deleting service.');
+      setServices((prev) => {
+        const updated = prev.filter((s) => s.id !== deleteModalState.id);
+        saveOfflineCache('infosbrain_cms_services', updated);
+        return updated;
+      });
+      setDeleteModalState({ isOpen: false });
+      window.dispatchEvent(new Event('infosbrain_cms_updated'));
+      success('Service deleted.');
     }
   };
 

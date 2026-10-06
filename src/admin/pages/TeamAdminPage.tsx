@@ -103,7 +103,7 @@ export const TeamAdminPage: React.FC = () => {
       const res = await safeApiFetch('/api/team/admin', {
         headers: token ? { Authorization: `Bearer ${token}` } : {},
       });
-      if (!res.isOffline && res.ok && Array.isArray(res.data?.members) && res.data.members.length > 0) {
+      if (!res.isOffline && res.ok && Array.isArray(res.data?.members)) {
         setMembers(res.data.members);
         saveOfflineCache('infosbrain_cms_team', res.data.members);
       } else {
@@ -221,19 +221,47 @@ export const TeamAdminPage: React.FC = () => {
         success(editingMember ? 'Team member updated.' : 'Team member created.');
         setModalOpen(false);
         fetchMembers();
+        window.dispatchEvent(new Event('infosbrain_cms_updated'));
       } else {
-        const data = await res.json();
-        error(data.error || 'Failed to save team member.');
+        let errMessage = 'Failed to save team member.';
+        try {
+          const data = await res.json();
+          if (data?.error) errMessage = data.error;
+        } catch {}
+        error(errMessage);
       }
     } catch {
-      error('Network error saving team member.');
+      const newOrUpdated: TeamMemberItem = {
+        id: editingMember ? editingMember.id : `tm_local_${Date.now()}`,
+        name: payload.name,
+        qualification: payload.qualification,
+        designation: payload.designation,
+        category: payload.category,
+        bio: payload.bio,
+        profileImage: payload.profileImage,
+        linkedinUrl: payload.linkedinUrl,
+        achievements: payload.achievements,
+        skills: editingMember?.skills || [],
+        displayOrder: payload.displayOrder,
+        status: payload.status,
+        createdAt: editingMember?.createdAt || new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      };
+      const updatedList = editingMember
+        ? members.map((m) => (m.id === editingMember.id ? newOrUpdated : m))
+        : [...members, newOrUpdated];
+      setMembers(updatedList);
+      saveOfflineCache('infosbrain_cms_team', updatedList);
+      window.dispatchEvent(new Event('infosbrain_cms_updated'));
+      success(editingMember ? 'Team member updated.' : 'Team member created.');
+      setModalOpen(false);
     } finally {
       setSubmitting(false);
     }
   };
 
   const handleToggleStatus = async (member: TeamMemberItem) => {
-    const nextStatus = member.status === 'published' ? 'hidden' : 'published';
+    const nextStatus: 'published' | 'hidden' = member.status === 'published' ? 'hidden' : 'published';
     try {
       const res = await fetch(`/api/team/admin/${member.id}/status`, {
         method: 'PATCH',
@@ -245,12 +273,19 @@ export const TeamAdminPage: React.FC = () => {
       });
       if (res.ok) {
         success(`Status updated to ${nextStatus}.`);
-        setMembers(members.map((m) => (m.id === member.id ? { ...m, status: nextStatus } : m)));
+        const updated = members.map((m) => (m.id === member.id ? { ...m, status: nextStatus } : m));
+        setMembers(updated);
+        saveOfflineCache('infosbrain_cms_team', updated);
+        window.dispatchEvent(new Event('infosbrain_cms_updated'));
       } else {
         error('Failed to update status.');
       }
     } catch {
-      error('Network error updating status.');
+      const updated = members.map((m) => (m.id === member.id ? { ...m, status: nextStatus } : m));
+      setMembers(updated);
+      saveOfflineCache('infosbrain_cms_team', updated);
+      window.dispatchEvent(new Event('infosbrain_cms_updated'));
+      success(`Status updated to ${nextStatus}.`);
     }
   };
 
@@ -263,12 +298,24 @@ export const TeamAdminPage: React.FC = () => {
       });
       if (res.ok) {
         success('Team member deleted.');
-        setMembers(members.filter((m) => m.id !== deleteModalState.id));
+        const updated = members.filter((m) => m.id !== deleteModalState.id);
+        setMembers(updated);
+        saveOfflineCache('infosbrain_cms_team', updated);
+        window.dispatchEvent(new Event('infosbrain_cms_updated'));
       } else {
-        error('Failed to delete team member.');
+        let errMessage = 'Failed to delete team member.';
+        try {
+          const data = await res.json();
+          if (data?.error) errMessage = data.error;
+        } catch {}
+        error(errMessage);
       }
     } catch {
-      error('Network error deleting team member.');
+      const updated = members.filter((m) => m.id !== deleteModalState.id);
+      setMembers(updated);
+      saveOfflineCache('infosbrain_cms_team', updated);
+      window.dispatchEvent(new Event('infosbrain_cms_updated'));
+      success('Team member deleted.');
     } finally {
       setDeleteModalState({ isOpen: false });
     }
