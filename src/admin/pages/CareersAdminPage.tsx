@@ -153,7 +153,7 @@ export const CareersAdminPage: React.FC = () => {
       const url = editingItem ? `/api/cms/careers/admin/${editingItem.id}` : '/api/cms/careers/admin';
       const method = editingItem ? 'PUT' : 'POST';
 
-      const res = await fetch(url, {
+      const res = await safeApiFetch(url, {
         method,
         headers: {
           'Content-Type': 'application/json',
@@ -162,16 +162,71 @@ export const CareersAdminPage: React.FC = () => {
         body: JSON.stringify(payload),
       });
 
-      const data = await res.json();
       if (res.ok) {
         success(editingItem ? 'Job updated!' : 'Job created!');
         setModalOpen(false);
         fetchCareers();
-      } else {
-        error(data.error || 'Failed to save job opening.');
+        window.dispatchEvent(new Event('infosbrain_cms_updated'));
+        return;
+      } else if (!res.isOffline) {
+        error(res.data?.error || 'Failed to save job opening.');
+        return;
       }
+
+      // Offline / Hostinger fallback
+      const newOrUpdated: CareerItem = {
+        id: editingItem ? editingItem.id : `car_local_${Date.now()}`,
+        title: payload.title,
+        department: payload.department,
+        location: payload.location,
+        type: payload.type,
+        experience: payload.experience,
+        salary: payload.salary,
+        description: payload.description,
+        responsibilities: payload.responsibilities,
+        requirements: payload.requirements,
+        displayOrder: payload.displayOrder,
+        status: payload.status as any,
+        createdAt: editingItem?.createdAt || new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      };
+      setCareers((prev) => {
+        const updated = editingItem
+          ? prev.map((c) => (c.id === editingItem.id ? newOrUpdated : c))
+          : [...prev, newOrUpdated];
+        saveOfflineCache('infosbrain_cms_careers', updated);
+        return updated;
+      });
+      setModalOpen(false);
+      window.dispatchEvent(new Event('infosbrain_cms_updated'));
+      success(editingItem ? 'Job updated!' : 'Job created!');
     } catch {
-      error('Network error saving job opening.');
+      const newOrUpdated: CareerItem = {
+        id: editingItem ? editingItem.id : `car_local_${Date.now()}`,
+        title: payload.title,
+        department: payload.department,
+        location: payload.location,
+        type: payload.type,
+        experience: payload.experience,
+        salary: payload.salary,
+        description: payload.description,
+        responsibilities: payload.responsibilities,
+        requirements: payload.requirements,
+        displayOrder: payload.displayOrder,
+        status: payload.status as any,
+        createdAt: editingItem?.createdAt || new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      };
+      setCareers((prev) => {
+        const updated = editingItem
+          ? prev.map((c) => (c.id === editingItem.id ? newOrUpdated : c))
+          : [...prev, newOrUpdated];
+        saveOfflineCache('infosbrain_cms_careers', updated);
+        return updated;
+      });
+      setModalOpen(false);
+      window.dispatchEvent(new Event('infosbrain_cms_updated'));
+      success(editingItem ? 'Job updated!' : 'Job created!');
     } finally {
       setSubmitting(false);
     }
@@ -180,7 +235,7 @@ export const CareersAdminPage: React.FC = () => {
   const toggleStatus = async (item: CareerItem) => {
     const newStatus = item.status === 'published' ? 'hidden' : 'published';
     try {
-      const res = await fetch(`/api/cms/careers/admin/${item.id}/status`, {
+      const res = await safeApiFetch(`/api/cms/careers/admin/${item.id}/status`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
@@ -188,40 +243,51 @@ export const CareersAdminPage: React.FC = () => {
         },
         body: JSON.stringify({ status: newStatus }),
       });
-      if (res.ok) {
+      if (res.ok || res.isOffline) {
         success(`Status set to ${newStatus}`);
-        setCareers((prev) => prev.map((c) => (c.id === item.id ? { ...c, status: newStatus as any } : c)));
+        setCareers((prev) => {
+          const updated = prev.map((c) => (c.id === item.id ? { ...c, status: newStatus as any } : c));
+          saveOfflineCache('infosbrain_cms_careers', updated);
+          return updated;
+        });
+        window.dispatchEvent(new Event('infosbrain_cms_updated'));
       } else {
-        error('Failed to change status.');
+        error(res.data?.error || 'Failed to change status.');
       }
     } catch {
-      error('Network error changing status.');
+      setCareers((prev) => {
+        const updated = prev.map((c) => (c.id === item.id ? { ...c, status: newStatus as any } : c));
+        saveOfflineCache('infosbrain_cms_careers', updated);
+        return updated;
+      });
+      window.dispatchEvent(new Event('infosbrain_cms_updated'));
+      success(`Status set to ${newStatus}`);
     }
   };
 
   const confirmDelete = async () => {
     if (!deleteModalState.id) return;
+    const targetId = deleteModalState.id;
     try {
-      const res = await fetch(`/api/cms/careers/admin/${deleteModalState.id}`, {
+      const res = await safeApiFetch(`/api/cms/careers/admin/${targetId}`, {
         method: 'DELETE',
         headers: token ? { Authorization: `Bearer ${token}` } : {},
       });
-      if (res.ok) {
+      if (res.ok || res.isOffline) {
         success('Job opening deleted.');
         setCareers((prev) => {
-          const updated = prev.filter((c) => c.id !== deleteModalState.id);
+          const updated = prev.filter((c) => c.id !== targetId);
           saveOfflineCache('infosbrain_cms_careers', updated);
           return updated;
         });
         setDeleteModalState({ isOpen: false });
         window.dispatchEvent(new Event('infosbrain_cms_updated'));
       } else {
-        const data = await res.json();
-        error(data.error || 'Failed to delete job opening.');
+        error(res.data?.error || 'Failed to delete job opening.');
       }
     } catch {
       setCareers((prev) => {
-        const updated = prev.filter((c) => c.id !== deleteModalState.id);
+        const updated = prev.filter((c) => c.id !== targetId);
         saveOfflineCache('infosbrain_cms_careers', updated);
         return updated;
       });

@@ -172,7 +172,7 @@ export const LocationsAdminPage: React.FC = () => {
       const url = editingItem ? `/api/cms/locations/admin/${editingItem.id}` : '/api/cms/locations/admin';
       const method = editingItem ? 'PUT' : 'POST';
 
-      const res = await fetch(url, {
+      const res = await safeApiFetch(url, {
         method,
         headers: {
           'Content-Type': 'application/json',
@@ -181,16 +181,75 @@ export const LocationsAdminPage: React.FC = () => {
         body: JSON.stringify(payload),
       });
 
-      const data = await res.json();
       if (res.ok) {
         success(editingItem ? 'Location updated!' : 'Location created!');
         setModalOpen(false);
         fetchLocations();
-      } else {
-        error(data.error || 'Failed to save location.');
+        window.dispatchEvent(new Event('infosbrain_cms_updated'));
+        return;
+      } else if (!res.isOffline) {
+        error(res.data?.error || 'Failed to save location.');
+        return;
       }
+
+      // Offline / Hostinger fallback
+      const newOrUpdated: LocationItem = {
+        id: editingItem ? editingItem.id : `loc_local_${Date.now()}`,
+        city: payload.city,
+        country: payload.country,
+        role: payload.role,
+        address: payload.address,
+        phone: payload.phone,
+        email: payload.email,
+        timeZone: payload.timeZone,
+        isHeadquarters: payload.isHeadquarters,
+        coordinates: payload.coordinates,
+        localImpactStory: payload.localImpactStory,
+        imageUrl: payload.imageUrl,
+        displayOrder: payload.displayOrder,
+        status: payload.status as any,
+        createdAt: editingItem?.createdAt || new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      };
+      setLocations((prev) => {
+        const updated = editingItem
+          ? prev.map((l) => (l.id === editingItem.id ? newOrUpdated : l))
+          : [...prev, newOrUpdated];
+        saveOfflineCache('infosbrain_cms_locations', updated);
+        return updated;
+      });
+      setModalOpen(false);
+      window.dispatchEvent(new Event('infosbrain_cms_updated'));
+      success(editingItem ? 'Location updated!' : 'Location created!');
     } catch {
-      error('Network error saving location.');
+      const newOrUpdated: LocationItem = {
+        id: editingItem ? editingItem.id : `loc_local_${Date.now()}`,
+        city: payload.city,
+        country: payload.country,
+        role: payload.role,
+        address: payload.address,
+        phone: payload.phone,
+        email: payload.email,
+        timeZone: payload.timeZone,
+        isHeadquarters: payload.isHeadquarters,
+        coordinates: payload.coordinates,
+        localImpactStory: payload.localImpactStory,
+        imageUrl: payload.imageUrl,
+        displayOrder: payload.displayOrder,
+        status: payload.status as any,
+        createdAt: editingItem?.createdAt || new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      };
+      setLocations((prev) => {
+        const updated = editingItem
+          ? prev.map((l) => (l.id === editingItem.id ? newOrUpdated : l))
+          : [...prev, newOrUpdated];
+        saveOfflineCache('infosbrain_cms_locations', updated);
+        return updated;
+      });
+      setModalOpen(false);
+      window.dispatchEvent(new Event('infosbrain_cms_updated'));
+      success(editingItem ? 'Location updated!' : 'Location created!');
     } finally {
       setSubmitting(false);
     }
@@ -199,7 +258,7 @@ export const LocationsAdminPage: React.FC = () => {
   const toggleStatus = async (item: LocationItem) => {
     const newStatus = item.status === 'published' ? 'hidden' : 'published';
     try {
-      const res = await fetch(`/api/cms/locations/admin/${item.id}/status`, {
+      const res = await safeApiFetch(`/api/cms/locations/admin/${item.id}/status`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
@@ -207,40 +266,51 @@ export const LocationsAdminPage: React.FC = () => {
         },
         body: JSON.stringify({ status: newStatus }),
       });
-      if (res.ok) {
+      if (res.ok || res.isOffline) {
         success(`Status set to ${newStatus}`);
-        setLocations((prev) => prev.map((l) => (l.id === item.id ? { ...l, status: newStatus as any } : l)));
+        setLocations((prev) => {
+          const updated = prev.map((l) => (l.id === item.id ? { ...l, status: newStatus as any } : l));
+          saveOfflineCache('infosbrain_cms_locations', updated);
+          return updated;
+        });
+        window.dispatchEvent(new Event('infosbrain_cms_updated'));
       } else {
-        error('Failed to change status.');
+        error(res.data?.error || 'Failed to change status.');
       }
     } catch {
-      error('Network error changing status.');
+      setLocations((prev) => {
+        const updated = prev.map((l) => (l.id === item.id ? { ...l, status: newStatus as any } : l));
+        saveOfflineCache('infosbrain_cms_locations', updated);
+        return updated;
+      });
+      window.dispatchEvent(new Event('infosbrain_cms_updated'));
+      success(`Status set to ${newStatus}`);
     }
   };
 
   const confirmDelete = async () => {
     if (!deleteModalState.id) return;
+    const targetId = deleteModalState.id;
     try {
-      const res = await fetch(`/api/cms/locations/admin/${deleteModalState.id}`, {
+      const res = await safeApiFetch(`/api/cms/locations/admin/${targetId}`, {
         method: 'DELETE',
         headers: token ? { Authorization: `Bearer ${token}` } : {},
       });
-      if (res.ok) {
+      if (res.ok || res.isOffline) {
         success('Location deleted.');
         setLocations((prev) => {
-          const updated = prev.filter((l) => l.id !== deleteModalState.id);
+          const updated = prev.filter((l) => l.id !== targetId);
           saveOfflineCache('infosbrain_cms_locations', updated);
           return updated;
         });
         setDeleteModalState({ isOpen: false });
         window.dispatchEvent(new Event('infosbrain_cms_updated'));
       } else {
-        const data = await res.json();
-        error(data.error || 'Failed to delete location.');
+        error(res.data?.error || 'Failed to delete location.');
       }
     } catch {
       setLocations((prev) => {
-        const updated = prev.filter((l) => l.id !== deleteModalState.id);
+        const updated = prev.filter((l) => l.id !== targetId);
         saveOfflineCache('infosbrain_cms_locations', updated);
         return updated;
       });

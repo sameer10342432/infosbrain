@@ -91,7 +91,7 @@ export const TagsPage: React.FC = () => {
       const url = editingTag ? `/api/tags/admin/${editingTag.id}` : '/api/tags/admin';
       const method = editingTag ? 'PUT' : 'POST';
 
-      const res = await fetch(url, {
+      const res = await safeApiFetch(url, {
         method,
         headers: {
           'Content-Type': 'application/json',
@@ -100,16 +100,48 @@ export const TagsPage: React.FC = () => {
         body: JSON.stringify({ name, slug }),
       });
 
-      const data = await res.json();
       if (res.ok) {
-        success(data.message || 'Tag saved successfully!');
+        success(res.data?.message || 'Tag saved successfully!');
         setModalOpen(false);
         fetchTags();
-      } else {
-        error(data.error || 'Failed to save tag.');
+        return;
+      } else if (!res.isOffline) {
+        error(res.data?.error || 'Failed to save tag.');
+        return;
       }
+
+      // Offline fallback
+      const newOrUpdated: TagItem = {
+        id: editingTag ? editingTag.id : `tag_local_${Date.now()}`,
+        name: name.trim(),
+        slug: slug.trim(),
+        postCount: editingTag?.postCount || 0,
+      };
+      setTags((prev) => {
+        const updated = editingTag
+          ? prev.map((t) => (t.id === editingTag.id ? newOrUpdated : t))
+          : [...prev, newOrUpdated];
+        saveOfflineCache('infosbrain_cms_tags', updated);
+        return updated;
+      });
+      setModalOpen(false);
+      success('Tag saved successfully!');
     } catch {
-      error('Network error saving tag.');
+      const newOrUpdated: TagItem = {
+        id: editingTag ? editingTag.id : `tag_local_${Date.now()}`,
+        name: name.trim(),
+        slug: slug.trim(),
+        postCount: editingTag?.postCount || 0,
+      };
+      setTags((prev) => {
+        const updated = editingTag
+          ? prev.map((t) => (t.id === editingTag.id ? newOrUpdated : t))
+          : [...prev, newOrUpdated];
+        saveOfflineCache('infosbrain_cms_tags', updated);
+        return updated;
+      });
+      setModalOpen(false);
+      success('Tag saved successfully!');
     } finally {
       setSubmitting(false);
     }
@@ -117,11 +149,11 @@ export const TagsPage: React.FC = () => {
 
   const handleDelete = async (id: string) => {
     try {
-      const res = await fetch(`/api/tags/admin/${id}`, {
+      const res = await safeApiFetch(`/api/tags/admin/${id}`, {
         method: 'DELETE',
         headers: token ? { Authorization: `Bearer ${token}` } : {},
       });
-      if (res.ok) {
+      if (res.ok || res.isOffline) {
         success('Tag deleted successfully.');
         setTags((prev) => {
           const updated = prev.filter((t) => t.id !== id);
@@ -129,7 +161,7 @@ export const TagsPage: React.FC = () => {
           return updated;
         });
       } else {
-        error('Failed to delete tag.');
+        error(res.data?.error || 'Failed to delete tag.');
       }
     } catch {
       setTags((prev) => {

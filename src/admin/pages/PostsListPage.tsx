@@ -166,11 +166,11 @@ export const PostsListPage: React.FC<PostsListPageProps> = ({ onNavigate, onPrev
   // Single post actions
   const handleDeletePost = async (id: string) => {
     try {
-      const res = await fetch(`/api/posts/admin/${id}`, {
+      const res = await safeApiFetch(`/api/posts/admin/${id}`, {
         method: 'DELETE',
         headers: token ? { Authorization: `Bearer ${token}` } : {},
       });
-      if (res.ok) {
+      if (res.ok || res.isOffline) {
         success('Post deleted successfully.');
         setPosts((prev) => {
           const updated = prev.filter((p) => p.id !== id);
@@ -179,7 +179,7 @@ export const PostsListPage: React.FC<PostsListPageProps> = ({ onNavigate, onPrev
         });
         setSelectedIds((prev) => prev.filter((i) => i !== id));
       } else {
-        error('Failed to delete post.');
+        error(res.data?.error || 'Failed to delete post.');
       }
     } catch {
       setPosts((prev) => {
@@ -196,16 +196,34 @@ export const PostsListPage: React.FC<PostsListPageProps> = ({ onNavigate, onPrev
 
   const handleDuplicatePost = async (id: string) => {
     try {
-      const res = await fetch(`/api/posts/admin/${id}/duplicate`, {
+      const res = await safeApiFetch(`/api/posts/admin/${id}/duplicate`, {
         method: 'POST',
         headers: token ? { Authorization: `Bearer ${token}` } : {},
       });
-      const data = await res.json();
       if (res.ok) {
         success('Post duplicated successfully as Draft.');
         fetchPosts();
+      } else if (res.isOffline) {
+        const original = posts.find((p) => p.id === id);
+        if (original) {
+          const duplicated: PostItem = {
+            ...original,
+            id: `post_dup_${Date.now()}`,
+            title: `${original.title} (Copy)`,
+            slug: `${original.slug}-copy-${Date.now()}`,
+            status: 'draft',
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+          };
+          setPosts((prev) => {
+            const updated = [duplicated, ...prev];
+            saveOfflineCache('infosbrain_cms_posts', updated);
+            return updated;
+          });
+          success('Post duplicated successfully as Draft.');
+        }
       } else {
-        error(data.error || 'Failed to duplicate post.');
+        error(res.data?.error || 'Failed to duplicate post.');
       }
     } catch {
       error('Network error duplicating post.');
@@ -222,7 +240,7 @@ export const PostsListPage: React.FC<PostsListPageProps> = ({ onNavigate, onPrev
     }
 
     try {
-      const res = await fetch('/api/posts/admin/bulk', {
+      const res = await safeApiFetch('/api/posts/admin/bulk', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -231,13 +249,23 @@ export const PostsListPage: React.FC<PostsListPageProps> = ({ onNavigate, onPrev
         body: JSON.stringify({ action, ids: selectedIds }),
       });
 
-      const data = await res.json();
       if (res.ok) {
-        success(data.message || 'Bulk action executed successfully.');
+        success(res.data?.message || 'Bulk action executed successfully.');
         setSelectedIds([]);
         fetchPosts();
+      } else if (res.isOffline) {
+        const targetStatus = action === 'publish' ? 'published' : action === 'unpublish' ? 'draft' : 'archived';
+        setPosts((prev) => {
+          const updated = prev.map((p) =>
+            selectedIds.includes(p.id) ? { ...p, status: targetStatus as any } : p
+          );
+          saveOfflineCache('infosbrain_cms_posts', updated);
+          return updated;
+        });
+        setSelectedIds([]);
+        success('Bulk action executed successfully.');
       } else {
-        error(data.error || 'Bulk action failed.');
+        error(res.data?.error || 'Bulk action failed.');
       }
     } catch {
       error('Network error executing bulk action.');
@@ -246,7 +274,7 @@ export const PostsListPage: React.FC<PostsListPageProps> = ({ onNavigate, onPrev
 
   const executeBulkDelete = async () => {
     try {
-      const res = await fetch('/api/posts/admin/bulk', {
+      const res = await safeApiFetch('/api/posts/admin/bulk', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -255,15 +283,26 @@ export const PostsListPage: React.FC<PostsListPageProps> = ({ onNavigate, onPrev
         body: JSON.stringify({ action: 'delete', ids: selectedIds }),
       });
 
-      if (res.ok) {
-        success(`Deleted ${selectedIds.length} posts.`);
+      if (res.ok || res.isOffline) {
+        const count = selectedIds.length;
+        setPosts((prev) => {
+          const updated = prev.filter((p) => !selectedIds.includes(p.id));
+          saveOfflineCache('infosbrain_cms_posts', updated);
+          return updated;
+        });
         setSelectedIds([]);
-        fetchPosts();
+        success(`Deleted ${count} posts.`);
       } else {
-        error('Failed to delete selected posts.');
+        error(res.data?.error || 'Failed to delete selected posts.');
       }
     } catch {
-      error('Network error deleting posts.');
+      setPosts((prev) => {
+        const updated = prev.filter((p) => !selectedIds.includes(p.id));
+        saveOfflineCache('infosbrain_cms_posts', updated);
+        return updated;
+      });
+      setSelectedIds([]);
+      success('Selected posts deleted.');
     } finally {
       setDeleteModalState({ isOpen: false });
     }

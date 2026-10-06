@@ -241,7 +241,7 @@ export const ServicesAdminPage: React.FC = () => {
       const url = editingService ? `/api/services/admin/${editingService.id}` : '/api/services/admin';
       const method = editingService ? 'PUT' : 'POST';
 
-      const res = await fetch(url, {
+      const res = await safeApiFetch(url, {
         method,
         headers: {
           'Content-Type': 'application/json',
@@ -250,16 +250,91 @@ export const ServicesAdminPage: React.FC = () => {
         body: JSON.stringify(payload),
       });
 
-      const data = await res.json();
       if (res.ok) {
         success(editingService ? 'Service updated successfully!' : 'Service created successfully!');
         setModalOpen(false);
         fetchServices();
-      } else {
-        error(data.error || 'Failed to save service.');
+        window.dispatchEvent(new Event('infosbrain_cms_updated'));
+        return;
+      } else if (!res.isOffline) {
+        error(res.data?.error || 'Failed to save service.');
+        return;
       }
+
+      // Offline / Hostinger fallback
+      const newOrUpdated: ServiceItem = {
+        id: editingService ? editingService.id : `srv_local_${Date.now()}`,
+        title: payload.title,
+        slug: payload.slug,
+        category: payload.category,
+        iconName: payload.iconName,
+        featured: payload.featured,
+        imageUrl: payload.imageUrl,
+        shortDescription: payload.shortDescription,
+        heroSubtitle: payload.heroSubtitle,
+        description: payload.description,
+        features: payload.features,
+        benefits: payload.benefits,
+        deliverables: payload.deliverables,
+        technologies: payload.technologies,
+        process: payload.process,
+        faqs: payload.faqs,
+        ctaText: payload.ctaText,
+        metaTitle: payload.metaTitle,
+        metaDescription: payload.metaDescription,
+        focusKeyword: payload.focusKeyword,
+        displayOrder: payload.displayOrder,
+        status: payload.status as any,
+        createdAt: editingService?.createdAt || new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      };
+      setServices((prev) => {
+        const updated = editingService
+          ? prev.map((s) => (s.id === editingService.id ? newOrUpdated : s))
+          : [...prev, newOrUpdated];
+        saveOfflineCache('infosbrain_cms_services', updated);
+        return updated;
+      });
+      setModalOpen(false);
+      window.dispatchEvent(new Event('infosbrain_cms_updated'));
+      success(editingService ? 'Service updated successfully!' : 'Service created successfully!');
     } catch {
-      error('Network error saving service.');
+      setServices((prev) => {
+        const newOrUpdated: ServiceItem = {
+          id: editingService ? editingService.id : `srv_local_${Date.now()}`,
+          title: payload.title,
+          slug: payload.slug,
+          category: payload.category,
+          iconName: payload.iconName,
+          featured: payload.featured,
+          imageUrl: payload.imageUrl,
+          shortDescription: payload.shortDescription,
+          heroSubtitle: payload.heroSubtitle,
+          description: payload.description,
+          features: payload.features,
+          benefits: payload.benefits,
+          deliverables: payload.deliverables,
+          technologies: payload.technologies,
+          process: payload.process,
+          faqs: payload.faqs,
+          ctaText: payload.ctaText,
+          metaTitle: payload.metaTitle,
+          metaDescription: payload.metaDescription,
+          focusKeyword: payload.focusKeyword,
+          displayOrder: payload.displayOrder,
+          status: payload.status as any,
+          createdAt: editingService?.createdAt || new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+        };
+        const updated = editingService
+          ? prev.map((s) => (s.id === editingService.id ? newOrUpdated : s))
+          : [...prev, newOrUpdated];
+        saveOfflineCache('infosbrain_cms_services', updated);
+        return updated;
+      });
+      setModalOpen(false);
+      window.dispatchEvent(new Event('infosbrain_cms_updated'));
+      success(editingService ? 'Service updated successfully!' : 'Service created successfully!');
     } finally {
       setSubmitting(false);
     }
@@ -268,7 +343,7 @@ export const ServicesAdminPage: React.FC = () => {
   const toggleStatus = async (service: ServiceItem) => {
     const newStatus = service.status === 'published' ? 'hidden' : 'published';
     try {
-      const res = await fetch(`/api/services/admin/${service.id}/status`, {
+      const res = await safeApiFetch(`/api/services/admin/${service.id}/status`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
@@ -276,42 +351,51 @@ export const ServicesAdminPage: React.FC = () => {
         },
         body: JSON.stringify({ status: newStatus }),
       });
-      if (res.ok) {
+      if (res.ok || res.isOffline) {
         success(`Service set to ${newStatus}`);
-        setServices((prev) =>
-          prev.map((s) => (s.id === service.id ? { ...s, status: newStatus as any } : s))
-        );
+        setServices((prev) => {
+          const updated = prev.map((s) => (s.id === service.id ? { ...s, status: newStatus as any } : s));
+          saveOfflineCache('infosbrain_cms_services', updated);
+          return updated;
+        });
+        window.dispatchEvent(new Event('infosbrain_cms_updated'));
       } else {
-        error('Failed to change status.');
+        error(res.data?.error || 'Failed to change status.');
       }
     } catch {
-      error('Network error changing status.');
+      setServices((prev) => {
+        const updated = prev.map((s) => (s.id === service.id ? { ...s, status: newStatus as any } : s));
+        saveOfflineCache('infosbrain_cms_services', updated);
+        return updated;
+      });
+      window.dispatchEvent(new Event('infosbrain_cms_updated'));
+      success(`Service set to ${newStatus}`);
     }
   };
 
   const confirmDelete = async () => {
     if (!deleteModalState.id) return;
+    const targetId = deleteModalState.id;
     try {
-      const res = await fetch(`/api/services/admin/${deleteModalState.id}`, {
+      const res = await safeApiFetch(`/api/services/admin/${targetId}`, {
         method: 'DELETE',
         headers: token ? { Authorization: `Bearer ${token}` } : {},
       });
-      if (res.ok) {
+      if (res.ok || res.isOffline) {
         success('Service deleted.');
         setServices((prev) => {
-          const updated = prev.filter((s) => s.id !== deleteModalState.id);
+          const updated = prev.filter((s) => s.id !== targetId);
           saveOfflineCache('infosbrain_cms_services', updated);
           return updated;
         });
         setDeleteModalState({ isOpen: false });
         window.dispatchEvent(new Event('infosbrain_cms_updated'));
       } else {
-        const data = await res.json();
-        error(data.error || 'Failed to delete service.');
+        error(res.data?.error || 'Failed to delete service.');
       }
     } catch {
       setServices((prev) => {
-        const updated = prev.filter((s) => s.id !== deleteModalState.id);
+        const updated = prev.filter((s) => s.id !== targetId);
         saveOfflineCache('infosbrain_cms_services', updated);
         return updated;
       });

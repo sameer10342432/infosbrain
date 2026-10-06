@@ -156,7 +156,7 @@ export const TestimonialsAdminPage: React.FC = () => {
       const url = editingItem ? `/api/cms/testimonials/admin/${editingItem.id}` : '/api/cms/testimonials/admin';
       const method = editingItem ? 'PUT' : 'POST';
 
-      const res = await fetch(url, {
+      const res = await safeApiFetch(url, {
         method,
         headers: {
           'Content-Type': 'application/json',
@@ -165,16 +165,71 @@ export const TestimonialsAdminPage: React.FC = () => {
         body: JSON.stringify(payload),
       });
 
-      const data = await res.json();
       if (res.ok) {
         success(editingItem ? 'Testimonial updated!' : 'Testimonial created!');
         setModalOpen(false);
         fetchTestimonials();
-      } else {
-        error(data.error || 'Failed to save testimonial.');
+        window.dispatchEvent(new Event('infosbrain_cms_updated'));
+        return;
+      } else if (!res.isOffline) {
+        error(res.data?.error || 'Failed to save testimonial.');
+        return;
       }
+
+      // Offline / Hostinger fallback
+      const newOrUpdated: TestimonialItem = {
+        id: editingItem ? editingItem.id : `testim_local_${Date.now()}`,
+        clientName: payload.clientName,
+        company: payload.company,
+        designation: payload.designation,
+        country: payload.country,
+        flag: payload.flag,
+        rating: payload.rating,
+        avatarText: payload.avatarText,
+        avatarUrl: payload.avatarUrl,
+        testimonial: payload.testimonial,
+        displayOrder: payload.displayOrder,
+        status: payload.status as any,
+        createdAt: editingItem?.createdAt || new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      };
+      setTestimonials((prev) => {
+        const updated = editingItem
+          ? prev.map((t) => (t.id === editingItem.id ? newOrUpdated : t))
+          : [...prev, newOrUpdated];
+        saveOfflineCache('infosbrain_cms_testimonials', updated);
+        return updated;
+      });
+      setModalOpen(false);
+      window.dispatchEvent(new Event('infosbrain_cms_updated'));
+      success(editingItem ? 'Testimonial updated!' : 'Testimonial created!');
     } catch {
-      error('Network error saving testimonial.');
+      const newOrUpdated: TestimonialItem = {
+        id: editingItem ? editingItem.id : `testim_local_${Date.now()}`,
+        clientName: payload.clientName,
+        company: payload.company,
+        designation: payload.designation,
+        country: payload.country,
+        flag: payload.flag,
+        rating: payload.rating,
+        avatarText: payload.avatarText,
+        avatarUrl: payload.avatarUrl,
+        testimonial: payload.testimonial,
+        displayOrder: payload.displayOrder,
+        status: payload.status as any,
+        createdAt: editingItem?.createdAt || new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      };
+      setTestimonials((prev) => {
+        const updated = editingItem
+          ? prev.map((t) => (t.id === editingItem.id ? newOrUpdated : t))
+          : [...prev, newOrUpdated];
+        saveOfflineCache('infosbrain_cms_testimonials', updated);
+        return updated;
+      });
+      setModalOpen(false);
+      window.dispatchEvent(new Event('infosbrain_cms_updated'));
+      success(editingItem ? 'Testimonial updated!' : 'Testimonial created!');
     } finally {
       setSubmitting(false);
     }
@@ -183,7 +238,7 @@ export const TestimonialsAdminPage: React.FC = () => {
   const toggleStatus = async (item: TestimonialItem) => {
     const newStatus = item.status === 'published' ? 'hidden' : 'published';
     try {
-      const res = await fetch(`/api/cms/testimonials/admin/${item.id}/status`, {
+      const res = await safeApiFetch(`/api/cms/testimonials/admin/${item.id}/status`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
@@ -191,40 +246,51 @@ export const TestimonialsAdminPage: React.FC = () => {
         },
         body: JSON.stringify({ status: newStatus }),
       });
-      if (res.ok) {
+      if (res.ok || res.isOffline) {
         success(`Status set to ${newStatus}`);
-        setTestimonials((prev) => prev.map((t) => (t.id === item.id ? { ...t, status: newStatus as any } : t)));
+        setTestimonials((prev) => {
+          const updated = prev.map((t) => (t.id === item.id ? { ...t, status: newStatus as any } : t));
+          saveOfflineCache('infosbrain_cms_testimonials', updated);
+          return updated;
+        });
+        window.dispatchEvent(new Event('infosbrain_cms_updated'));
       } else {
-        error('Failed to change status.');
+        error(res.data?.error || 'Failed to change status.');
       }
     } catch {
-      error('Network error changing status.');
+      setTestimonials((prev) => {
+        const updated = prev.map((t) => (t.id === item.id ? { ...t, status: newStatus as any } : t));
+        saveOfflineCache('infosbrain_cms_testimonials', updated);
+        return updated;
+      });
+      window.dispatchEvent(new Event('infosbrain_cms_updated'));
+      success(`Status set to ${newStatus}`);
     }
   };
 
   const confirmDelete = async () => {
     if (!deleteModalState.id) return;
+    const targetId = deleteModalState.id;
     try {
-      const res = await fetch(`/api/cms/testimonials/admin/${deleteModalState.id}`, {
+      const res = await safeApiFetch(`/api/cms/testimonials/admin/${targetId}`, {
         method: 'DELETE',
         headers: token ? { Authorization: `Bearer ${token}` } : {},
       });
-      if (res.ok) {
+      if (res.ok || res.isOffline) {
         success('Testimonial deleted.');
         setTestimonials((prev) => {
-          const updated = prev.filter((t) => t.id !== deleteModalState.id);
+          const updated = prev.filter((t) => t.id !== targetId);
           saveOfflineCache('infosbrain_cms_testimonials', updated);
           return updated;
         });
         setDeleteModalState({ isOpen: false });
         window.dispatchEvent(new Event('infosbrain_cms_updated'));
       } else {
-        const data = await res.json();
-        error(data.error || 'Failed to delete testimonial.');
+        error(res.data?.error || 'Failed to delete testimonial.');
       }
     } catch {
       setTestimonials((prev) => {
-        const updated = prev.filter((t) => t.id !== deleteModalState.id);
+        const updated = prev.filter((t) => t.id !== targetId);
         saveOfflineCache('infosbrain_cms_testimonials', updated);
         return updated;
       });

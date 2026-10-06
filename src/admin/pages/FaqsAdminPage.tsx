@@ -122,7 +122,7 @@ export const FaqsAdminPage: React.FC = () => {
       const url = editingItem ? `/api/cms/faqs/admin/${editingItem.id}` : '/api/cms/faqs/admin';
       const method = editingItem ? 'PUT' : 'POST';
 
-      const res = await fetch(url, {
+      const res = await safeApiFetch(url, {
         method,
         headers: {
           'Content-Type': 'application/json',
@@ -131,16 +131,59 @@ export const FaqsAdminPage: React.FC = () => {
         body: JSON.stringify(payload),
       });
 
-      const data = await res.json();
       if (res.ok) {
         success(editingItem ? 'FAQ updated!' : 'FAQ created!');
         setModalOpen(false);
         fetchFaqs();
-      } else {
-        error(data.error || 'Failed to save FAQ.');
+        window.dispatchEvent(new Event('infosbrain_cms_updated'));
+        return;
+      } else if (!res.isOffline) {
+        error(res.data?.error || 'Failed to save FAQ.');
+        return;
       }
+
+      // Offline / Hostinger fallback
+      const newOrUpdated: FaqItem = {
+        id: editingItem ? editingItem.id : `faq_local_${Date.now()}`,
+        question: payload.question,
+        answer: payload.answer,
+        category: payload.category,
+        displayOrder: payload.displayOrder,
+        status: payload.status as any,
+        createdAt: editingItem?.createdAt || new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      };
+      setFaqs((prev) => {
+        const updated = editingItem
+          ? prev.map((f) => (f.id === editingItem.id ? newOrUpdated : f))
+          : [...prev, newOrUpdated];
+        saveOfflineCache('infosbrain_cms_faqs', updated);
+        return updated;
+      });
+      setModalOpen(false);
+      window.dispatchEvent(new Event('infosbrain_cms_updated'));
+      success(editingItem ? 'FAQ updated!' : 'FAQ created!');
     } catch {
-      error('Network error saving FAQ.');
+      const newOrUpdated: FaqItem = {
+        id: editingItem ? editingItem.id : `faq_local_${Date.now()}`,
+        question: payload.question,
+        answer: payload.answer,
+        category: payload.category,
+        displayOrder: payload.displayOrder,
+        status: payload.status as any,
+        createdAt: editingItem?.createdAt || new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      };
+      setFaqs((prev) => {
+        const updated = editingItem
+          ? prev.map((f) => (f.id === editingItem.id ? newOrUpdated : f))
+          : [...prev, newOrUpdated];
+        saveOfflineCache('infosbrain_cms_faqs', updated);
+        return updated;
+      });
+      setModalOpen(false);
+      window.dispatchEvent(new Event('infosbrain_cms_updated'));
+      success(editingItem ? 'FAQ updated!' : 'FAQ created!');
     } finally {
       setSubmitting(false);
     }
@@ -149,7 +192,7 @@ export const FaqsAdminPage: React.FC = () => {
   const toggleStatus = async (item: FaqItem) => {
     const newStatus = item.status === 'published' ? 'hidden' : 'published';
     try {
-      const res = await fetch(`/api/cms/faqs/admin/${item.id}/status`, {
+      const res = await safeApiFetch(`/api/cms/faqs/admin/${item.id}/status`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
@@ -157,40 +200,51 @@ export const FaqsAdminPage: React.FC = () => {
         },
         body: JSON.stringify({ status: newStatus }),
       });
-      if (res.ok) {
+      if (res.ok || res.isOffline) {
         success(`Status set to ${newStatus}`);
-        setFaqs((prev) => prev.map((f) => (f.id === item.id ? { ...f, status: newStatus as any } : f)));
+        setFaqs((prev) => {
+          const updated = prev.map((f) => (f.id === item.id ? { ...f, status: newStatus as any } : f));
+          saveOfflineCache('infosbrain_cms_faqs', updated);
+          return updated;
+        });
+        window.dispatchEvent(new Event('infosbrain_cms_updated'));
       } else {
-        error('Failed to change status.');
+        error(res.data?.error || 'Failed to change status.');
       }
     } catch {
-      error('Network error changing status.');
+      setFaqs((prev) => {
+        const updated = prev.map((f) => (f.id === item.id ? { ...f, status: newStatus as any } : f));
+        saveOfflineCache('infosbrain_cms_faqs', updated);
+        return updated;
+      });
+      window.dispatchEvent(new Event('infosbrain_cms_updated'));
+      success(`Status set to ${newStatus}`);
     }
   };
 
   const confirmDelete = async () => {
     if (!deleteModalState.id) return;
+    const targetId = deleteModalState.id;
     try {
-      const res = await fetch(`/api/cms/faqs/admin/${deleteModalState.id}`, {
+      const res = await safeApiFetch(`/api/cms/faqs/admin/${targetId}`, {
         method: 'DELETE',
         headers: token ? { Authorization: `Bearer ${token}` } : {},
       });
-      if (res.ok) {
+      if (res.ok || res.isOffline) {
         success('FAQ deleted.');
         setFaqs((prev) => {
-          const updated = prev.filter((f) => f.id !== deleteModalState.id);
+          const updated = prev.filter((f) => f.id !== targetId);
           saveOfflineCache('infosbrain_cms_faqs', updated);
           return updated;
         });
         setDeleteModalState({ isOpen: false });
         window.dispatchEvent(new Event('infosbrain_cms_updated'));
       } else {
-        const data = await res.json();
-        error(data.error || 'Failed to delete FAQ.');
+        error(res.data?.error || 'Failed to delete FAQ.');
       }
     } catch {
       setFaqs((prev) => {
-        const updated = prev.filter((f) => f.id !== deleteModalState.id);
+        const updated = prev.filter((f) => f.id !== targetId);
         saveOfflineCache('infosbrain_cms_faqs', updated);
         return updated;
       });

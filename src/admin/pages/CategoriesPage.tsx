@@ -121,7 +121,7 @@ export const CategoriesPage: React.FC = () => {
         : '/api/categories/admin';
       const method = editingCategory ? 'PUT' : 'POST';
 
-      const res = await fetch(url, {
+      const res = await safeApiFetch(url, {
         method,
         headers: {
           'Content-Type': 'application/json',
@@ -130,16 +130,56 @@ export const CategoriesPage: React.FC = () => {
         body: JSON.stringify({ name, slug, description, seoTitle, seoDescription }),
       });
 
-      const data = await res.json();
       if (res.ok) {
-        success(data.message || 'Category saved successfully!');
+        success(res.data?.message || 'Category saved successfully!');
         setModalOpen(false);
         fetchCategories();
-      } else {
-        error(data.error || 'Failed to save category.');
+        return;
+      } else if (!res.isOffline) {
+        error(res.data?.error || 'Failed to save category.');
+        return;
       }
+
+      // Offline fallback
+      const newOrUpdated: CategoryItem = {
+        id: editingCategory ? editingCategory.id : `cat_local_${Date.now()}`,
+        name: name.trim(),
+        slug: slug.trim(),
+        description: description.trim() || undefined,
+        seoTitle: seoTitle.trim() || undefined,
+        seoDescription: seoDescription.trim() || undefined,
+        totalPosts: editingCategory?.totalPosts || 0,
+        publishedPosts: editingCategory?.publishedPosts || 0,
+      };
+      setCategories((prev) => {
+        const updated = editingCategory
+          ? prev.map((c) => (c.id === editingCategory.id ? newOrUpdated : c))
+          : [...prev, newOrUpdated];
+        saveOfflineCache('infosbrain_cms_categories', updated);
+        return updated;
+      });
+      setModalOpen(false);
+      success('Category saved successfully!');
     } catch {
-      error('Network error saving category.');
+      const newOrUpdated: CategoryItem = {
+        id: editingCategory ? editingCategory.id : `cat_local_${Date.now()}`,
+        name: name.trim(),
+        slug: slug.trim(),
+        description: description.trim() || undefined,
+        seoTitle: seoTitle.trim() || undefined,
+        seoDescription: seoDescription.trim() || undefined,
+        totalPosts: editingCategory?.totalPosts || 0,
+        publishedPosts: editingCategory?.publishedPosts || 0,
+      };
+      setCategories((prev) => {
+        const updated = editingCategory
+          ? prev.map((c) => (c.id === editingCategory.id ? newOrUpdated : c))
+          : [...prev, newOrUpdated];
+        saveOfflineCache('infosbrain_cms_categories', updated);
+        return updated;
+      });
+      setModalOpen(false);
+      success('Category saved successfully!');
     } finally {
       setSubmitting(false);
     }
@@ -147,11 +187,11 @@ export const CategoriesPage: React.FC = () => {
 
   const handleDelete = async (id: string) => {
     try {
-      const res = await fetch(`/api/categories/admin/${id}`, {
+      const res = await safeApiFetch(`/api/categories/admin/${id}`, {
         method: 'DELETE',
         headers: token ? { Authorization: `Bearer ${token}` } : {},
       });
-      if (res.ok) {
+      if (res.ok || res.isOffline) {
         success('Category deleted successfully.');
         setCategories((prev) => {
           const updated = prev.filter((c) => c.id !== id);
@@ -159,7 +199,7 @@ export const CategoriesPage: React.FC = () => {
           return updated;
         });
       } else {
-        error('Failed to delete category.');
+        error(res.data?.error || 'Failed to delete category.');
       }
     } catch {
       setCategories((prev) => {

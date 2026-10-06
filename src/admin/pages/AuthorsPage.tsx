@@ -122,7 +122,7 @@ export const AuthorsPage: React.FC = () => {
       const url = editingAuthor ? `/api/authors/admin/${editingAuthor.id}` : '/api/authors/admin';
       const method = editingAuthor ? 'PUT' : 'POST';
 
-      const res = await fetch(url, {
+      const res = await safeApiFetch(url, {
         method,
         headers: {
           'Content-Type': 'application/json',
@@ -140,16 +140,60 @@ export const AuthorsPage: React.FC = () => {
         }),
       });
 
-      const data = await res.json();
       if (res.ok) {
-        success(data.message || 'Author saved successfully!');
+        success(res.data?.message || 'Author saved successfully!');
         setModalOpen(false);
         fetchAuthors();
-      } else {
-        error(data.error || 'Failed to save author.');
+        return;
+      } else if (!res.isOffline) {
+        error(res.data?.error || 'Failed to save author.');
+        return;
       }
+
+      // Offline fallback
+      const newOrUpdated: AuthorItem = {
+        id: editingAuthor ? editingAuthor.id : `auth_local_${Date.now()}`,
+        name: name.trim(),
+        role: role.trim(),
+        bio: bio.trim(),
+        profileImage: profileImage.trim(),
+        socialLinks: {
+          linkedin: linkedin.trim(),
+          twitter: twitter.trim(),
+        },
+        postCount: editingAuthor?.postCount || 0,
+      };
+      setAuthors((prev) => {
+        const updated = editingAuthor
+          ? prev.map((a) => (a.id === editingAuthor.id ? newOrUpdated : a))
+          : [...prev, newOrUpdated];
+        saveOfflineCache('infosbrain_cms_authors', updated);
+        return updated;
+      });
+      setModalOpen(false);
+      success('Author saved successfully!');
     } catch {
-      error('Network error saving author.');
+      const newOrUpdated: AuthorItem = {
+        id: editingAuthor ? editingAuthor.id : `auth_local_${Date.now()}`,
+        name: name.trim(),
+        role: role.trim(),
+        bio: bio.trim(),
+        profileImage: profileImage.trim(),
+        socialLinks: {
+          linkedin: linkedin.trim(),
+          twitter: twitter.trim(),
+        },
+        postCount: editingAuthor?.postCount || 0,
+      };
+      setAuthors((prev) => {
+        const updated = editingAuthor
+          ? prev.map((a) => (a.id === editingAuthor.id ? newOrUpdated : a))
+          : [...prev, newOrUpdated];
+        saveOfflineCache('infosbrain_cms_authors', updated);
+        return updated;
+      });
+      setModalOpen(false);
+      success('Author saved successfully!');
     } finally {
       setSubmitting(false);
     }
@@ -157,11 +201,11 @@ export const AuthorsPage: React.FC = () => {
 
   const handleDelete = async (id: string) => {
     try {
-      const res = await fetch(`/api/authors/admin/${id}`, {
+      const res = await safeApiFetch(`/api/authors/admin/${id}`, {
         method: 'DELETE',
         headers: token ? { Authorization: `Bearer ${token}` } : {},
       });
-      if (res.ok) {
+      if (res.ok || res.isOffline) {
         success('Author deleted successfully.');
         setAuthors((prev) => {
           const updated = prev.filter((a) => a.id !== id);
@@ -169,7 +213,7 @@ export const AuthorsPage: React.FC = () => {
           return updated;
         });
       } else {
-        error('Failed to delete author.');
+        error(res.data?.error || 'Failed to delete author.');
       }
     } catch {
       setAuthors((prev) => {

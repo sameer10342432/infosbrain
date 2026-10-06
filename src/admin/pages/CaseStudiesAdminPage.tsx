@@ -204,7 +204,7 @@ export const CaseStudiesAdminPage: React.FC = () => {
       const url = editingCase ? `/api/cms/case-studies/admin/${editingCase.id}` : '/api/cms/case-studies/admin';
       const method = editingCase ? 'PUT' : 'POST';
 
-      const res = await fetch(url, {
+      const res = await safeApiFetch(url, {
         method,
         headers: {
           'Content-Type': 'application/json',
@@ -213,16 +213,81 @@ export const CaseStudiesAdminPage: React.FC = () => {
         body: JSON.stringify(payload),
       });
 
-      const data = await res.json();
       if (res.ok) {
         success(editingCase ? 'Case study updated!' : 'Case study created!');
         setModalOpen(false);
         fetchCases();
-      } else {
-        error(data.error || 'Failed to save case study.');
+        window.dispatchEvent(new Event('infosbrain_cms_updated'));
+        return;
+      } else if (!res.isOffline) {
+        error(res.data?.error || 'Failed to save case study.');
+        return;
       }
+
+      // Offline / Hostinger fallback
+      const newOrUpdated: CaseStudyItem = {
+        id: editingCase ? editingCase.id : `cs_local_${Date.now()}`,
+        title: payload.title,
+        slug: payload.slug,
+        client: payload.client,
+        industry: payload.industry,
+        duration: payload.duration,
+        shortDescription: payload.shortDescription,
+        fullDescription: payload.fullDescription,
+        featuredImage: payload.featuredImage,
+        challenge: payload.challenge,
+        solution: payload.solution,
+        results: payload.results,
+        technologies: payload.technologies,
+        services: payload.services,
+        featured: payload.featured,
+        displayOrder: payload.displayOrder,
+        status: payload.status as any,
+        createdAt: editingCase?.createdAt || new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      };
+      setCases((prev) => {
+        const updated = editingCase
+          ? prev.map((c) => (c.id === editingCase.id ? newOrUpdated : c))
+          : [...prev, newOrUpdated];
+        saveOfflineCache('infosbrain_cms_case_studies', updated);
+        return updated;
+      });
+      setModalOpen(false);
+      window.dispatchEvent(new Event('infosbrain_cms_updated'));
+      success(editingCase ? 'Case study updated!' : 'Case study created!');
     } catch {
-      error('Network error saving case study.');
+      const newOrUpdated: CaseStudyItem = {
+        id: editingCase ? editingCase.id : `cs_local_${Date.now()}`,
+        title: payload.title,
+        slug: payload.slug,
+        client: payload.client,
+        industry: payload.industry,
+        duration: payload.duration,
+        shortDescription: payload.shortDescription,
+        fullDescription: payload.fullDescription,
+        featuredImage: payload.featuredImage,
+        challenge: payload.challenge,
+        solution: payload.solution,
+        results: payload.results,
+        technologies: payload.technologies,
+        services: payload.services,
+        featured: payload.featured,
+        displayOrder: payload.displayOrder,
+        status: payload.status as any,
+        createdAt: editingCase?.createdAt || new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      };
+      setCases((prev) => {
+        const updated = editingCase
+          ? prev.map((c) => (c.id === editingCase.id ? newOrUpdated : c))
+          : [...prev, newOrUpdated];
+        saveOfflineCache('infosbrain_cms_case_studies', updated);
+        return updated;
+      });
+      setModalOpen(false);
+      window.dispatchEvent(new Event('infosbrain_cms_updated'));
+      success(editingCase ? 'Case study updated!' : 'Case study created!');
     } finally {
       setSubmitting(false);
     }
@@ -231,7 +296,7 @@ export const CaseStudiesAdminPage: React.FC = () => {
   const toggleStatus = async (item: CaseStudyItem) => {
     const newStatus = item.status === 'published' ? 'hidden' : 'published';
     try {
-      const res = await fetch(`/api/cms/case-studies/admin/${item.id}/status`, {
+      const res = await safeApiFetch(`/api/cms/case-studies/admin/${item.id}/status`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
@@ -239,40 +304,51 @@ export const CaseStudiesAdminPage: React.FC = () => {
         },
         body: JSON.stringify({ status: newStatus }),
       });
-      if (res.ok) {
+      if (res.ok || res.isOffline) {
         success(`Status set to ${newStatus}`);
-        setCases((prev) => prev.map((c) => (c.id === item.id ? { ...c, status: newStatus as any } : c)));
+        setCases((prev) => {
+          const updated = prev.map((c) => (c.id === item.id ? { ...c, status: newStatus as any } : c));
+          saveOfflineCache('infosbrain_cms_case_studies', updated);
+          return updated;
+        });
+        window.dispatchEvent(new Event('infosbrain_cms_updated'));
       } else {
-        error('Failed to change status.');
+        error(res.data?.error || 'Failed to change status.');
       }
     } catch {
-      error('Network error changing status.');
+      setCases((prev) => {
+        const updated = prev.map((c) => (c.id === item.id ? { ...c, status: newStatus as any } : c));
+        saveOfflineCache('infosbrain_cms_case_studies', updated);
+        return updated;
+      });
+      window.dispatchEvent(new Event('infosbrain_cms_updated'));
+      success(`Status set to ${newStatus}`);
     }
   };
 
   const confirmDelete = async () => {
     if (!deleteModalState.id) return;
+    const targetId = deleteModalState.id;
     try {
-      const res = await fetch(`/api/cms/case-studies/admin/${deleteModalState.id}`, {
+      const res = await safeApiFetch(`/api/cms/case-studies/admin/${targetId}`, {
         method: 'DELETE',
         headers: token ? { Authorization: `Bearer ${token}` } : {},
       });
-      if (res.ok) {
+      if (res.ok || res.isOffline) {
         success('Case study deleted.');
         setCases((prev) => {
-          const updated = prev.filter((c) => c.id !== deleteModalState.id);
+          const updated = prev.filter((c) => c.id !== targetId);
           saveOfflineCache('infosbrain_cms_case_studies', updated);
           return updated;
         });
         setDeleteModalState({ isOpen: false });
         window.dispatchEvent(new Event('infosbrain_cms_updated'));
       } else {
-        const data = await res.json();
-        error(data.error || 'Failed to delete case study.');
+        error(res.data?.error || 'Failed to delete case study.');
       }
     } catch {
       setCases((prev) => {
-        const updated = prev.filter((c) => c.id !== deleteModalState.id);
+        const updated = prev.filter((c) => c.id !== targetId);
         saveOfflineCache('infosbrain_cms_case_studies', updated);
         return updated;
       });

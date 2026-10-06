@@ -208,7 +208,7 @@ export const TeamAdminPage: React.FC = () => {
       const url = editingMember ? `/api/team/admin/${editingMember.id}` : '/api/team/admin';
       const method = editingMember ? 'PUT' : 'POST';
 
-      const res = await fetch(url, {
+      const res = await safeApiFetch(url, {
         method,
         headers: {
           'Content-Type': 'application/json',
@@ -222,14 +222,37 @@ export const TeamAdminPage: React.FC = () => {
         setModalOpen(false);
         fetchMembers();
         window.dispatchEvent(new Event('infosbrain_cms_updated'));
-      } else {
-        let errMessage = 'Failed to save team member.';
-        try {
-          const data = await res.json();
-          if (data?.error) errMessage = data.error;
-        } catch {}
-        error(errMessage);
+        return;
+      } else if (!res.isOffline) {
+        error(res.data?.error || 'Failed to save team member.');
+        return;
       }
+
+      // Offline / static host fallback
+      const newOrUpdated: TeamMemberItem = {
+        id: editingMember ? editingMember.id : `tm_local_${Date.now()}`,
+        name: payload.name,
+        qualification: payload.qualification,
+        designation: payload.designation,
+        category: payload.category,
+        bio: payload.bio,
+        profileImage: payload.profileImage,
+        linkedinUrl: payload.linkedinUrl,
+        achievements: payload.achievements,
+        skills: editingMember?.skills || [],
+        displayOrder: payload.displayOrder,
+        status: payload.status,
+        createdAt: editingMember?.createdAt || new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      };
+      const updatedList = editingMember
+        ? members.map((m) => (m.id === editingMember.id ? newOrUpdated : m))
+        : [...members, newOrUpdated];
+      setMembers(updatedList);
+      saveOfflineCache('infosbrain_cms_team', updatedList);
+      window.dispatchEvent(new Event('infosbrain_cms_updated'));
+      success(editingMember ? 'Team member updated.' : 'Team member created.');
+      setModalOpen(false);
     } catch {
       const newOrUpdated: TeamMemberItem = {
         id: editingMember ? editingMember.id : `tm_local_${Date.now()}`,
@@ -263,7 +286,7 @@ export const TeamAdminPage: React.FC = () => {
   const handleToggleStatus = async (member: TeamMemberItem) => {
     const nextStatus: 'published' | 'hidden' = member.status === 'published' ? 'hidden' : 'published';
     try {
-      const res = await fetch(`/api/team/admin/${member.id}/status`, {
+      const res = await safeApiFetch(`/api/team/admin/${member.id}/status`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
@@ -271,14 +294,14 @@ export const TeamAdminPage: React.FC = () => {
         },
         body: JSON.stringify({ status: nextStatus }),
       });
-      if (res.ok) {
+      if (res.ok || res.isOffline) {
         success(`Status updated to ${nextStatus}.`);
         const updated = members.map((m) => (m.id === member.id ? { ...m, status: nextStatus } : m));
         setMembers(updated);
         saveOfflineCache('infosbrain_cms_team', updated);
         window.dispatchEvent(new Event('infosbrain_cms_updated'));
       } else {
-        error('Failed to update status.');
+        error(res.data?.error || 'Failed to update status.');
       }
     } catch {
       const updated = members.map((m) => (m.id === member.id ? { ...m, status: nextStatus } : m));
@@ -291,27 +314,23 @@ export const TeamAdminPage: React.FC = () => {
 
   const confirmDelete = async () => {
     if (!deleteModalState.id) return;
+    const targetId = deleteModalState.id;
     try {
-      const res = await fetch(`/api/team/admin/${deleteModalState.id}`, {
+      const res = await safeApiFetch(`/api/team/admin/${targetId}`, {
         method: 'DELETE',
         headers: token ? { Authorization: `Bearer ${token}` } : {},
       });
-      if (res.ok) {
+      if (res.ok || res.isOffline) {
         success('Team member deleted.');
-        const updated = members.filter((m) => m.id !== deleteModalState.id);
+        const updated = members.filter((m) => m.id !== targetId);
         setMembers(updated);
         saveOfflineCache('infosbrain_cms_team', updated);
         window.dispatchEvent(new Event('infosbrain_cms_updated'));
       } else {
-        let errMessage = 'Failed to delete team member.';
-        try {
-          const data = await res.json();
-          if (data?.error) errMessage = data.error;
-        } catch {}
-        error(errMessage);
+        error(res.data?.error || 'Failed to delete team member.');
       }
     } catch {
-      const updated = members.filter((m) => m.id !== deleteModalState.id);
+      const updated = members.filter((m) => m.id !== targetId);
       setMembers(updated);
       saveOfflineCache('infosbrain_cms_team', updated);
       window.dispatchEvent(new Event('infosbrain_cms_updated'));

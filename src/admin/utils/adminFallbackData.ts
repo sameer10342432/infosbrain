@@ -320,6 +320,10 @@ export async function safeApiFetch(
 ): Promise<{ ok: boolean; status: number; data?: any; isOffline: boolean }> {
   try {
     const res = await fetch(url, options);
+    // 501 (Not Implemented e.g. CDN/static host blocking DELETE/PUT) or 405 (Method Not Allowed)
+    if (res.status === 501 || res.status === 405) {
+      return { ok: false, status: res.status, isOffline: true };
+    }
     const contentType = res.headers.get('content-type') || '';
     if (!contentType.includes('application/json')) {
       // Server returned HTML (e.g. Hostinger SPA index.html fallback)
