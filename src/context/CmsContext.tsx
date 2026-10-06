@@ -153,9 +153,56 @@ const CmsContext = createContext<CmsContextType>({
   refreshCms: async () => {},
 });
 
+function loadInitialLeadership(): LeadershipMember[] {
+  try {
+    const saved = localStorage.getItem('infosbrain_cms_team');
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      if (Array.isArray(parsed)) {
+        return parsed
+          .filter((m: any) => m.status !== 'hidden' && m.category === 'leadership')
+          .sort((a: any, b: any) => (Number(a.displayOrder) || 0) - (Number(b.displayOrder) || 0))
+          .map((m: any) => ({
+            id: m.id,
+            name: m.name,
+            role: m.designation || m.role || '',
+            bio: m.bio || '',
+            achievements: Array.isArray(m.achievements) ? m.achievements : m.keyAchievements || [],
+            imageUrl: m.profileImage || m.imageUrl || m.image || '',
+            linkedinUrl: m.linkedinUrl || m.linkedin || '',
+          }));
+      }
+    }
+  } catch {}
+  return siteConfig.leadership || [];
+}
+
+function loadInitialTeam(): TeamMember[] {
+  try {
+    const saved = localStorage.getItem('infosbrain_cms_team');
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      if (Array.isArray(parsed)) {
+        return parsed
+          .filter((m: any) => m.status !== 'hidden' && m.category === 'team')
+          .sort((a: any, b: any) => (Number(a.displayOrder) || 0) - (Number(b.displayOrder) || 0))
+          .map((m: any) => ({
+            id: m.id,
+            name: m.name,
+            role: m.designation || m.role || '',
+            bio: m.bio || '',
+            imageUrl: m.profileImage || m.imageUrl || m.image || '',
+            skills: Array.isArray(m.skills) ? m.skills : m.achievements || [],
+          }));
+      }
+    }
+  } catch {}
+  return siteConfig.teamMembers || [];
+}
+
 export const CmsProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [leadership, setLeadership] = useState<LeadershipMember[]>(siteConfig.leadership || []);
-  const [teamMembers, setTeamMembers] = useState<TeamMember[]>(siteConfig.teamMembers || []);
+  const [leadership, setLeadership] = useState<LeadershipMember[]>(() => loadInitialLeadership());
+  const [teamMembers, setTeamMembers] = useState<TeamMember[]>(() => loadInitialTeam());
   const [services, setServices] = useState<ServiceItem[]>(siteConfig.services || []);
   const [statistics, setStatistics] = useState<CmsStatistic[]>(defaultStats);
   const [testimonials, setTestimonials] = useState<TestimonialItem[]>(siteConfig.testimonials || []);
@@ -168,11 +215,12 @@ export const CmsProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const [settings, setSettings] = useState<Record<string, string>>(defaultSettings);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
-  const syncOfflineSections = useCallback(() => {
+  const syncOfflineData = useCallback(() => {
     try {
-      const saved = localStorage.getItem('infosbrain_cms_sections');
-      if (saved) {
-        const parsed = JSON.parse(saved);
+      // 1. Sync sections
+      const savedSections = localStorage.getItem('infosbrain_cms_sections');
+      if (savedSections) {
+        const parsed = JSON.parse(savedSections);
         if (Array.isArray(parsed) && parsed.length > 0) {
           const customSectionsMap: Record<string, CmsSection> = {};
           parsed.forEach((sec: any) => {
@@ -182,6 +230,100 @@ export const CmsProvider: React.FC<{ children: React.ReactNode }> = ({ children 
             };
           });
           setSections((prev) => ({ ...prev, ...customSectionsMap }));
+        }
+      }
+
+      // 2. Sync team & leadership
+      const savedTeam = localStorage.getItem('infosbrain_cms_team');
+      if (savedTeam) {
+        const parsedTeam = JSON.parse(savedTeam);
+        if (Array.isArray(parsedTeam)) {
+          const activeMembers = parsedTeam.filter((m: any) => m.status !== 'hidden');
+          activeMembers.sort((a: any, b: any) => (Number(a.displayOrder) || 0) - (Number(b.displayOrder) || 0));
+
+          const newLeadership: LeadershipMember[] = activeMembers
+            .filter((m: any) => m.category === 'leadership')
+            .map((m: any) => ({
+              id: m.id,
+              name: m.name,
+              role: m.designation || m.role || '',
+              bio: m.bio || '',
+              achievements: Array.isArray(m.achievements)
+                ? m.achievements
+                : Array.isArray(m.keyAchievements)
+                ? m.keyAchievements
+                : [],
+              imageUrl: m.profileImage || m.imageUrl || m.image || '',
+              linkedinUrl: m.linkedinUrl || m.linkedin || '',
+            }));
+
+          const newTeam: TeamMember[] = activeMembers
+            .filter((m: any) => m.category === 'team')
+            .map((m: any) => ({
+              id: m.id,
+              name: m.name,
+              role: m.designation || m.role || '',
+              bio: m.bio || '',
+              imageUrl: m.profileImage || m.imageUrl || m.image || '',
+              skills: Array.isArray(m.skills) ? m.skills : Array.isArray(m.achievements) ? m.achievements : [],
+            }));
+
+          setLeadership(newLeadership);
+          setTeamMembers(newTeam);
+        }
+      }
+
+      // 3. Sync testimonials
+      const savedTestimonials = localStorage.getItem('infosbrain_cms_testimonials');
+      if (savedTestimonials) {
+        const parsedTestimonials = JSON.parse(savedTestimonials);
+        if (Array.isArray(parsedTestimonials)) {
+          setTestimonials(parsedTestimonials.filter((t: any) => t.status !== 'hidden'));
+        }
+      }
+
+      // 4. Sync FAQs
+      const savedFaqs = localStorage.getItem('infosbrain_cms_faqs');
+      if (savedFaqs) {
+        const parsedFaqs = JSON.parse(savedFaqs);
+        if (Array.isArray(parsedFaqs)) {
+          setFaqs(parsedFaqs.filter((f: any) => f.status !== 'hidden'));
+        }
+      }
+
+      // 5. Sync Locations
+      const savedLocations = localStorage.getItem('infosbrain_cms_locations');
+      if (savedLocations) {
+        const parsedLocs = JSON.parse(savedLocations);
+        if (Array.isArray(parsedLocs)) {
+          setLocations(parsedLocs.filter((l: any) => l.status !== 'hidden'));
+        }
+      }
+
+      // 6. Sync Case Studies
+      const savedCases = localStorage.getItem('infosbrain_cms_case_studies');
+      if (savedCases) {
+        const parsedCases = JSON.parse(savedCases);
+        if (Array.isArray(parsedCases)) {
+          setCaseStudies(parsedCases.filter((c: any) => c.status !== 'hidden'));
+        }
+      }
+
+      // 7. Sync Careers
+      const savedCareers = localStorage.getItem('infosbrain_cms_careers');
+      if (savedCareers) {
+        const parsedCareers = JSON.parse(savedCareers);
+        if (Array.isArray(parsedCareers)) {
+          setCareers(parsedCareers.filter((c: any) => c.status !== 'hidden'));
+        }
+      }
+
+      // 8. Sync Services
+      const savedServices = localStorage.getItem('infosbrain_cms_services');
+      if (savedServices) {
+        const parsedServices = JSON.parse(savedServices);
+        if (Array.isArray(parsedServices)) {
+          setServices(parsedServices.filter((s: any) => s.status !== 'hidden'));
         }
       }
     } catch {}
@@ -239,26 +381,28 @@ export const CmsProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         }
       }
     } catch (err) {
-      console.warn('[CMS Provider] Falling back to default site configuration:', err);
+      console.warn('[CMS Provider] Falling back to offline/cached site configuration:', err);
     } finally {
-      syncOfflineSections();
+      syncOfflineData();
       setIsLoading(false);
     }
-  }, [syncOfflineSections]);
+  }, [syncOfflineData]);
 
   useEffect(() => {
-    syncOfflineSections();
+    syncOfflineData();
     fetchCmsData();
 
     const handleCmsUpdate = () => {
-      syncOfflineSections();
+      syncOfflineData();
       fetchCmsData();
     };
     window.addEventListener('infosbrain_cms_updated', handleCmsUpdate);
+    window.addEventListener('storage', handleCmsUpdate);
     return () => {
       window.removeEventListener('infosbrain_cms_updated', handleCmsUpdate);
+      window.removeEventListener('storage', handleCmsUpdate);
     };
-  }, [fetchCmsData, syncOfflineSections]);
+  }, [fetchCmsData, syncOfflineData]);
 
   const isSectionVisible = useCallback(
     (sectionKey: string): boolean => {

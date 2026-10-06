@@ -18,7 +18,11 @@ export const LeadershipSection: React.FC = () => {
   const description =
     sectionData?.description ||
     'A multidisciplinary executive cadre combining deep technological expertise, global governance acumen, and an uncompromising commitment to client success.';
-  const members = leadership && leadership.length > 0 ? leadership : siteConfig.leadership;
+  const members = leadership;
+
+  if (!members || members.length === 0) {
+    return null;
+  }
 
   return (
     <section id="leadership" className="relative py-24 bg-[#050816] overflow-hidden">

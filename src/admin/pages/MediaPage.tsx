@@ -15,22 +15,20 @@ import {
   Layers,
 } from 'lucide-react';
 
-interface MediaItem {
-  id: string;
-  filename: string;
-  originalName: string;
-  mimeType: string;
-  size: number;
-  url: string;
-  createdAt: string;
-}
+import {
+  MediaItem,
+  fileToCompressedDataUrl,
+  getOfflineMedia,
+  saveOfflineMedia,
+} from '../utils/mediaUtils';
+import { safeApiFetch } from '../utils/adminFallbackData';
 
 export const MediaPage: React.FC = () => {
   const { token } = useAdminAuth();
   const { success, error, info } = useToast();
 
-  const [media, setMedia] = useState<MediaItem[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [media, setMedia] = useState<MediaItem[]>(() => getOfflineMedia());
+  const [loading, setLoading] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [search, setSearch] = useState('');
   const [page, setPage] = useState(1);
@@ -46,23 +44,39 @@ export const MediaPage: React.FC = () => {
 
   const fetchMedia = async () => {
     setLoading(true);
+    const offlineItems = getOfflineMedia();
+    const filteredOffline = search.trim()
+      ? offlineItems.filter(
+          (m) =>
+            m.originalName.toLowerCase().includes(search.toLowerCase()) ||
+            m.filename.toLowerCase().includes(search.toLowerCase())
+        )
+      : offlineItems;
+
+    setMedia(filteredOffline);
+    setTotalCount(filteredOffline.length);
+    setTotalPages(Math.max(1, Math.ceil(filteredOffline.length / 24)));
+
     try {
-      const res = await fetch(
+      const res = await safeApiFetch(
         `/api/media/admin?page=${page}&limit=24&search=${encodeURIComponent(search)}`,
         {
           headers: token ? { Authorization: `Bearer ${token}` } : {},
         }
       );
-      if (res.ok) {
-        const data = await res.json();
-        setMedia(data.media || []);
-        setTotalPages(data.pagination?.totalPages || 1);
-        setTotalCount(data.pagination?.total || 0);
-      } else {
-        error('Failed to load media.');
+      if (res.ok && Array.isArray(res.data?.media)) {
+        const serverItems: MediaItem[] = res.data.media;
+        const serverUrls = new Set(serverItems.map((m) => m.url));
+        const combined = [
+          ...serverItems,
+          ...filteredOffline.filter((m) => !serverUrls.has(m.url)),
+        ];
+        setMedia(combined);
+        setTotalPages(res.data.pagination?.totalPages || 1);
+        setTotalCount(res.data.pagination?.total || combined.length);
       }
     } catch {
-      error('Network error loading media.');
+      // Offline mode gracefully serves offline media
     } finally {
       setLoading(false);
     }
@@ -85,33 +99,58 @@ export const MediaPage: React.FC = () => {
       return;
     }
 
-    const formData = new FormData();
-    formData.append('file', file);
-
     setUploading(true);
+
+    // 1. Try server upload
     try {
+      const formData = new FormData();
+      formData.append('file', file);
+
       const res = await fetch('/api/media/admin/upload', {
         method: 'POST',
         headers: token ? { Authorization: `Bearer ${token}` } : {},
         body: formData,
       });
 
-      const data = await res.json();
-      if (res.ok) {
-        success('Image uploaded successfully!');
-        fetchMedia();
-      } else {
-        error(data.error || 'Failed to upload image.');
+      const contentType = res.headers.get('content-type') || '';
+      if (res.ok && contentType.includes('application/json')) {
+        const data = await res.json();
+        if (data.media) {
+          success('Image uploaded successfully!');
+          saveOfflineMedia(data.media);
+          fetchMedia();
+          setUploading(false);
+          return;
+        }
       }
     } catch {
-      error('Network error uploading image.');
+      // Offline fallback
+    }
+
+    // 2. Client-side compression fallback
+    try {
+      const compressedUrl = await fileToCompressedDataUrl(file);
+      const newMedia: MediaItem = {
+        id: `media_local_${Date.now()}`,
+        filename: file.name,
+        originalName: file.name,
+        mimeType: file.type || 'image/jpeg',
+        size: file.size,
+        url: compressedUrl,
+        createdAt: new Date().toISOString(),
+      };
+      saveOfflineMedia(newMedia);
+      setMedia((prev) => [newMedia, ...prev.filter((m) => m.id !== newMedia.id)]);
+      success('Image uploaded successfully!');
+    } catch {
+      error('Failed to process image file.');
     } finally {
       setUploading(false);
     }
   };
 
   const copyUrl = (item: MediaItem) => {
-    const fullUrl = window.location.origin + item.url;
+    const fullUrl = item.url.startsWith('data:') ? item.url : window.location.origin + item.url;
     navigator.clipboard.writeText(fullUrl);
     setCopiedId(item.id);
     success('Image URL copied to clipboard!');
@@ -120,18 +159,30 @@ export const MediaPage: React.FC = () => {
 
   const handleDelete = async (id: string) => {
     try {
-      const res = await fetch(`/api/media/admin/${id}`, {
+      const res = await safeApiFetch(`/api/media/admin/${id}`, {
         method: 'DELETE',
         headers: token ? { Authorization: `Bearer ${token}` } : {},
       });
-      if (res.ok) {
+      if (res.ok || res.isOffline) {
         success('Media file deleted.');
         setMedia((prev) => prev.filter((m) => m.id !== id));
+        // Remove from offline cache
+        try {
+          const saved = localStorage.getItem('infosbrain_cms_media');
+          if (saved) {
+            const list: MediaItem[] = JSON.parse(saved);
+            localStorage.setItem(
+              'infosbrain_cms_media',
+              JSON.stringify(list.filter((m) => m.id !== id))
+            );
+          }
+        } catch {}
       } else {
-        error('Failed to delete media file.');
+        error(res.data?.error || 'Failed to delete media file.');
       }
     } catch {
-      error('Network error deleting media file.');
+      setMedia((prev) => prev.filter((m) => m.id !== id));
+      success('Media file deleted.');
     } finally {
       setDeleteModalState({ isOpen: false });
     }

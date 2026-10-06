@@ -342,12 +342,12 @@ export async function safeApiFetch(
 export function loadOfflineCache<T>(cacheKey: string, defaultValue: T): T {
   try {
     const stored = localStorage.getItem(cacheKey);
-    if (stored) {
+    if (stored !== null) {
       const parsed = JSON.parse(stored);
-      if (Array.isArray(parsed) && parsed.length > 0) {
+      if (Array.isArray(parsed)) {
         return parsed as T;
       }
-      if (parsed && typeof parsed === 'object' && Object.keys(parsed).length > 0) {
+      if (parsed && typeof parsed === 'object') {
         return parsed as T;
       }
     }

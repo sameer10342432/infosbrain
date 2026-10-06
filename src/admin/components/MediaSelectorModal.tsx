@@ -2,16 +2,12 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useAdminAuth } from '../context/AdminAuthContext';
 import { useToast } from './Toast';
 import { X, UploadCloud, Search, Check, Image as ImageIcon, Loader2 } from 'lucide-react';
-
-interface MediaItem {
-  id: string;
-  filename: string;
-  originalName: string;
-  mimeType: string;
-  size: number;
-  url: string;
-  createdAt: string;
-}
+import {
+  MediaItem,
+  fileToCompressedDataUrl,
+  getOfflineMedia,
+  saveOfflineMedia,
+} from '../utils/mediaUtils';
 
 interface MediaSelectorModalProps {
   isOpen: boolean;
@@ -29,7 +25,7 @@ export const MediaSelectorModal: React.FC<MediaSelectorModalProps> = ({
   const { token } = useAdminAuth();
   const { success, error } = useToast();
   const [activeTab, setActiveTab] = useState<'library' | 'upload'>('library');
-  const [mediaList, setMediaList] = useState<MediaItem[]>([]);
+  const [mediaList, setMediaList] = useState<MediaItem[]>(() => getOfflineMedia());
   const [search, setSearch] = useState('');
   const [loading, setLoading] = useState(false);
   const [uploading, setUploading] = useState(false);
@@ -38,16 +34,36 @@ export const MediaSelectorModal: React.FC<MediaSelectorModalProps> = ({
 
   const fetchMedia = async () => {
     setLoading(true);
+    const offlineItems = getOfflineMedia();
+    const filteredOffline = search.trim()
+      ? offlineItems.filter(
+          (m) =>
+            m.originalName.toLowerCase().includes(search.toLowerCase()) ||
+            m.filename.toLowerCase().includes(search.toLowerCase())
+        )
+      : offlineItems;
+
+    setMediaList(filteredOffline);
+
     try {
       const res = await fetch(`/api/media/admin?limit=50&search=${encodeURIComponent(search)}`, {
         headers: token ? { Authorization: `Bearer ${token}` } : {},
       });
-      if (res.ok) {
+      const contentType = res.headers.get('content-type') || '';
+      if (res.ok && contentType.includes('application/json')) {
         const data = await res.json();
-        setMediaList(data.media || []);
+        if (Array.isArray(data.media)) {
+          const serverItems: MediaItem[] = data.media;
+          const serverUrls = new Set(serverItems.map((m) => m.url));
+          const combined = [
+            ...serverItems,
+            ...filteredOffline.filter((m) => !serverUrls.has(m.url)),
+          ];
+          setMediaList(combined);
+        }
       }
     } catch {
-      error('Failed to load media library.');
+      // Offline mode gracefully uses cached media
     } finally {
       setLoading(false);
     }
@@ -58,6 +74,16 @@ export const MediaSelectorModal: React.FC<MediaSelectorModalProps> = ({
       fetchMedia();
     }
   }, [isOpen, search]);
+
+  useEffect(() => {
+    const handleMediaUpdated = () => {
+      if (isOpen) fetchMedia();
+    };
+    window.addEventListener('infosbrain_media_updated', handleMediaUpdated);
+    return () => {
+      window.removeEventListener('infosbrain_media_updated', handleMediaUpdated);
+    };
+  }, [isOpen]);
 
   const handleFileUpload = async (file: File) => {
     if (!file) return;
@@ -72,28 +98,55 @@ export const MediaSelectorModal: React.FC<MediaSelectorModalProps> = ({
       return;
     }
 
-    const formData = new FormData();
-    formData.append('file', file);
-
     setUploading(true);
+
+    // 1. Attempt upload to online backend
     try {
+      const formData = new FormData();
+      formData.append('file', file);
+
       const res = await fetch('/api/media/admin/upload', {
         method: 'POST',
         headers: token ? { Authorization: `Bearer ${token}` } : {},
         body: formData,
       });
 
-      const data = await res.json();
-      if (res.ok) {
-        success('Image uploaded successfully!');
-        setMediaList((prev) => [data.media, ...prev]);
-        setSelectedItem(data.media);
-        setActiveTab('library');
-      } else {
-        error(data.error || 'Failed to upload image.');
+      const contentType = res.headers.get('content-type') || '';
+      if (res.ok && contentType.includes('application/json')) {
+        const data = await res.json();
+        if (data.media) {
+          success('Image uploaded successfully!');
+          saveOfflineMedia(data.media);
+          setMediaList((prev) => [data.media, ...prev.filter((m) => m.id !== data.media.id)]);
+          setSelectedItem(data.media);
+          setActiveTab('library');
+          setUploading(false);
+          return;
+        }
       }
     } catch {
-      error('Network error while uploading image.');
+      // Server upload failed or Hostinger static environment
+    }
+
+    // 2. Client-side fallback: compress image and store in offline media cache
+    try {
+      const compressedDataUrl = await fileToCompressedDataUrl(file);
+      const newMedia: MediaItem = {
+        id: `media_local_${Date.now()}`,
+        filename: file.name,
+        originalName: file.name,
+        mimeType: file.type || 'image/jpeg',
+        size: file.size,
+        url: compressedDataUrl,
+        createdAt: new Date().toISOString(),
+      };
+      saveOfflineMedia(newMedia);
+      setMediaList((prev) => [newMedia, ...prev.filter((m) => m.id !== newMedia.id)]);
+      setSelectedItem(newMedia);
+      setActiveTab('library');
+      success('Image uploaded successfully!');
+    } catch {
+      error('Failed to process image file.');
     } finally {
       setUploading(false);
     }

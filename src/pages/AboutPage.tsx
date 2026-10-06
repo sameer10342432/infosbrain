@@ -24,7 +24,7 @@ import {
 export const AboutPage: React.FC = () => {
   const { navigate } = useRouter();
   const { teamMembers, settings } = useCms();
-  const displayTeam = teamMembers && teamMembers.length > 0 ? teamMembers : siteConfig.teamMembers;
+  const displayTeam = teamMembers;
 
   const values = [
     {
