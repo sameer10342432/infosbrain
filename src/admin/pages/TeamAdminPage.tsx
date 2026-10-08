@@ -43,25 +43,6 @@ interface TeamMemberItem {
 import { safeApiFetch, loadOfflineCache, saveOfflineCache } from '../utils/adminFallbackData';
 import { siteConfig } from '../../config/siteConfig';
 
-const initialTeamFallback: any[] = [
-  ...(siteConfig.leadership || []).map((m: any, idx: number) => ({
-    ...m,
-    designation: m.role || m.designation,
-    profileImage: m.imageUrl || m.profileImage,
-    category: 'leadership',
-    displayOrder: idx + 1,
-    status: 'published',
-  })),
-  ...(siteConfig.teamMembers || []).map((m: any, idx: number) => ({
-    ...m,
-    designation: m.role || m.designation,
-    profileImage: m.imageUrl || m.profileImage,
-    category: 'team',
-    displayOrder: idx + 10,
-    status: 'published',
-  })),
-];
-
 export function normalizeCategory(cat?: string): 'leadership' | 'team' {
   if (!cat) return 'leadership';
   const c = String(cat).trim().toLowerCase();
@@ -82,7 +63,7 @@ export const TeamAdminPage: React.FC = () => {
   const { success, error } = useToast();
 
   const [members, setMembers] = useState<TeamMemberItem[]>(() =>
-    loadOfflineCache('infosbrain_cms_team', initialTeamFallback)
+    loadOfflineCache('infosbrain_cms_team', [])
   );
   const [loading, setLoading] = useState(false);
   const [filterCategory, setFilterCategory] = useState<'all' | 'leadership' | 'team'>('all');
@@ -122,11 +103,11 @@ export const TeamAdminPage: React.FC = () => {
         setMembers(res.data.members);
         saveOfflineCache('infosbrain_cms_team', res.data.members);
       } else {
-        const cached = loadOfflineCache('infosbrain_cms_team', initialTeamFallback);
+        const cached = loadOfflineCache('infosbrain_cms_team', []);
         setMembers(cached);
       }
     } catch {
-      const cached = loadOfflineCache('infosbrain_cms_team', initialTeamFallback);
+      const cached = loadOfflineCache('infosbrain_cms_team', []);
       setMembers(cached);
     } finally {
       setLoading(false);
@@ -584,7 +565,7 @@ export const TeamAdminPage: React.FC = () => {
                     required
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    placeholder="e.g. Elena Vance, Ph.D."
+                    placeholder="e.g. Ishfaq Chaman"
                     className="w-full px-3.5 py-2.5 rounded-xl bg-slate-900 border border-slate-700 text-white placeholder-slate-500 text-xs focus:outline-none focus:border-cyan-400"
                   />
                 </div>
