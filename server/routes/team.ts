@@ -1,4 +1,6 @@
 import { Router, Response } from 'express';
+import fs from 'fs';
+import path from 'path';
 import db from '../db/index.js';
 import { requireAdmin, AuthenticatedRequest } from '../auth.js';
 
@@ -21,7 +23,7 @@ export function normalizeCategory(cat?: string): 'leadership' | 'team' {
 }
 
 // Helper to format team row
-function formatTeamMember(row: any) {
+export function formatTeamMember(row: any) {
   const category = normalizeCategory(row.category);
   return {
     ...row,
@@ -33,6 +35,40 @@ function formatTeamMember(row: any) {
     imageUrl: row.profileImage,
     bio: row.bio || '',
   };
+}
+
+// Helper to keep static JSON endpoints synchronized whenever SQLite mutations happen
+export function syncTeamStaticFiles() {
+  try {
+    const rows = db.prepare(`
+      SELECT * FROM team_members
+      WHERE LOWER(status) IN ('published', 'active', 'visible')
+         OR status IS NULL
+      ORDER BY displayOrder ASC, createdAt ASC
+    `).all();
+
+    const members = rows.map(formatTeamMember);
+    const leadership = members.filter((m) => m.category === 'leadership');
+    const teamMembers = members.filter((m) => m.category === 'team');
+
+    const payload = JSON.stringify({ members, leadership, teamMembers }, null, 2);
+
+    const destinations = [
+      path.resolve(process.cwd(), 'public', 'api', 'team.json'),
+      path.resolve(process.cwd(), 'public', 'api', 'team'),
+      path.resolve(process.cwd(), 'dist', 'api', 'team.json'),
+      path.resolve(process.cwd(), 'dist', 'api', 'team'),
+    ];
+
+    for (const dest of destinations) {
+      const dir = path.dirname(dest);
+      if (fs.existsSync(dir)) {
+        fs.writeFileSync(dest, payload, 'utf8');
+      }
+    }
+  } catch (err) {
+    console.warn('[Team Static Sync Notice]', err);
+  }
 }
 
 // GET /api/team - Public list of published team members
@@ -132,6 +168,7 @@ router.post('/admin', requireAdmin, (req: AuthenticatedRequest, res: Response) =
     );
 
     const created = db.prepare('SELECT * FROM team_members WHERE id = ?').get(id);
+    syncTeamStaticFiles();
     res.status(201).json({
       success: true,
       member: formatTeamMember(created),
@@ -206,6 +243,7 @@ router.put('/admin/:id', requireAdmin, (req: AuthenticatedRequest, res: Response
     );
 
     const updated = db.prepare('SELECT * FROM team_members WHERE id = ?').get(id);
+    syncTeamStaticFiles();
     res.json({
       success: true,
       member: formatTeamMember(updated),
@@ -228,6 +266,7 @@ router.patch('/admin/:id/status', requireAdmin, (req: AuthenticatedRequest, res:
 
     const now = new Date().toISOString();
     db.prepare('UPDATE team_members SET status = ?, updatedAt = ? WHERE id = ?').run(status, now, id);
+    syncTeamStaticFiles();
 
     res.json({ success: true, message: `Status updated to ${status}` });
   } catch (err: any) {
@@ -256,6 +295,7 @@ router.put('/admin/reorder', requireAdmin, (req: AuthenticatedRequest, res: Resp
     });
 
     transaction(items);
+    syncTeamStaticFiles();
     res.json({ success: true, message: 'Reordered successfully' });
   } catch (err: any) {
     res.status(500).json({ error: err.message });
@@ -273,6 +313,7 @@ router.delete('/admin/:id', requireAdmin, (req: AuthenticatedRequest, res: Respo
     }
 
     db.prepare('DELETE FROM team_members WHERE id = ?').run(id);
+    syncTeamStaticFiles();
     res.json({ success: true, message: 'Team member deleted successfully' });
   } catch (err: any) {
     res.status(500).json({ error: err.message });

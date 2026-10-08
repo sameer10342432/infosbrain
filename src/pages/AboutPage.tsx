@@ -42,13 +42,7 @@ export const AboutPage: React.FC = () => {
     return 'team';
   };
 
-  const allMembers =
-    members && members.length > 0
-      ? members
-      : [
-          ...(leadership || []).map((m: any) => ({ ...m, category: 'leadership' })),
-          ...(teamMembers || []).map((m: any) => ({ ...m, category: 'team' })),
-        ];
+  const allMembers = members || [];
 
   const displayTeam =
     categoryFilter === 'all'

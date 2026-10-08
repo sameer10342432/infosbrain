@@ -7,14 +7,14 @@
   RewriteEngine On
   RewriteBase /
 
+  # Route all API endpoints to universal PHP router
+  RewriteRule ^api/(.*)$ api/router.php [QSA,L]
+  RewriteRule ^api/?$ api/router.php [QSA,L]
+
   # Serve existing physical files and directories directly
   RewriteCond %{REQUEST_FILENAME} -f [OR]
   RewriteCond %{REQUEST_FILENAME} -d
   RewriteRule ^ - [L]
-
-  # Route public API endpoints to pre-rendered JSON on static hosts (Hostinger / Apache)
-  RewriteRule ^api/cms/all/?$ api/cms/all.json [L]
-  RewriteRule ^api/team/?$ api/team.json [L]
 
   # Route all other client URLs to index.html for React SPA Router
   RewriteRule ^ index.html [L]
@@ -30,6 +30,7 @@
   ExpiresActive On
   ExpiresDefault "access plus 1 month"
   ExpiresByType text/html "access plus 0 seconds"
+  ExpiresByType application/json "access plus 0 seconds"
   ExpiresByType application/javascript "access plus 1 year"
   ExpiresByType text/css "access plus 1 year"
   ExpiresByType image/jpeg "access plus 1 year"

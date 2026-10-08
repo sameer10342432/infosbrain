@@ -118,8 +118,15 @@ if (fs.existsSync(distDir)) {
       const cmsDir = path.resolve(apiDir, 'cms');
       fs.mkdirSync(cmsDir, { recursive: true });
 
-      fs.writeFileSync(path.join(apiDir, 'team.json'), JSON.stringify(teamPayload, null, 2), 'utf8');
-      fs.writeFileSync(path.join(apiDir, 'team'), JSON.stringify(teamPayload, null, 2), 'utf8');
+      const publicApiDir = path.resolve(process.cwd(), 'public', 'api');
+      const publicCmsDir = path.resolve(publicApiDir, 'cms');
+      fs.mkdirSync(publicCmsDir, { recursive: true });
+
+      const teamJsonContent = JSON.stringify(teamPayload, null, 2);
+      fs.writeFileSync(path.join(apiDir, 'team.json'), teamJsonContent, 'utf8');
+      fs.writeFileSync(path.join(apiDir, 'team'), teamJsonContent, 'utf8');
+      fs.writeFileSync(path.join(publicApiDir, 'team.json'), teamJsonContent, 'utf8');
+      fs.writeFileSync(path.join(publicApiDir, 'team'), teamJsonContent, 'utf8');
 
       // 2. Services
       const serviceRows = db.prepare(`
@@ -201,7 +208,7 @@ if (fs.existsSync(distDir)) {
         settingsObj[s.key] = s.value;
       });
 
-      // Write dist/api/cms/all
+      // Write dist/api/cms/all and public/api/cms/all
       const cmsAllPayload = {
         members: formattedTeam,
         leadership,
@@ -215,10 +222,19 @@ if (fs.existsSync(distDir)) {
         sections: sectionsByKey,
         settings: settingsObj,
       };
-      fs.writeFileSync(path.join(cmsDir, 'all.json'), JSON.stringify(cmsAllPayload, null, 2), 'utf8');
-      fs.writeFileSync(path.join(cmsDir, 'all'), JSON.stringify(cmsAllPayload, null, 2), 'utf8');
+      const cmsAllJsonContent = JSON.stringify(cmsAllPayload, null, 2);
+      fs.writeFileSync(path.join(cmsDir, 'all.json'), cmsAllJsonContent, 'utf8');
+      fs.writeFileSync(path.join(cmsDir, 'all'), cmsAllJsonContent, 'utf8');
+      fs.writeFileSync(path.join(publicCmsDir, 'all.json'), cmsAllJsonContent, 'utf8');
+      fs.writeFileSync(path.join(publicCmsDir, 'all'), cmsAllJsonContent, 'utf8');
 
-      console.log(`[Build] Successfully generated static API endpoints for ${formattedTeam.length} published team members and all CMS tables in dist/api`);
+      // Sync router.php to dist/api/router.php
+      const routerPhpSrc = path.join(publicApiDir, 'router.php');
+      if (fs.existsSync(routerPhpSrc)) {
+        fs.copyFileSync(routerPhpSrc, path.join(apiDir, 'router.php'));
+      }
+
+      console.log(`[Build] Successfully generated static API endpoints for ${formattedTeam.length} published team members and all CMS tables in dist/api and public/api`);
       db.close();
     }
   } catch (err) {

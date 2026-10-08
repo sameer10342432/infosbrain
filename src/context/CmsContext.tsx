@@ -163,9 +163,9 @@ const initialTeamList = (siteConfig.teamMembers || []).map((m: any) => ({
 const initialAllMembers = [...initialLeadershipList, ...initialTeamList];
 
 const CmsContext = createContext<CmsContextType>({
-  members: initialAllMembers,
-  leadership: siteConfig.leadership || [],
-  teamMembers: siteConfig.teamMembers || [],
+  members: [],
+  leadership: [],
+  teamMembers: [],
   services: siteConfig.services || [],
   statistics: defaultStats,
   testimonials: siteConfig.testimonials || [],
@@ -176,16 +176,16 @@ const CmsContext = createContext<CmsContextType>({
   partnerships: [],
   sections: defaultSections,
   settings: defaultSettings,
-  isLoading: false,
+  isLoading: true,
   isSectionVisible: () => true,
   getSection: () => undefined,
   refreshCms: async () => {},
 });
 
 export const CmsProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [members, setMembers] = useState<any[]>(initialAllMembers);
-  const [leadership, setLeadership] = useState<LeadershipMember[]>(siteConfig.leadership || []);
-  const [teamMembers, setTeamMembers] = useState<TeamMember[]>(siteConfig.teamMembers || []);
+  const [members, setMembers] = useState<any[]>([]);
+  const [leadership, setLeadership] = useState<LeadershipMember[]>([]);
+  const [teamMembers, setTeamMembers] = useState<TeamMember[]>([]);
   const [services, setServices] = useState<ServiceItem[]>(siteConfig.services || []);
   const [statistics, setStatistics] = useState<CmsStatistic[]>(defaultStats);
   const [testimonials, setTestimonials] = useState<TestimonialItem[]>(siteConfig.testimonials || []);
@@ -214,7 +214,7 @@ export const CmsProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       const contentType = res.headers.get('content-type') || '';
       if (res.ok && contentType.includes('application/json')) {
         data = await res.json();
-        if (Array.isArray(data?.members) && data.members.length > 0) {
+        if (Array.isArray(data?.members)) {
           rawMembers = data.members;
         } else if (Array.isArray(data?.data?.members)) {
           rawMembers = data.data.members;
@@ -232,7 +232,7 @@ export const CmsProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     }
 
     // 2. If team members not found in /api/cms/all, attempt public Team endpoint: /api/team
-    if (!rawMembers || rawMembers.length === 0) {
+    if (rawMembers === null) {
       for (const endpoint of ['/api/team', '/api/team.json', '/api/cms/all.json']) {
         try {
           const res = await fetch(endpoint, {
@@ -245,13 +245,13 @@ export const CmsProvider: React.FC<{ children: React.ReactNode }> = ({ children 
           const contentType = res.headers.get('content-type') || '';
           if (res.ok && contentType.includes('application/json')) {
             const teamData = await res.json();
-            if (Array.isArray(teamData) && teamData.length > 0) {
+            if (Array.isArray(teamData)) {
               rawMembers = teamData;
               break;
-            } else if (Array.isArray(teamData?.members) && teamData.members.length > 0) {
+            } else if (Array.isArray(teamData?.members)) {
               rawMembers = teamData.members;
               break;
-            } else if (Array.isArray(teamData?.data) && teamData.data.length > 0) {
+            } else if (Array.isArray(teamData?.data)) {
               rawMembers = teamData.data;
               break;
             } else if (Array.isArray(teamData?.leadership) || Array.isArray(teamData?.teamMembers)) {
@@ -259,7 +259,7 @@ export const CmsProvider: React.FC<{ children: React.ReactNode }> = ({ children 
                 ...(Array.isArray(teamData.leadership) ? teamData.leadership : []),
                 ...(Array.isArray(teamData.teamMembers) ? teamData.teamMembers : []),
               ];
-              if (rawMembers.length > 0) break;
+              break;
             }
           }
         } catch {}
@@ -267,7 +267,7 @@ export const CmsProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     }
 
     // 3. Format and update team if retrieved from API
-    if (Array.isArray(rawMembers) && rawMembers.length > 0) {
+    if (Array.isArray(rawMembers)) {
       const activeMembers = rawMembers.filter((m: any) => {
         const st = String(m.status || 'published').toLowerCase();
         return st !== 'hidden' && st !== 'draft';
@@ -322,66 +322,6 @@ export const CmsProvider: React.FC<{ children: React.ReactNode }> = ({ children 
             skills: m.skills,
           }))
       );
-    } else {
-      // Offline fallback: check localStorage for any local admin changes
-      try {
-        const cached = localStorage.getItem('infosbrain_cms_team');
-        if (cached) {
-          const parsed = JSON.parse(cached);
-          if (Array.isArray(parsed) && parsed.length > 0) {
-            const activeCached = parsed.filter((m: any) => {
-              const st = String(m.status || 'published').toLowerCase();
-              return st !== 'hidden' && st !== 'draft';
-            });
-            if (activeCached.length > 0) {
-              const formattedCached = activeCached.map((m: any) => ({
-                ...m,
-                id: m.id,
-                name: m.name,
-                role: m.designation || m.role || '',
-                designation: m.designation || m.role || '',
-                bio: m.bio || '',
-                qualification: m.qualification || '',
-                imageUrl: m.profileImage || m.imageUrl || m.image || '',
-                profileImage: m.profileImage || m.imageUrl || m.image || '',
-                linkedinUrl: m.linkedinUrl || m.linkedin || '',
-                achievements: Array.isArray(m.achievements) ? m.achievements : [],
-                skills: Array.isArray(m.skills) ? m.skills : Array.isArray(m.achievements) ? m.achievements : [],
-                category: normalizeCat(m.category),
-                displayOrder: Number(m.displayOrder) || 0,
-                status: m.status || 'published',
-              })).sort((a, b) => a.displayOrder - b.displayOrder);
-
-              setMembers(formattedCached);
-              setLeadership(
-                formattedCached
-                  .filter((m: any) => m.category === 'leadership')
-                  .map((m: any) => ({
-                    id: m.id,
-                    name: m.name,
-                    role: m.role,
-                    bio: m.bio,
-                    achievements: m.achievements,
-                    imageUrl: m.imageUrl,
-                    linkedinUrl: m.linkedinUrl,
-                  }))
-              );
-              setTeamMembers(
-                formattedCached
-                  .filter((m: any) => m.category === 'team')
-                  .map((m: any) => ({
-                    id: m.id,
-                    name: m.name,
-                    role: m.role,
-                    bio: m.bio,
-                    imageUrl: m.imageUrl,
-                    skills: m.skills,
-                  }))
-              );
-            }
-          }
-        }
-      } catch {}
     }
 
     // 4. Update other CMS sections if cmsData was returned
