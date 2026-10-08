@@ -4,10 +4,28 @@ import { requireAdmin, AuthenticatedRequest } from '../auth.js';
 
 const router = Router();
 
+// Category normalization helper
+export function normalizeCategory(cat?: string): 'leadership' | 'team' {
+  if (!cat) return 'leadership';
+  const c = String(cat).trim().toLowerCase();
+  if (
+    c.includes('leadership') ||
+    c.includes('executive') ||
+    c.includes('showcase') ||
+    c === 'lead' ||
+    c === 'director'
+  ) {
+    return 'leadership';
+  }
+  return 'team';
+}
+
 // Helper to format team row
 function formatTeamMember(row: any) {
+  const category = normalizeCategory(row.category);
   return {
     ...row,
+    category,
     achievements: row.achievements ? JSON.parse(row.achievements) : [],
     skills: row.skills ? JSON.parse(row.skills) : [],
     // Provide both naming conventions so existing UI components work out-of-the-box
@@ -22,7 +40,8 @@ router.get('/', (_req, res: Response) => {
   try {
     const rows = db.prepare(`
       SELECT * FROM team_members
-      WHERE LOWER(status) = 'published'
+      WHERE LOWER(status) IN ('published', 'active', 'visible')
+         OR status IS NULL
       ORDER BY displayOrder ASC, createdAt ASC
     `).all();
 

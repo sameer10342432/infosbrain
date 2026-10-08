@@ -12,6 +12,10 @@
   RewriteCond %{REQUEST_FILENAME} -d
   RewriteRule ^ - [L]
 
+  # Route public API endpoints to pre-rendered JSON on static hosts (Hostinger / Apache)
+  RewriteRule ^api/cms/all/?$ api/cms/all.json [L]
+  RewriteRule ^api/team/?$ api/team.json [L]
+
   # Route all other client URLs to index.html for React SPA Router
   RewriteRule ^ index.html [L]
 </IfModule>

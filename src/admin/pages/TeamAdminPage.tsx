@@ -62,6 +62,21 @@ const initialTeamFallback: any[] = [
   })),
 ];
 
+export function normalizeCategory(cat?: string): 'leadership' | 'team' {
+  if (!cat) return 'leadership';
+  const c = String(cat).trim().toLowerCase();
+  if (
+    c.includes('leadership') ||
+    c.includes('executive') ||
+    c.includes('showcase') ||
+    c === 'lead' ||
+    c === 'director'
+  ) {
+    return 'leadership';
+  }
+  return 'team';
+}
+
 export const TeamAdminPage: React.FC = () => {
   const { token } = useAdminAuth();
   const { success, error } = useToast();
@@ -353,7 +368,9 @@ export const TeamAdminPage: React.FC = () => {
   };
 
   const filteredMembers =
-    filterCategory === 'all' ? members : members.filter((m) => m.category === filterCategory);
+    filterCategory === 'all'
+      ? members
+      : members.filter((m) => normalizeCategory(m.category) === filterCategory);
 
   return (
     <div className="space-y-6">

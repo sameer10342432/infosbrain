@@ -4,6 +4,21 @@ import { requireAdmin, AuthenticatedRequest } from '../auth.js';
 
 const router = Router();
 
+function normalizeCategory(cat?: string): 'leadership' | 'team' {
+  if (!cat) return 'leadership';
+  const c = String(cat).trim().toLowerCase();
+  if (
+    c.includes('leadership') ||
+    c.includes('executive') ||
+    c.includes('showcase') ||
+    c === 'lead' ||
+    c === 'director'
+  ) {
+    return 'leadership';
+  }
+  return 'team';
+}
+
 // ===================================================
 // UNIFIED FRONTEND BUNDLE: GET /api/cms/all
 // Fast, single-trip loader for all published website content
@@ -13,12 +28,14 @@ router.get('/all', (_req, res: Response) => {
     // 1. Team & Leadership
     const teamRows = db.prepare(`
       SELECT * FROM team_members
-      WHERE LOWER(status) = 'published'
+      WHERE LOWER(status) IN ('published', 'active', 'visible')
+         OR status IS NULL
       ORDER BY displayOrder ASC, createdAt ASC
     `).all();
 
     const formattedTeam = teamRows.map((r: any) => ({
       ...r,
+      category: normalizeCategory(r.category),
       achievements: r.achievements ? JSON.parse(r.achievements) : [],
       skills: r.skills ? JSON.parse(r.skills) : [],
       role: r.designation,

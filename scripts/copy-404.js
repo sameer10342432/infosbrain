@@ -74,5 +74,156 @@ if (fs.existsSync(distDir)) {
     }
   });
   console.log('[Build] Successfully verified Hostinger .htaccess, robots.txt, and sitemap.xml in dist/');
+
+  // Generate static API endpoints for static hosting environments (Hostinger / GitHub Pages)
+  try {
+    const dbPath = path.resolve(process.cwd(), 'data', 'infosbrain.db');
+    if (fs.existsSync(dbPath)) {
+      const { default: Database } = await import('better-sqlite3');
+      const db = new Database(dbPath);
+      const teamRows = db.prepare(`
+        SELECT * FROM team_members
+        WHERE LOWER(status) IN ('published', 'active', 'visible')
+           OR status IS NULL
+        ORDER BY displayOrder ASC, createdAt ASC
+      `).all();
+
+      const normalizeCat = (cat) => {
+        if (!cat) return 'leadership';
+        const c = String(cat).trim().toLowerCase();
+        if (c.includes('leadership') || c.includes('executive') || c.includes('showcase') || c === 'lead' || c === 'director') return 'leadership';
+        return 'team';
+      };
+
+      const formattedTeam = teamRows.map(r => ({
+        ...r,
+        category: normalizeCat(r.category),
+        achievements: r.achievements ? JSON.parse(r.achievements) : [],
+        skills: r.skills ? JSON.parse(r.skills) : [],
+        role: r.designation,
+        imageUrl: r.profileImage,
+        bio: r.bio || ''
+      }));
+
+      const leadership = formattedTeam.filter(m => m.category === 'leadership');
+      const teamMembers = formattedTeam.filter(m => m.category === 'team');
+
+      const teamPayload = {
+        members: formattedTeam,
+        leadership,
+        teamMembers
+      };
+
+      const apiDir = path.resolve(distDir, 'api');
+      const cmsDir = path.resolve(apiDir, 'cms');
+      fs.mkdirSync(cmsDir, { recursive: true });
+
+      fs.writeFileSync(path.join(apiDir, 'team.json'), JSON.stringify(teamPayload, null, 2), 'utf8');
+      fs.writeFileSync(path.join(apiDir, 'team'), JSON.stringify(teamPayload, null, 2), 'utf8');
+
+      // 2. Services
+      const serviceRows = db.prepare(`
+        SELECT * FROM services
+        WHERE LOWER(status) IN ('published', 'active', 'visible') OR status IS NULL
+        ORDER BY displayOrder ASC, createdAt ASC
+      `).all();
+      const formattedServices = serviceRows.map((r) => ({
+        ...r,
+        featured: Boolean(r.featured),
+        features: r.features ? JSON.parse(r.features) : [],
+        benefits: r.benefits ? JSON.parse(r.benefits) : [],
+        deliverables: r.deliverables ? JSON.parse(r.deliverables) : [],
+        technologies: r.technologies ? JSON.parse(r.technologies) : [],
+        process: r.process ? JSON.parse(r.process) : [],
+        faqs: r.faqs ? JSON.parse(r.faqs) : [],
+      }));
+
+      // 3. Testimonials
+      const testRows = db.prepare(`
+        SELECT * FROM testimonials
+        WHERE LOWER(status) IN ('published', 'active', 'visible') OR status IS NULL
+        ORDER BY displayOrder ASC, createdAt ASC
+      `).all();
+
+      // 4. FAQs
+      const faqRows = db.prepare(`
+        SELECT * FROM faqs
+        WHERE LOWER(status) IN ('published', 'active', 'visible') OR status IS NULL
+        ORDER BY displayOrder ASC, createdAt ASC
+      `).all();
+
+      // 5. Locations
+      const locRows = db.prepare(`
+        SELECT * FROM locations
+        WHERE LOWER(status) IN ('published', 'active', 'visible') OR status IS NULL
+        ORDER BY displayOrder ASC, createdAt ASC
+      `).all();
+      const formattedLocs = locRows.map((r) => ({
+        ...r,
+        coordinates: r.coordinates ? JSON.parse(r.coordinates) : { x: 50, y: 50 },
+        servicesProvided: r.servicesProvided ? JSON.parse(r.servicesProvided) : [],
+      }));
+
+      // 6. Case Studies
+      const caseRows = db.prepare(`
+        SELECT * FROM case_studies
+        WHERE LOWER(status) IN ('published', 'active', 'visible') OR status IS NULL
+        ORDER BY displayOrder ASC, createdAt ASC
+      `).all();
+      const formattedCases = caseRows.map((r) => ({
+        ...r,
+        services: r.services ? JSON.parse(r.services) : [],
+        results: r.results ? JSON.parse(r.results) : [],
+        technologies: r.technologies ? JSON.parse(r.technologies) : [],
+      }));
+
+      // 7. Careers
+      const careerRows = db.prepare(`
+        SELECT * FROM careers
+        WHERE LOWER(status) IN ('published', 'active', 'visible') OR status IS NULL
+        ORDER BY displayOrder ASC, createdAt ASC
+      `).all();
+      const formattedCareers = careerRows.map((r) => ({
+        ...r,
+        requirements: r.requirements ? JSON.parse(r.requirements) : [],
+        responsibilities: r.responsibilities ? JSON.parse(r.responsibilities) : [],
+      }));
+
+      // 8. Sections & Settings
+      const sectionRows = db.prepare('SELECT * FROM sections ORDER BY displayOrder ASC').all();
+      const sectionsByKey = {};
+      sectionRows.forEach((s) => {
+        sectionsByKey[s.sectionKey] = { ...s, isVisible: s.status === 'visible' };
+      });
+      const settingRows = db.prepare('SELECT key, value FROM settings').all();
+      const settingsObj = {};
+      settingRows.forEach((s) => {
+        settingsObj[s.key] = s.value;
+      });
+
+      // Write dist/api/cms/all
+      const cmsAllPayload = {
+        members: formattedTeam,
+        leadership,
+        teamMembers,
+        services: formattedServices,
+        testimonials: testRows,
+        faqs: faqRows,
+        locations: formattedLocs,
+        caseStudies: formattedCases,
+        careers: formattedCareers,
+        sections: sectionsByKey,
+        settings: settingsObj,
+      };
+      fs.writeFileSync(path.join(cmsDir, 'all.json'), JSON.stringify(cmsAllPayload, null, 2), 'utf8');
+      fs.writeFileSync(path.join(cmsDir, 'all'), JSON.stringify(cmsAllPayload, null, 2), 'utf8');
+
+      console.log(`[Build] Successfully generated static API endpoints for ${formattedTeam.length} published team members and all CMS tables in dist/api`);
+      db.close();
+    }
+  } catch (err) {
+    console.warn('[Build] Warning generating static API endpoints:', err.message);
+  }
 }
+
 

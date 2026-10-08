@@ -27,17 +27,36 @@ export const AboutPage: React.FC = () => {
   const { members, leadership, teamMembers, settings } = useCms();
   const [categoryFilter, setCategoryFilter] = React.useState<'all' | 'leadership' | 'team'>('all');
 
+  const normalizeCat = (cat?: string): 'leadership' | 'team' => {
+    if (!cat) return 'leadership';
+    const c = String(cat).trim().toLowerCase();
+    if (
+      c.includes('leadership') ||
+      c.includes('executive') ||
+      c.includes('showcase') ||
+      c === 'lead' ||
+      c === 'director'
+    ) {
+      return 'leadership';
+    }
+    return 'team';
+  };
+
   const allMembers =
     members && members.length > 0
       ? members
-      : [...(leadership || []), ...(teamMembers || [])];
+      : [
+          ...(leadership || []).map((m: any) => ({ ...m, category: 'leadership' })),
+          ...(teamMembers || []).map((m: any) => ({ ...m, category: 'team' })),
+        ];
 
   const displayTeam =
     categoryFilter === 'all'
       ? allMembers
       : categoryFilter === 'leadership'
-      ? allMembers.filter((m: any) => m.category === 'leadership')
-      : allMembers.filter((m: any) => m.category === 'team');
+      ? allMembers.filter((m: any) => normalizeCat(m.category) === 'leadership')
+      : allMembers.filter((m: any) => normalizeCat(m.category) === 'team');
+
 
   const values = [
     {
@@ -274,11 +293,11 @@ export const AboutPage: React.FC = () => {
                 { id: 'all', label: `All Members (${allMembers.length})` },
                 {
                   id: 'leadership',
-                  label: `Executive Leadership (${allMembers.filter((m: any) => m.category === 'leadership').length})`,
+                  label: `Executive Leadership (${allMembers.filter((m: any) => normalizeCat(m.category) === 'leadership').length})`,
                 },
                 {
                   id: 'team',
-                  label: `Practice & Engineering Leads (${allMembers.filter((m: any) => m.category === 'team').length})`,
+                  label: `Practice & Engineering Leads (${allMembers.filter((m: any) => normalizeCat(m.category) === 'team').length})`,
                 },
               ] as const
             ).map((tab) => (

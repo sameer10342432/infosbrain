@@ -2281,7 +2281,7 @@ export const siteConfig = {
   teamMembers: [
     {
       id: 'tm-1',
-      name: 'Elena Vance [Demo Profile]',
+      name: 'Elena Vance [Practice Lead]',
       role: 'Principal Digital Strategist & Co-Founder',
       imageUrl: 'https://images.unsplash.com/photo-1573496799652-408c2ac9fe98?auto=format&fit=crop&w=400&q=80',
       bio: '12+ years orchestrating digital growth strategies, brand scaling, and technology initiatives for international businesses.',
@@ -2289,7 +2289,7 @@ export const siteConfig = {
     },
     {
       id: 'tm-2',
-      name: 'Kaelen Thorne [Demo Profile]',
+      name: 'Kaelen Thorne [Practice Lead]',
       role: 'Head of Web Engineering & Architecture',
       imageUrl: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=400&q=80',
       bio: 'Full-stack systems architect specializing in high-throughput MERN, headless Next.js platforms, and cloud resilience.',
@@ -2297,7 +2297,7 @@ export const siteConfig = {
     },
     {
       id: 'tm-3',
-      name: 'Nadia Chen [Demo Profile]',
+      name: 'Nadia Chen [Practice Lead]',
       role: 'Director of Performance Media & SEO',
       imageUrl: 'https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?auto=format&fit=crop&w=400&q=80',
       bio: 'Data-driven performance marketer with expertise in algorithmic search optimization and multi-million dollar paid campaigns.',
@@ -2305,7 +2305,7 @@ export const siteConfig = {
     },
     {
       id: 'tm-4',
-      name: 'Liam Sterling [Demo Profile]',
+      name: 'Liam Sterling [Practice Lead]',
       role: 'Creative Director & Brand Designer',
       imageUrl: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=400&q=80',
       bio: 'Award-winning visual designer shaping cyber-modern design systems, high-converting UI/UX, and distinctive digital identities.',
@@ -2313,3 +2313,4 @@ export const siteConfig = {
     },
   ] as TeamMember[],
 };
+
