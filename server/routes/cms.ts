@@ -13,7 +13,7 @@ router.get('/all', (_req, res: Response) => {
     // 1. Team & Leadership
     const teamRows = db.prepare(`
       SELECT * FROM team_members
-      WHERE status = 'published'
+      WHERE LOWER(status) = 'published'
       ORDER BY displayOrder ASC, createdAt ASC
     `).all();
 
@@ -29,7 +29,7 @@ router.get('/all', (_req, res: Response) => {
     // 2. Services
     const serviceRows = db.prepare(`
       SELECT * FROM services
-      WHERE status = 'published'
+      WHERE LOWER(status) = 'published'
       ORDER BY displayOrder ASC, createdAt ASC
     `).all();
 
@@ -47,28 +47,28 @@ router.get('/all', (_req, res: Response) => {
     // 3. Statistics
     const statRows = db.prepare(`
       SELECT * FROM statistics
-      WHERE status = 'published'
+      WHERE LOWER(status) = 'published'
       ORDER BY displayOrder ASC, createdAt ASC
     `).all();
 
     // 4. Testimonials
     const testRows = db.prepare(`
       SELECT * FROM testimonials
-      WHERE status = 'published'
+      WHERE LOWER(status) = 'published'
       ORDER BY displayOrder ASC, createdAt ASC
     `).all();
 
     // 5. FAQs
     const faqRows = db.prepare(`
       SELECT * FROM faqs
-      WHERE status = 'published'
+      WHERE LOWER(status) = 'published'
       ORDER BY displayOrder ASC, createdAt ASC
     `).all();
 
     // 6. Global Locations
     const locRows = db.prepare(`
       SELECT * FROM locations
-      WHERE status = 'published'
+      WHERE LOWER(status) = 'published'
       ORDER BY displayOrder ASC, createdAt ASC
     `).all();
 
@@ -81,7 +81,7 @@ router.get('/all', (_req, res: Response) => {
     // 7. Case Studies
     const caseRows = db.prepare(`
       SELECT * FROM case_studies
-      WHERE status = 'published'
+      WHERE LOWER(status) = 'published'
       ORDER BY displayOrder ASC, createdAt ASC
     `).all();
 
@@ -96,7 +96,7 @@ router.get('/all', (_req, res: Response) => {
     // 8. Careers
     const careerRows = db.prepare(`
       SELECT * FROM careers
-      WHERE status = 'published'
+      WHERE LOWER(status) = 'published'
       ORDER BY displayOrder ASC, createdAt ASC
     `).all();
 
@@ -109,7 +109,7 @@ router.get('/all', (_req, res: Response) => {
     // 9. Partnerships
     const partnerRows = db.prepare(`
       SELECT * FROM partnerships
-      WHERE status = 'published'
+      WHERE LOWER(status) = 'published'
       ORDER BY displayOrder ASC, createdAt ASC
     `).all();
 
@@ -135,6 +135,7 @@ router.get('/all', (_req, res: Response) => {
     });
 
     res.json({
+      members: formattedTeam,
       leadership: formattedTeam.filter((m) => m.category === 'leadership'),
       teamMembers: formattedTeam.filter((m) => m.category === 'team'),
       services: formattedServices,
@@ -253,7 +254,7 @@ router.patch('/sections/admin/:sectionKey/visibility', requireAdmin, (req: Authe
 
 router.get('/testimonials', (_req, res: Response) => {
   try {
-    const rows = db.prepare(`SELECT * FROM testimonials WHERE status = 'published' ORDER BY displayOrder ASC`).all();
+    const rows = db.prepare(`SELECT * FROM testimonials WHERE LOWER(status) = 'published' ORDER BY displayOrder ASC`).all();
     res.json({ testimonials: rows });
   } catch (err: any) {
     res.status(500).json({ error: err.message });
@@ -397,7 +398,7 @@ router.delete('/testimonials/admin/:id', requireAdmin, (req: AuthenticatedReques
 
 router.get('/faqs', (_req, res: Response) => {
   try {
-    const rows = db.prepare(`SELECT * FROM faqs WHERE status = 'published' ORDER BY displayOrder ASC`).all();
+    const rows = db.prepare(`SELECT * FROM faqs WHERE LOWER(status) = 'published' ORDER BY displayOrder ASC`).all();
     res.json({ faqs: rows });
   } catch (err: any) {
     res.status(500).json({ error: err.message });
@@ -472,7 +473,7 @@ router.delete('/faqs/admin/:id', requireAdmin, (req: AuthenticatedRequest, res: 
 
 router.get('/statistics', (_req, res: Response) => {
   try {
-    const rows = db.prepare(`SELECT * FROM statistics WHERE status = 'published' ORDER BY displayOrder ASC`).all();
+    const rows = db.prepare(`SELECT * FROM statistics WHERE LOWER(status) = 'published' ORDER BY displayOrder ASC`).all();
     res.json({ statistics: rows });
   } catch (err: any) {
     res.status(500).json({ error: err.message });
@@ -547,7 +548,7 @@ router.delete('/statistics/admin/:id', requireAdmin, (req: AuthenticatedRequest,
 
 router.get('/case-studies', (_req, res: Response) => {
   try {
-    const rows = db.prepare(`SELECT * FROM case_studies WHERE status = 'published' ORDER BY displayOrder ASC`).all();
+    const rows = db.prepare(`SELECT * FROM case_studies WHERE LOWER(status) = 'published' ORDER BY displayOrder ASC`).all();
     const formatted = rows.map((r: any) => ({
       ...r,
       services: r.services ? JSON.parse(r.services) : [],
@@ -737,7 +738,7 @@ router.delete('/case-studies/admin/:id', requireAdmin, (req: AuthenticatedReques
 
 router.get('/careers', (_req, res: Response) => {
   try {
-    const rows = db.prepare(`SELECT * FROM careers WHERE status = 'published' ORDER BY displayOrder ASC`).all();
+    const rows = db.prepare(`SELECT * FROM careers WHERE LOWER(status) = 'published' ORDER BY displayOrder ASC`).all();
     const formatted = rows.map((r: any) => ({
       ...r,
       requirements: r.requirements ? JSON.parse(r.requirements) : [],
@@ -883,7 +884,7 @@ router.delete('/careers/admin/:id', requireAdmin, (req: AuthenticatedRequest, re
 
 router.get('/locations', (_req, res: Response) => {
   try {
-    const rows = db.prepare(`SELECT * FROM locations WHERE status = 'published' ORDER BY displayOrder ASC`).all();
+    const rows = db.prepare(`SELECT * FROM locations WHERE LOWER(status) = 'published' ORDER BY displayOrder ASC`).all();
     const formatted = rows.map((r: any) => ({
       ...r,
       coordinates: r.coordinates ? JSON.parse(r.coordinates) : { x: 50, y: 50 },
@@ -1041,7 +1042,7 @@ router.delete('/locations/admin/:id', requireAdmin, (req: AuthenticatedRequest, 
 
 router.get('/partnerships', (_req, res: Response) => {
   try {
-    const rows = db.prepare(`SELECT * FROM partnerships WHERE status = 'published' ORDER BY displayOrder ASC`).all();
+    const rows = db.prepare(`SELECT * FROM partnerships WHERE LOWER(status) = 'published' ORDER BY displayOrder ASC`).all();
     res.json({ partnerships: rows });
   } catch (err: any) {
     res.status(500).json({ error: err.message });

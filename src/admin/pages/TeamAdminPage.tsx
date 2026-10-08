@@ -294,15 +294,21 @@ export const TeamAdminPage: React.FC = () => {
         },
         body: JSON.stringify({ status: nextStatus }),
       });
-      if (res.ok || res.isOffline) {
+      if (res.ok) {
         success(`Status updated to ${nextStatus}.`);
-        const updated = members.map((m) => (m.id === member.id ? { ...m, status: nextStatus } : m));
-        setMembers(updated);
-        saveOfflineCache('infosbrain_cms_team', updated);
+        fetchMembers();
         window.dispatchEvent(new Event('infosbrain_cms_updated'));
-      } else {
+        return;
+      } else if (!res.isOffline) {
         error(res.data?.error || 'Failed to update status.');
+        return;
       }
+      
+      const updated = members.map((m) => (m.id === member.id ? { ...m, status: nextStatus } : m));
+      setMembers(updated);
+      saveOfflineCache('infosbrain_cms_team', updated);
+      window.dispatchEvent(new Event('infosbrain_cms_updated'));
+      success(`Status updated to ${nextStatus}.`);
     } catch {
       const updated = members.map((m) => (m.id === member.id ? { ...m, status: nextStatus } : m));
       setMembers(updated);
@@ -320,15 +326,21 @@ export const TeamAdminPage: React.FC = () => {
         method: 'DELETE',
         headers: token ? { Authorization: `Bearer ${token}` } : {},
       });
-      if (res.ok || res.isOffline) {
+      if (res.ok) {
         success('Team member deleted.');
-        const updated = members.filter((m) => m.id !== targetId);
-        setMembers(updated);
-        saveOfflineCache('infosbrain_cms_team', updated);
+        fetchMembers();
         window.dispatchEvent(new Event('infosbrain_cms_updated'));
-      } else {
+        return;
+      } else if (!res.isOffline) {
         error(res.data?.error || 'Failed to delete team member.');
+        return;
       }
+      
+      const updated = members.filter((m) => m.id !== targetId);
+      setMembers(updated);
+      saveOfflineCache('infosbrain_cms_team', updated);
+      window.dispatchEvent(new Event('infosbrain_cms_updated'));
+      success('Team member deleted.');
     } catch {
       const updated = members.filter((m) => m.id !== targetId);
       setMembers(updated);

@@ -26,6 +26,15 @@ app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 app.use(cookieParser());
 
+// Disable caching for all API endpoints so changes are immediately visible
+app.use('/api', (_req, res, next) => {
+  res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+  res.setHeader('Pragma', 'no-cache');
+  res.setHeader('Expires', '0');
+  res.setHeader('Surrogate-Control', 'no-store');
+  next();
+});
+
 // Static uploads and assets directory
 const uploadsDir = path.resolve(process.cwd(), 'public', 'uploads');
 app.use('/uploads', express.static(uploadsDir));

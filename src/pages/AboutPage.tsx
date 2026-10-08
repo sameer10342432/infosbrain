@@ -19,12 +19,25 @@ import {
   TrendingUp,
   Cpu,
   Layers,
+  Linkedin,
 } from 'lucide-react';
 
 export const AboutPage: React.FC = () => {
   const { navigate } = useRouter();
-  const { teamMembers, settings } = useCms();
-  const displayTeam = teamMembers;
+  const { members, leadership, teamMembers, settings } = useCms();
+  const [categoryFilter, setCategoryFilter] = React.useState<'all' | 'leadership' | 'team'>('all');
+
+  const allMembers =
+    members && members.length > 0
+      ? members
+      : [...(leadership || []), ...(teamMembers || [])];
+
+  const displayTeam =
+    categoryFilter === 'all'
+      ? allMembers
+      : categoryFilter === 'leadership'
+      ? allMembers.filter((m: any) => m.category === 'leadership')
+      : allMembers.filter((m: any) => m.category === 'team');
 
   const values = [
     {
@@ -224,18 +237,18 @@ export const AboutPage: React.FC = () => {
         </div>
       </section>
 
-      {/* Leadership / Team Section with clearly marked demo profiles */}
+      {/* Leadership / Team Section */}
       <section className="py-20 bg-[#070B1F] border-t border-slate-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <SectionHeading
             badge="LEADERSHIP COLLECTIVE"
             title="Meet Our Strategy &"
             highlightText="Engineering Leads"
-            description="*Clearly marked placeholder profiles representing our multidisciplinary leadership structure. Easily customized for your leadership team."
+            description="A multidisciplinary executive cadre and engineering leadership combining deep technological expertise, global governance acumen, and commitment to client success."
           />
 
           {/* Full-Width Team & Leadership Banner */}
-          <div className="mb-14 relative w-full aspect-[21/9] sm:aspect-[2.4/1] rounded-3xl overflow-hidden border border-cyan-500/30 shadow-[0_0_40px_rgba(6,182,212,0.15)] bg-slate-950 flex items-center justify-center group">
+          <div className="mb-10 relative w-full aspect-[21/9] sm:aspect-[2.4/1] rounded-3xl overflow-hidden border border-cyan-500/30 shadow-[0_0_40px_rgba(6,182,212,0.15)] bg-slate-950 flex items-center justify-center group">
             <img
               src="/assets/team-banner.png"
               alt="InfosBrain Executive Leadership and Engineering Team"
@@ -254,54 +267,123 @@ export const AboutPage: React.FC = () => {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-            {displayTeam.map((member) => (
-              <div
-                key={member.id}
-                className="p-6 rounded-2xl bg-[#050816] border border-slate-800 hover:border-cyan-500/40 transition-all flex flex-col justify-between group overflow-hidden"
+          {/* Category Filter Tabs */}
+          <div className="flex items-center justify-center gap-2 mb-12 flex-wrap">
+            {(
+              [
+                { id: 'all', label: `All Members (${allMembers.length})` },
+                {
+                  id: 'leadership',
+                  label: `Executive Leadership (${allMembers.filter((m: any) => m.category === 'leadership').length})`,
+                },
+                {
+                  id: 'team',
+                  label: `Practice & Engineering Leads (${allMembers.filter((m: any) => m.category === 'team').length})`,
+                },
+              ] as const
+            ).map((tab) => (
+              <button
+                key={tab.id}
+                onClick={() => setCategoryFilter(tab.id)}
+                className={`px-4 py-2 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
+                  categoryFilter === tab.id
+                    ? 'bg-gradient-to-r from-cyan-500 to-blue-600 text-white shadow-lg shadow-cyan-900/30'
+                    : 'bg-slate-900/80 hover:bg-slate-800 text-slate-300 border border-slate-800'
+                }`}
               >
-                <div>
-                  {member.imageUrl ? (
-                    <div className="relative w-24 h-24 rounded-2xl overflow-hidden mb-5 border-2 border-cyan-500/30 group-hover:border-cyan-400/70 transition-all shadow-lg">
-                      <img
-                        src={member.imageUrl}
-                        alt={member.name}
-                        referrerPolicy="no-referrer"
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                      />
-                    </div>
-                  ) : (
-                    <div className="w-20 h-20 rounded-2xl bg-gradient-to-tr from-blue-600 via-cyan-500 to-violet-600 p-0.5 mb-5 shadow-lg">
-                      <div className="w-full h-full bg-[#070B1F] rounded-[14px] flex items-center justify-center font-display font-bold text-2xl text-cyan-400">
-                        {member.name.slice(0, 2)}
-                      </div>
-                    </div>
-                  )}
-
-                  <h3 className="text-lg font-bold text-white font-display">
-                    {member.name}
-                  </h3>
-                  <div className="text-xs font-semibold text-cyan-400 mb-3">
-                    {member.role}
-                  </div>
-                  <p className="text-xs text-slate-400 leading-relaxed mb-4">
-                    {member.bio}
-                  </p>
-                </div>
-
-                <div className="flex flex-wrap gap-1.5 pt-3 border-t border-slate-800">
-                  {member.skills.map((skill, sIdx) => (
-                    <span
-                      key={sIdx}
-                      className="px-2 py-0.5 rounded text-[10px] font-mono text-slate-400 bg-slate-900 border border-slate-800"
-                    >
-                      {skill}
-                    </span>
-                  ))}
-                </div>
-              </div>
+                {tab.label}
+              </button>
             ))}
           </div>
+
+          {displayTeam.length === 0 ? (
+            <div className="text-center py-16 px-4 rounded-2xl bg-slate-900/40 border border-slate-800 text-slate-400">
+              <Users className="w-10 h-10 mx-auto text-slate-600 mb-3" />
+              <p className="text-sm">No team members currently published in this category.</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+              {displayTeam.map((member: any) => {
+                const img = member.imageUrl || member.profileImage || '';
+                const role = member.role || member.designation || '';
+                const tags = Array.isArray(member.skills) && member.skills.length > 0
+                  ? member.skills
+                  : Array.isArray(member.achievements)
+                  ? member.achievements
+                  : [];
+
+                return (
+                  <div
+                    key={member.id}
+                    className="p-6 rounded-2xl bg-[#050816] border border-slate-800 hover:border-cyan-500/40 transition-all flex flex-col justify-between group overflow-hidden"
+                  >
+                    <div>
+                      <div className="flex items-start justify-between mb-5">
+                        {img ? (
+                          <div className="relative w-24 h-24 rounded-2xl overflow-hidden border-2 border-cyan-500/30 group-hover:border-cyan-400/70 transition-all shadow-lg">
+                            <img
+                              src={img}
+                              alt={member.name}
+                              referrerPolicy="no-referrer"
+                              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                            />
+                          </div>
+                        ) : (
+                          <div className="w-20 h-20 rounded-2xl bg-gradient-to-tr from-blue-600 via-cyan-500 to-violet-600 p-0.5 shadow-lg">
+                            <div className="w-full h-full bg-[#070B1F] rounded-[14px] flex items-center justify-center font-display font-bold text-2xl text-cyan-400">
+                              {member.name.slice(0, 2).toUpperCase()}
+                            </div>
+                          </div>
+                        )}
+
+                        {member.linkedinUrl && (
+                          <a
+                            href={member.linkedinUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="w-8 h-8 rounded-lg bg-slate-900 border border-slate-800 hover:border-cyan-400 flex items-center justify-center text-slate-400 hover:text-cyan-300 transition-all cursor-pointer"
+                            aria-label={`${member.name} LinkedIn Profile`}
+                          >
+                            <Linkedin className="w-4 h-4" />
+                          </a>
+                        )}
+                      </div>
+
+                      <h3 className="text-lg font-bold text-white font-display">
+                        {member.name}
+                      </h3>
+                      <div className="text-xs font-semibold text-cyan-400 mb-1">
+                        {role}
+                      </div>
+                      {member.qualification && (
+                        <div className="text-[11px] font-mono text-slate-400 mb-3">
+                          {member.qualification}
+                        </div>
+                      )}
+                      {member.bio && (
+                        <p className="text-xs text-slate-400 leading-relaxed mb-4">
+                          {member.bio}
+                        </p>
+                      )}
+                    </div>
+
+                    {tags.length > 0 && (
+                      <div className="flex flex-wrap gap-1.5 pt-3 border-t border-slate-800">
+                        {tags.slice(0, 4).map((tag: string, sIdx: number) => (
+                          <span
+                            key={sIdx}
+                            className="px-2 py-0.5 rounded text-[10px] font-mono text-slate-400 bg-slate-900 border border-slate-800"
+                          >
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          )}
         </div>
       </section>
 

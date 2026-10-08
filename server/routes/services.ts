@@ -22,7 +22,7 @@ router.get('/', (_req, res: Response) => {
   try {
     const rows = db.prepare(`
       SELECT * FROM services
-      WHERE status = 'published'
+      WHERE LOWER(status) = 'published'
       ORDER BY displayOrder ASC, createdAt ASC
     `).all();
 

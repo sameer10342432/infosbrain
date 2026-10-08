@@ -95,20 +95,22 @@ export const LeadershipSection: React.FC = () => {
               </div>
 
               {/* Achievements */}
-              <div className="pt-3 border-t border-slate-800/80 space-y-1.5">
-                <div className="text-[10px] font-mono font-semibold text-slate-400 uppercase tracking-wider flex items-center gap-1">
-                  <Award className="w-3 h-3 text-[#00C9A7]" />
-                  Key Achievements:
+              {Array.isArray(member.achievements) && member.achievements.length > 0 && (
+                <div className="pt-3 border-t border-slate-800/80 space-y-1.5">
+                  <div className="text-[10px] font-mono font-semibold text-slate-400 uppercase tracking-wider flex items-center gap-1">
+                    <Award className="w-3 h-3 text-[#00C9A7]" />
+                    Key Achievements:
+                  </div>
+                  <div className="space-y-1">
+                    {member.achievements.map((ach, idx) => (
+                      <div key={idx} className="flex items-start gap-1.5 text-[11px] text-slate-300">
+                        <CheckCircle2 className="w-3 h-3 text-[#00C9A7] flex-shrink-0 mt-0.5" />
+                        <span className="line-clamp-2">{ach}</span>
+                      </div>
+                    ))}
+                  </div>
                 </div>
-                <div className="space-y-1">
-                  {member.achievements.map((ach, idx) => (
-                    <div key={idx} className="flex items-start gap-1.5 text-[11px] text-slate-300">
-                      <CheckCircle2 className="w-3 h-3 text-[#00C9A7] flex-shrink-0 mt-0.5" />
-                      <span className="line-clamp-2">{ach}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
+              )}
             </div>
           ))}
         </div>

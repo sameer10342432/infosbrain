@@ -39,6 +39,7 @@ export interface CmsSection {
 }
 
 export interface CmsContextType {
+  members: any[];
   leadership: LeadershipMember[];
   teamMembers: TeamMember[];
   services: ServiceItem[];
@@ -135,15 +136,16 @@ const defaultSettings: Record<string, string> = {
 };
 
 const CmsContext = createContext<CmsContextType>({
-  leadership: siteConfig.leadership,
-  teamMembers: siteConfig.teamMembers,
-  services: siteConfig.services,
+  members: [],
+  leadership: [],
+  teamMembers: [],
+  services: siteConfig.services || [],
   statistics: defaultStats,
-  testimonials: siteConfig.testimonials,
-  faqs: siteConfig.faqs,
-  locations: siteConfig.globalOffices,
-  caseStudies: siteConfig.caseStudies,
-  careers: siteConfig.careers,
+  testimonials: siteConfig.testimonials || [],
+  faqs: siteConfig.faqs || [],
+  locations: siteConfig.globalOffices || [],
+  caseStudies: siteConfig.caseStudies || [],
+  careers: siteConfig.careers || [],
   partnerships: [],
   sections: defaultSections,
   settings: defaultSettings,
@@ -153,56 +155,10 @@ const CmsContext = createContext<CmsContextType>({
   refreshCms: async () => {},
 });
 
-function loadInitialLeadership(): LeadershipMember[] {
-  try {
-    const saved = localStorage.getItem('infosbrain_cms_team');
-    if (saved) {
-      const parsed = JSON.parse(saved);
-      if (Array.isArray(parsed)) {
-        return parsed
-          .filter((m: any) => m.status !== 'hidden' && m.category === 'leadership')
-          .sort((a: any, b: any) => (Number(a.displayOrder) || 0) - (Number(b.displayOrder) || 0))
-          .map((m: any) => ({
-            id: m.id,
-            name: m.name,
-            role: m.designation || m.role || '',
-            bio: m.bio || '',
-            achievements: Array.isArray(m.achievements) ? m.achievements : m.keyAchievements || [],
-            imageUrl: m.profileImage || m.imageUrl || m.image || '',
-            linkedinUrl: m.linkedinUrl || m.linkedin || '',
-          }));
-      }
-    }
-  } catch {}
-  return siteConfig.leadership || [];
-}
-
-function loadInitialTeam(): TeamMember[] {
-  try {
-    const saved = localStorage.getItem('infosbrain_cms_team');
-    if (saved) {
-      const parsed = JSON.parse(saved);
-      if (Array.isArray(parsed)) {
-        return parsed
-          .filter((m: any) => m.status !== 'hidden' && m.category === 'team')
-          .sort((a: any, b: any) => (Number(a.displayOrder) || 0) - (Number(b.displayOrder) || 0))
-          .map((m: any) => ({
-            id: m.id,
-            name: m.name,
-            role: m.designation || m.role || '',
-            bio: m.bio || '',
-            imageUrl: m.profileImage || m.imageUrl || m.image || '',
-            skills: Array.isArray(m.skills) ? m.skills : m.achievements || [],
-          }));
-      }
-    }
-  } catch {}
-  return siteConfig.teamMembers || [];
-}
-
 export const CmsProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [leadership, setLeadership] = useState<LeadershipMember[]>(() => loadInitialLeadership());
-  const [teamMembers, setTeamMembers] = useState<TeamMember[]>(() => loadInitialTeam());
+  const [members, setMembers] = useState<any[]>([]);
+  const [leadership, setLeadership] = useState<LeadershipMember[]>([]);
+  const [teamMembers, setTeamMembers] = useState<TeamMember[]>([]);
   const [services, setServices] = useState<ServiceItem[]>(siteConfig.services || []);
   const [statistics, setStatistics] = useState<CmsStatistic[]>(defaultStats);
   const [testimonials, setTestimonials] = useState<TestimonialItem[]>(siteConfig.testimonials || []);
@@ -215,194 +171,143 @@ export const CmsProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const [settings, setSettings] = useState<Record<string, string>>(defaultSettings);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
-  const syncOfflineData = useCallback(() => {
-    try {
-      // 1. Sync sections
-      const savedSections = localStorage.getItem('infosbrain_cms_sections');
-      if (savedSections) {
-        const parsed = JSON.parse(savedSections);
-        if (Array.isArray(parsed) && parsed.length > 0) {
-          const customSectionsMap: Record<string, CmsSection> = {};
-          parsed.forEach((sec: any) => {
-            customSectionsMap[sec.sectionKey] = {
-              ...sec,
-              isVisible: sec.status === 'visible',
-            };
-          });
-          setSections((prev) => ({ ...prev, ...customSectionsMap }));
-        }
-      }
-
-      // 2. Sync team & leadership
-      const savedTeam = localStorage.getItem('infosbrain_cms_team');
-      if (savedTeam) {
-        const parsedTeam = JSON.parse(savedTeam);
-        if (Array.isArray(parsedTeam)) {
-          const activeMembers = parsedTeam.filter((m: any) => m.status !== 'hidden');
-          activeMembers.sort((a: any, b: any) => (Number(a.displayOrder) || 0) - (Number(b.displayOrder) || 0));
-
-          const newLeadership: LeadershipMember[] = activeMembers
-            .filter((m: any) => m.category === 'leadership')
-            .map((m: any) => ({
-              id: m.id,
-              name: m.name,
-              role: m.designation || m.role || '',
-              bio: m.bio || '',
-              achievements: Array.isArray(m.achievements)
-                ? m.achievements
-                : Array.isArray(m.keyAchievements)
-                ? m.keyAchievements
-                : [],
-              imageUrl: m.profileImage || m.imageUrl || m.image || '',
-              linkedinUrl: m.linkedinUrl || m.linkedin || '',
-            }));
-
-          const newTeam: TeamMember[] = activeMembers
-            .filter((m: any) => m.category === 'team')
-            .map((m: any) => ({
-              id: m.id,
-              name: m.name,
-              role: m.designation || m.role || '',
-              bio: m.bio || '',
-              imageUrl: m.profileImage || m.imageUrl || m.image || '',
-              skills: Array.isArray(m.skills) ? m.skills : Array.isArray(m.achievements) ? m.achievements : [],
-            }));
-
-          setLeadership(newLeadership);
-          setTeamMembers(newTeam);
-        }
-      }
-
-      // 3. Sync testimonials
-      const savedTestimonials = localStorage.getItem('infosbrain_cms_testimonials');
-      if (savedTestimonials) {
-        const parsedTestimonials = JSON.parse(savedTestimonials);
-        if (Array.isArray(parsedTestimonials)) {
-          setTestimonials(parsedTestimonials.filter((t: any) => t.status !== 'hidden'));
-        }
-      }
-
-      // 4. Sync FAQs
-      const savedFaqs = localStorage.getItem('infosbrain_cms_faqs');
-      if (savedFaqs) {
-        const parsedFaqs = JSON.parse(savedFaqs);
-        if (Array.isArray(parsedFaqs)) {
-          setFaqs(parsedFaqs.filter((f: any) => f.status !== 'hidden'));
-        }
-      }
-
-      // 5. Sync Locations
-      const savedLocations = localStorage.getItem('infosbrain_cms_locations');
-      if (savedLocations) {
-        const parsedLocs = JSON.parse(savedLocations);
-        if (Array.isArray(parsedLocs)) {
-          setLocations(parsedLocs.filter((l: any) => l.status !== 'hidden'));
-        }
-      }
-
-      // 6. Sync Case Studies
-      const savedCases = localStorage.getItem('infosbrain_cms_case_studies');
-      if (savedCases) {
-        const parsedCases = JSON.parse(savedCases);
-        if (Array.isArray(parsedCases)) {
-          setCaseStudies(parsedCases.filter((c: any) => c.status !== 'hidden'));
-        }
-      }
-
-      // 7. Sync Careers
-      const savedCareers = localStorage.getItem('infosbrain_cms_careers');
-      if (savedCareers) {
-        const parsedCareers = JSON.parse(savedCareers);
-        if (Array.isArray(parsedCareers)) {
-          setCareers(parsedCareers.filter((c: any) => c.status !== 'hidden'));
-        }
-      }
-
-      // 8. Sync Services
-      const savedServices = localStorage.getItem('infosbrain_cms_services');
-      if (savedServices) {
-        const parsedServices = JSON.parse(savedServices);
-        if (Array.isArray(parsedServices)) {
-          setServices(parsedServices.filter((s: any) => s.status !== 'hidden'));
-        }
-      }
-    } catch {}
-  }, []);
-
   const fetchCmsData = useCallback(async () => {
     try {
-      const res = await fetch('/api/cms/all');
+      const res = await fetch('/api/cms/all', {
+        cache: 'no-store',
+        headers: {
+          'Cache-Control': 'no-cache, no-store',
+          Pragma: 'no-cache',
+        },
+      });
       const contentType = res.headers.get('content-type') || '';
       if (res.ok && contentType.includes('application/json')) {
         const data = await res.json();
+
+        // 1. Team & Leadership: Database is single source of truth
+        const rawMembers = Array.isArray(data.members)
+          ? data.members
+          : [
+              ...(Array.isArray(data.leadership) ? data.leadership : []),
+              ...(Array.isArray(data.teamMembers) ? data.teamMembers : []),
+            ];
+
+        // Format team members consistently
+        const formattedMembers = rawMembers.map((m: any) => ({
+          ...m,
+          id: m.id,
+          name: m.name,
+          role: m.role || m.designation || '',
+          designation: m.designation || m.role || '',
+          bio: m.bio || '',
+          qualification: m.qualification || '',
+          imageUrl: m.imageUrl || m.profileImage || m.image || '',
+          profileImage: m.profileImage || m.imageUrl || m.image || '',
+          linkedinUrl: m.linkedinUrl || m.linkedin || '',
+          achievements: Array.isArray(m.achievements) ? m.achievements : [],
+          skills: Array.isArray(m.skills) ? m.skills : Array.isArray(m.achievements) ? m.achievements : [],
+          category: m.category || 'leadership',
+          displayOrder: Number(m.displayOrder) || 0,
+          status: m.status || 'published',
+        }));
+
+        setMembers(formattedMembers);
+
         if (Array.isArray(data.leadership)) {
-          setLeadership(data.leadership);
+          setLeadership(
+            data.leadership.map((m: any) => ({
+              ...m,
+              role: m.role || m.designation || '',
+              imageUrl: m.imageUrl || m.profileImage || '',
+            }))
+          );
+        } else {
+          setLeadership(formattedMembers.filter((m: any) => m.category === 'leadership'));
         }
+
         if (Array.isArray(data.teamMembers)) {
-          setTeamMembers(data.teamMembers);
+          setTeamMembers(
+            data.teamMembers.map((m: any) => ({
+              ...m,
+              role: m.role || m.designation || '',
+              imageUrl: m.imageUrl || m.profileImage || '',
+              skills: Array.isArray(m.skills) ? m.skills : Array.isArray(m.achievements) ? m.achievements : [],
+            }))
+          );
+        } else {
+          setTeamMembers(formattedMembers.filter((m: any) => m.category === 'team'));
         }
-        if (data.services && data.services.length > 0) {
-          setServices((prev) => {
-            const cmsServices: ServiceItem[] = data.services;
-            const cmsSlugSet = new Set(cmsServices.map((s: any) => s.slug));
-            return [...cmsServices, ...prev.filter((p: any) => !cmsSlugSet.has(p.slug))];
-          });
+
+        // 2. Services: Database is single source of truth
+        if (Array.isArray(data.services)) {
+          setServices(data.services);
         }
-        if (data.statistics && data.statistics.length > 0) {
+
+        // 3. Statistics
+        if (Array.isArray(data.statistics)) {
           setStatistics(data.statistics);
         }
-        if (data.testimonials && data.testimonials.length > 0) {
+
+        // 4. Testimonials
+        if (Array.isArray(data.testimonials)) {
           setTestimonials(data.testimonials);
         }
-        if (data.faqs && data.faqs.length > 0) {
+
+        // 5. FAQs
+        if (Array.isArray(data.faqs)) {
           setFaqs(data.faqs);
         }
-        if (data.locations && data.locations.length > 0) {
+
+        // 6. Locations
+        if (Array.isArray(data.locations)) {
           setLocations(data.locations);
         }
-        if (data.caseStudies && data.caseStudies.length > 0) {
-          setCaseStudies((prev) => {
-            const cmsItems: CaseStudyItem[] = data.caseStudies;
-            const cmsKeySet = new Set(cmsItems.flatMap((c: any) => [c.id, c.slug].filter(Boolean)));
-            return [...cmsItems, ...prev.filter((p: any) => !cmsKeySet.has(p.id) && !cmsKeySet.has(p.slug))];
-          });
+
+        // 7. Case Studies: Database is single source of truth
+        if (Array.isArray(data.caseStudies)) {
+          setCaseStudies(data.caseStudies);
         }
-        if (data.careers && data.careers.length > 0) {
+
+        // 8. Careers
+        if (Array.isArray(data.careers)) {
           setCareers(data.careers);
         }
-        if (data.partnerships && data.partnerships.length > 0) {
+
+        // 9. Partnerships
+        if (Array.isArray(data.partnerships)) {
           setPartnerships(data.partnerships);
         }
-        if (data.sections && Object.keys(data.sections).length > 0) {
+
+        // 10. Sections & Page Banners
+        if (data.sections && typeof data.sections === 'object' && Object.keys(data.sections).length > 0) {
           setSections((prev) => ({ ...prev, ...data.sections }));
         }
-        if (data.settings && Object.keys(data.settings).length > 0) {
+
+        // 11. Site Settings
+        if (data.settings && typeof data.settings === 'object' && Object.keys(data.settings).length > 0) {
           setSettings((prev) => ({ ...prev, ...data.settings }));
         }
       }
     } catch (err) {
-      console.warn('[CMS Provider] Falling back to offline/cached site configuration:', err);
+      console.warn('[CMS Provider] API fetch notice:', err);
     } finally {
-      syncOfflineData();
       setIsLoading(false);
     }
-  }, [syncOfflineData]);
+  }, []);
 
   useEffect(() => {
-    syncOfflineData();
     fetchCmsData();
 
+    // Trigger immediate reload when admin mutates CMS content
     const handleCmsUpdate = () => {
-      syncOfflineData();
       fetchCmsData();
     };
+
     window.addEventListener('infosbrain_cms_updated', handleCmsUpdate);
-    window.addEventListener('storage', handleCmsUpdate);
     return () => {
       window.removeEventListener('infosbrain_cms_updated', handleCmsUpdate);
-      window.removeEventListener('storage', handleCmsUpdate);
     };
-  }, [fetchCmsData, syncOfflineData]);
+  }, [fetchCmsData]);
 
   const isSectionVisible = useCallback(
     (sectionKey: string): boolean => {
@@ -423,6 +328,7 @@ export const CmsProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   return (
     <CmsContext.Provider
       value={{
+        members,
         leadership,
         teamMembers,
         services,
