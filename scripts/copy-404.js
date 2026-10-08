@@ -73,7 +73,16 @@ if (fs.existsSync(distDir)) {
       fs.copyFileSync(src, dest);
     }
   });
-  console.log('[Build] Successfully verified Hostinger .htaccess, robots.txt, and sitemap.xml in dist/');
+  // Copy data directory to dist/data for SQLite availability on Hostinger
+  const dataDir = path.resolve(process.cwd(), 'data');
+  const distDataDir = path.resolve(distDir, 'data');
+  if (fs.existsSync(dataDir)) {
+    fs.mkdirSync(distDataDir, { recursive: true });
+    const dbSrc = path.join(dataDir, 'infosbrain.db');
+    if (fs.existsSync(dbSrc)) {
+      fs.copyFileSync(dbSrc, path.join(distDataDir, 'infosbrain.db'));
+    }
+  }
 
   // Generate static API endpoints for static hosting environments (Hostinger / GitHub Pages)
   try {

@@ -74,6 +74,94 @@ try {
             updatedAt TEXT
         );
     ");
+
+    $count = intval($db->query("SELECT COUNT(*) FROM team_members")->fetchColumn());
+    if ($count === 0) {
+        $seedStmt = $db->prepare("
+            INSERT INTO team_members (
+                id, name, qualification, designation, bio, profileImage, linkedinUrl,
+                achievements, skills, category, displayOrder, status, createdAt, updatedAt
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ");
+        $now = gmdate('c');
+        $initial = [
+            [
+                'lead-1', 'Elena Vance, Ph.D.', 'Ph.D. in Computer Science & AI Ethics', 'Founder & Global Managing Director',
+                'Pioneered human-centric AI and digital transformation frameworks with over 15 years advising global enterprises, academic institutions, and NGOs on technology-driven growth.',
+                'https://images.unsplash.com/photo-1573496799652-408c2ac9fe98?auto=format&fit=crop&w=600&q=80',
+                'https://linkedin.com',
+                json_encode(['Chaired international digital transformation steering committees', 'Published researcher in responsible AI architecture and ethical governance', 'Architected modern technology strategies across 20+ countries']),
+                json_encode(['AI Strategy', 'Digital Transformation', 'Enterprise Governance']),
+                'leadership', 1, 'published', $now, $now
+            ],
+            [
+                'lead-2', 'Marcus Sterling', 'M.Sc. Enterprise Systems, Harvard Alumni', 'Chief Executive Officer (CEO)',
+                'Leads global operations, strategic alliances, and commercial delivery. Former senior technology executive driving multi-million-dollar software and cloud initiatives.',
+                'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=600&q=80',
+                'https://linkedin.com',
+                json_encode(['Scaled high-performance software engineering teams across 3 continents', 'Spearheaded enterprise modernization partnerships for FTSE & Fortune 500 orgs', 'Advocate for cross-border technology accessibility and responsible AI adoption']),
+                json_encode(['Global Operations', 'Commercial Strategy', 'Cloud Leadership']),
+                'leadership', 2, 'published', $now, $now
+            ],
+            [
+                'lead-3', 'Tariq Al-Mansoor', 'M.Eng. Distributed Systems & Security', 'Chief Technology Officer (CTO)',
+                'Oversees software engineering, R&D centers, and cloud infrastructure. Specializes in distributed microservices, zero-trust cybersecurity, and deep neural models.',
+                'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=600&q=80',
+                'https://linkedin.com',
+                json_encode(['Engineered high-throughput cloud platforms handling millions of transactions daily', 'Certified cloud architect (AWS Solutions Architect Pro & Azure Solutions Expert)', 'Led proprietary R&D in computer vision and document intelligence models']),
+                json_encode(['Microservices', 'Zero-Trust Architecture', 'Deep Learning']),
+                'leadership', 3, 'published', $now, $now
+            ],
+            [
+                'lead-4', 'Dr. Kwame Osei-Bonsu', 'D.Phil. Public Policy & Digital Systems', 'Strategic Advisory Board Chair',
+                'Senior advisor on international technology policy, institutional digital capacity building, and public-sector digital service transformation.',
+                'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&w=600&q=80',
+                'https://linkedin.com',
+                json_encode(['Advised international development banks and regional governments', 'Fellow of the Global Institute for Digital Transformation', 'Championed sustainable digital infrastructure for underserved economies']),
+                json_encode(['Public Sector Tech', 'Policy & Governance', 'Digital Capacity']),
+                'leadership', 4, 'published', $now, $now
+            ],
+            [
+                'tm-1', 'Elena Vance [Practice Lead]', 'Lead Growth Strategist', 'Principal Digital Strategist & Co-Founder',
+                '12+ years orchestrating digital growth strategies, brand scaling, and technology initiatives for international businesses.',
+                'https://images.unsplash.com/photo-1573496799652-408c2ac9fe98?auto=format&fit=crop&w=400&q=80',
+                'https://linkedin.com',
+                json_encode(['Delivered 350% average client ROI across digital transformation engagements']),
+                json_encode(['Growth Strategy', 'Brand Architecture', 'CRO']),
+                'team', 5, 'published', $now, $now
+            ],
+            [
+                'tm-2', 'Kaelen Thorne [Practice Lead]', 'Principal Systems Architect', 'Head of Web Engineering & Architecture',
+                'Full-stack systems architect specializing in high-throughput MERN, headless Next.js platforms, and cloud resilience.',
+                'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=400&q=80',
+                'https://linkedin.com',
+                json_encode(['Architected scalable SaaS backends handling 50k+ daily concurrent users']),
+                json_encode(['MERN Stack', 'Next.js', 'System Architecture']),
+                'team', 6, 'published', $now, $now
+            ],
+            [
+                'tm-3', 'Nadia Chen [Practice Lead]', 'Director of Search Science', 'Director of Performance Media & SEO',
+                'Data-driven performance marketer with expertise in algorithmic search optimization and multi-million dollar paid campaigns.',
+                'https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?auto=format&fit=crop&w=400&q=80',
+                'https://linkedin.com',
+                json_encode(['Ranked 400+ competitive commercial keywords on Google Page 1']),
+                json_encode(['Technical SEO', 'Google Ads', 'Meta CAPI']),
+                'team', 7, 'published', $now, $now
+            ],
+            [
+                'tm-4', 'Liam Sterling [Practice Lead]', 'Creative Director', 'Creative Director & Brand Designer',
+                'Award-winning visual designer shaping cyber-modern design systems, high-converting UI/UX, and distinctive digital identities.',
+                'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=400&q=80',
+                'https://linkedin.com',
+                json_encode(['Redesigned 50+ enterprise and consumer digital brand identities']),
+                json_encode(['UI/UX Systems', 'Futuristic Visuals', 'Motion']),
+                'team', 8, 'published', $now, $now
+            ],
+        ];
+        foreach ($initial as $row) {
+            $seedStmt->execute($row);
+        }
+    }
 } catch (Exception $e) {
     // If SQLite fails, database will remain null and fallback to JSON files
     $db = null;
